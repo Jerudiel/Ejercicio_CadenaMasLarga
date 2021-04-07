@@ -1967,7 +1967,7 @@ void Monitor::revisarEstadoSenPresion(){
         }
         else{
             timerEstadoSenPresion->stop();
-            qDebug() << "Esta detenido senpresion";
+            qDebug() << "Esta activo senpresion";
             senPresionListo = true;
             estadoVentilador = true;
             serPresion->corriendo = true;
