@@ -1,0 +1,2 @@
+# ventilador
+Ventilador c++ QT
