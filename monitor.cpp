@@ -19,7 +19,7 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
         versionVentiladorEsperada = "3.5";
         versionSenPresionEsperada = "2.7";
         versionTecladoEsperada = "0.5";
-        versionPi = "3.55";
+        versionPi = "3.56";
 
         mainwindow = parent;
         this->consul = consul;
@@ -3847,12 +3847,15 @@ void Monitor::recePresion(QString trama){
                     if(trama.size() == 2){
                         if(trama[1] == "1"){
                             error_sensores_sensor_presion = true;
+                            qDebug() << "Error-SV sensor de presion";
                         }
                         else if(trama[1] == "2"){
                             error_sensores_sensor_inhalacion = true;
+                            qDebug() << "Error-SV sensor de inhalación";
                         }
                         else if(trama[1] == "3"){
                             error_sensores_sensor_exhalacion = true;
+                            qDebug() << "Error-SV sensor de exhalación";
                         }
                     }
                     else{
