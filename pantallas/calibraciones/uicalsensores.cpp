@@ -122,6 +122,8 @@ UiCalSensores::UiCalSensores(QWidget *parent, Monitor *monitor) : QWidget(parent
 
         retranslateUi();
 
+        //qDebug() << "Termina de crear pantalla sensores";
+
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }

@@ -17,11 +17,11 @@ UiCalibraciones::UiCalibraciones(Monitor * monitor, QWidget *parent) : QWidget(p
         btnNoSeleccionadoWidget = "QPushButton { border: 2px solid rgb(255,112,61); border-radius: 5px; color: white;}"
                                   "QPushButton:checked { background-color: green; border: 1px solid green;"
                                   "border-radius: 5px; color: white;}";
-        centralwidget = new QWidget(this);
+        centralwidget = new QWidget(parent); //this
         centralwidget->setObjectName("centralwidget");
 
         horizontalLayoutWidget = new QWidget(centralwidget);
-        horizontalLayoutWidget->setGeometry(QRect(0, 25, 1031, 601));
+        horizontalLayoutWidget->setGeometry(QRect(0, 0, 1000, 500));
         horizontalLayoutWidget->setObjectName("horizontalLayoutWidget");
 
         fuente = new QFont;
@@ -30,6 +30,7 @@ UiCalibraciones::UiCalibraciones(Monitor * monitor, QWidget *parent) : QWidget(p
 
         tabWidget = new QTabWidget(horizontalLayoutWidget);
         tabWidget->setObjectName("tabWidget");
+        tabWidget->setGeometry(QRect(0, 0, 1000, 500));
 
         /*tab_cal =  new QWidget;
         tab_cal->setObjectName("tab_cal");
@@ -64,12 +65,26 @@ UiCalibraciones::UiCalibraciones(Monitor * monitor, QWidget *parent) : QWidget(p
     }
 }
 
+void UiCalibraciones::llenarConfiguracion(){
+    try {
+        tab_sensores->cargarFactores();
+        tab_control->cargarFactores();
+        tab_otros->cargarAltura();
+        tab_otros->cargarTeclado();
+        tab_otros->cargarFio2();
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+
+    }
+}
+
 void UiCalibraciones::retranslateUi(){
     try {
 
         tabWidget->setTabText(tabWidget->indexOf(tab_sensores), "SENSORES");
         tabWidget->setTabText(tabWidget->indexOf(tab_control), "CONTROL");
         tabWidget->setTabText(tabWidget->indexOf(tab_otros), "RPI");
+        qDebug() << "Cargar nombres a tabs calibraciones";
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
 
@@ -78,6 +93,7 @@ void UiCalibraciones::retranslateUi(){
 
 void UiCalibraciones::cambioTab(int i){
     try {
+        //qDebug() << "Cambio tab en calibraciones";
         //tabWidget->indexOf(tab_datetime);
         if(i == tabWidget->indexOf(tab_sensores)){
             tab_sensores->cargarFactores();
@@ -90,6 +106,20 @@ void UiCalibraciones::cambioTab(int i){
             tab_otros->cargarTeclado();
             tab_otros->cargarFio2();
         }
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+
+    }
+}
+
+void UiCalibraciones::paintEvent(QPaintEvent* /*event*/)
+{
+    try {
+        QStyleOption * opt = new QStyleOption;
+        opt->initFrom(this);
+        QPainter * p = new QPainter(this);
+        this->style()->drawPrimitive(QStyle::PE_Widget, opt, p, this);
+        p->end();
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
 

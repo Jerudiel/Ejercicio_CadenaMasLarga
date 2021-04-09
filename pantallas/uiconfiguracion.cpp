@@ -195,11 +195,11 @@ void UiConfiguracion::cambioTab(int i){
             tab_info_sistema->cargarVersiones();
         }
         else if(i == tabWidget->indexOf(tab_calibrar)){
-            tab_calibrar->cargarFactores();
-            tab_calibrar->cargarOffsets();
-            tab_calibrar->cargarAltura();
-            tab_calibrar->cargarTeclado();
-            tab_calibrar->cargarFio2();
+            tab_calibrar->calibraciones->tab_sensores->cargarFactores();
+            tab_calibrar->calibraciones->tab_control->cargarFactores();
+            tab_calibrar->calibraciones->tab_otros->cargarAltura();
+            tab_calibrar->calibraciones->tab_otros->cargarTeclado();
+            tab_calibrar->calibraciones->tab_otros->cargarFio2();
         }
         else if(i == tabWidget->indexOf(tab_datetime)){
             tab_datetime->cargarFecha();

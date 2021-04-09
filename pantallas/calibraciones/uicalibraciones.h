@@ -43,7 +43,7 @@ public:
     int elementSel;
 
     void retranslateUi();
-    virtual void paintEvet(QPaintEvent *event);
+    virtual void paintEvent(QPaintEvent *event);
     void llenarConfiguracion();
 public slots:
     void cambioTab(int i);

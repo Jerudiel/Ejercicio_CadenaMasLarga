@@ -17,9 +17,9 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
 {
     try {
         versionVentiladorEsperada = "3.5";
-        versionSenPresionEsperada = "2.7";
+        versionSenPresionEsperada = "2.8";
         versionTecladoEsperada = "0.5";
-        versionPi = "3.56";
+        versionPi = "3.57";
 
         mainwindow = parent;
         this->consul = consul;
@@ -3827,9 +3827,11 @@ void Monitor::recePresion(QString trama){
                         QString b1 = trama.mid(4, 3);
                         QString b2 = trama.mid(7, 3);
                         QString b3 = trama.mid(10, 3);
-                        QString b4 = trama.mid(14, 3);
-                        QString b5 = trama.mid(17, 3);
-                        consul->guarda_cali(b1, b2, b3, b4, b5);
+                        QString b4 = trama.mid(13, 3);
+                        QString b5 = trama.mid(16, 3);
+                        QString b6 = trama.mid(19, 3);
+                        QString b7 = trama.mid(22, 3);
+                        consul->guarda_cali(b1, b2, b3, b4, b5, b6, b7);
                         if(trama.mid(1,3) != versionSenPresionEsperada){
                             if(vAviso == nullptr){
                                 muestraAviso("VERSION OBSOLETA\n ACTUALIZAR VERSION SENSORES");

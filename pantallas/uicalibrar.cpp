@@ -12,6 +12,7 @@ UiCalibrar::UiCalibrar(QWidget *parent, Monitor *monitor) : QWidget(parent)
 
         calibraciones = new UiCalibraciones(this->monitor, this);
         calibraciones->setObjectName("calibraciones");
+        calibraciones->setGeometry(QRect(0,0,1000,500));
 
         /*rangos_offsets = {{0,70},{0,70},{0,200},{0,200},{0,500},{0,999},{0,999}};
 
