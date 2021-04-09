@@ -67,9 +67,29 @@ UiCalibraciones::UiCalibraciones(Monitor * monitor, QWidget *parent) : QWidget(p
 void UiCalibraciones::retranslateUi(){
     try {
 
-        /*tabWidget->setTabText(tabWidget->indexOf(tab_info_sistema), "SISTEMA");
-        tabWidget->setTabText(tabWidget->indexOf(tab_calibrar), "CALIBRAR");
-        tabWidget->setTabText(tabWidget->indexOf(tab_datetime), "FECHA");*/
+        tabWidget->setTabText(tabWidget->indexOf(tab_sensores), "SENSORES");
+        tabWidget->setTabText(tabWidget->indexOf(tab_control), "CONTROL");
+        tabWidget->setTabText(tabWidget->indexOf(tab_otros), "RPI");
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+
+    }
+}
+
+void UiCalibraciones::cambioTab(int i){
+    try {
+        //tabWidget->indexOf(tab_datetime);
+        if(i == tabWidget->indexOf(tab_sensores)){
+            tab_sensores->cargarFactores();
+        }
+        else if(i == tabWidget->indexOf(tab_control)){
+            tab_control->cargarFactores();
+        }
+        else if(i == tabWidget->indexOf(tab_otros)){
+            tab_otros->cargarAltura();
+            tab_otros->cargarTeclado();
+            tab_otros->cargarFio2();
+        }
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
 

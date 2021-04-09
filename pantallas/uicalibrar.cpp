@@ -10,7 +10,10 @@ UiCalibrar::UiCalibrar(QWidget *parent, Monitor *monitor) : QWidget(parent)
         fuente->setBold(true);
         fuente->setWeight(75);
 
-        rangos_offsets = {{0,70},{0,70},{0,200},{0,200},{0,500},{0,999},{0,999}};
+        calibraciones = new UiCalibraciones(this->monitor, this);
+        calibraciones->setObjectName("calibraciones");
+
+        /*rangos_offsets = {{0,70},{0,70},{0,200},{0,200},{0,500},{0,999},{0,999}};
 
         labelFactor1 = new QLabel(this);
         labelFactor1->setGeometry(QRect(10, 20, 130, 30));
@@ -313,14 +316,14 @@ UiCalibrar::UiCalibrar(QWidget *parent, Monitor *monitor) : QWidget(parent)
         timerTecladoAplicados->setSingleShot(true);
         connect(timerTecladoAplicados, SIGNAL(timeout()), this, SLOT(revisarCambiosTeclado()));
 
-        retranslateUi();
+        retranslateUi();*/
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
 
     }
 }
 
-void UiCalibrar::retranslateUi(){
+/*void UiCalibrar::retranslateUi(){
     try {
         labelFactor1->setText("Factor inh: ");
         labelFactor2->setText("Umbral bajo: ");
@@ -345,7 +348,7 @@ void UiCalibrar::retranslateUi(){
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
 
     }
-}
+}*/
 
 void UiCalibrar::paintEvent(QPaintEvent* /*event*/)
 {
@@ -361,7 +364,7 @@ void UiCalibrar::paintEvent(QPaintEvent* /*event*/)
     }
 }
 
-void UiCalibrar::revisarCambios(){
+/*void UiCalibrar::revisarCambios(){
     try {
         if(monitor->cambiosCalibrar){
             bool temp = monitor->consul->guarda_cali(lineEditFactor1->text(), lineEditFactor2->text(), lineEditFactor3->text(),
@@ -711,3 +714,4 @@ void UiCalibrar::aplicarCambiosFio2(){
 
     }
 }
+*/

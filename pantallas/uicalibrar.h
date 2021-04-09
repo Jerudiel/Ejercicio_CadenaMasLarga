@@ -12,6 +12,7 @@
 #include <QStyleOption>
 #include <QPainter>
 
+#include "pantallas/calibraciones/uicalibraciones.h"
 
 class UiCalibrar : public QWidget
 {
@@ -20,7 +21,8 @@ public:
     explicit UiCalibrar(QWidget *parent = nullptr, Monitor * monitor = nullptr);
     Monitor *monitor;
     QFont * fuente;
-    QVector< QVector< int > > rangos_offsets;
+    UiCalibraciones *calibraciones;
+    /*QVector< QVector< int > > rangos_offsets;
     QLabel * labelFactor1;
     QLineEdit * lineEditFactor1;
     QLabel * labelFactor2;
@@ -67,30 +69,30 @@ public:
     QLabel *labelInfo;
     QTimer *timerCambiosAplicados;
     QTimer *timerOffsetsAplicados;
-    QTimer *timerTecladoAplicados;
+    QTimer *timerTecladoAplicados;*/
 
 
 
-    void retranslateUi();
+    //void retranslateUi();
     virtual void paintEvent(QPaintEvent *event);
 
 
-    void cargarFactores();
+    /*void cargarFactores();
     void cargarOffsets();
     void cargarAltura();
     void cargarTeclado();
-    void cargarFio2();
+    void cargarFio2();*/
 
 
 public slots:
-    void aplicarCambios();
+    /*void aplicarCambios();
     void aplicarCambiosOffsets();
     void aplicarCambiosAltura();
     void aplicarCambiosTeclado();
     void aplicarCambiosFio2();
     void revisarCambios();
     void revisarCambiosOffsets();
-    void revisarCambiosTeclado();
+    void revisarCambiosTeclado();*/
 
 signals:
 

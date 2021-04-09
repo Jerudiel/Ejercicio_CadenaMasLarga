@@ -23,7 +23,7 @@ class UiCalibraciones : public QWidget
 {
     Q_OBJECT
 public:
-    explicit UiCalibraciones(QWidget *parent = nullptr);
+    explicit UiCalibraciones(Monitor *monitor = nullptr, QWidget *parent = nullptr);
     Monitor * monitor;
     QString btn;
     QString btnSeleccionado;
