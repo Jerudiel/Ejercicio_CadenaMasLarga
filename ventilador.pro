@@ -14,6 +14,7 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     monitor.cpp \
+    pantallas/calibraciones/uicalibraciones.cpp \
     pantallas/modos/uimodopcmv.cpp \
     pantallas/modos/uimodopcpap.cpp \
     pantallas/modos/uimodopsimv.cpp \
@@ -73,6 +74,7 @@ HEADERS += \
     consultas.h \
     mainwindow.h \
     monitor.h \
+    pantallas/calibraciones/uicalibraciones.h \
     pantallas/modos/uimodopcmv.h \
     pantallas/modos/uimodopcpap.h \
     pantallas/modos/uimodopsimv.h \
