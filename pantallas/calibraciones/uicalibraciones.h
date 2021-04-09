@@ -15,6 +15,10 @@
 #include <QStyleOption>
 #include <QPainter>
 
+#include "pantallas/calibraciones/uicalsensores.h"
+#include "pantallas/calibraciones/uicalcontrol.h"
+#include "pantallas/calibraciones/uicalotros.h"
+
 class UiCalibraciones : public QWidget
 {
     Q_OBJECT
@@ -31,6 +35,10 @@ public:
     QTabWidget * tabWidget;
     QWidget * tab_cal;
     QFont * fuente;
+
+    UiCalSensores *tab_sensores;
+    UiCalControl *tab_control;
+    UiCalOtros *tab_otros;
 
     int elementSel;
 

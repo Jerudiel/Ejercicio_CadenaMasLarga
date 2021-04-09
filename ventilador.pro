@@ -14,7 +14,10 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     monitor.cpp \
+    pantallas/calibraciones/uicalcontrol.cpp \
     pantallas/calibraciones/uicalibraciones.cpp \
+    pantallas/calibraciones/uicalotros.cpp \
+    pantallas/calibraciones/uicalsensores.cpp \
     pantallas/modos/uimodopcmv.cpp \
     pantallas/modos/uimodopcpap.cpp \
     pantallas/modos/uimodopsimv.cpp \
@@ -74,7 +77,10 @@ HEADERS += \
     consultas.h \
     mainwindow.h \
     monitor.h \
+    pantallas/calibraciones/uicalcontrol.h \
     pantallas/calibraciones/uicalibraciones.h \
+    pantallas/calibraciones/uicalotros.h \
+    pantallas/calibraciones/uicalsensores.h \
     pantallas/modos/uimodopcmv.h \
     pantallas/modos/uimodopcpap.h \
     pantallas/modos/uimodopsimv.h \

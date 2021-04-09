@@ -31,9 +31,9 @@ UiCalibraciones::UiCalibraciones(Monitor * monitor, QWidget *parent) : QWidget(p
         tabWidget = new QTabWidget(horizontalLayoutWidget);
         tabWidget->setObjectName("tabWidget");
 
-        tab_cal =  new QWidget;
+        /*tab_cal =  new QWidget;
         tab_cal->setObjectName("tab_cal");
-        tabWidget->addTab(tab_cal, "");
+        tabWidget->addTab(tab_cal, "");*/
 
         //aqui se van a agregar los 3 tabs
         /*tab_info_sistema = new UiInfoSistema(this, monitor);
@@ -41,6 +41,17 @@ UiCalibraciones::UiCalibraciones(Monitor * monitor, QWidget *parent) : QWidget(p
         tabWidget->addTab(tab_info_sistema, "");*/
         //configModo = new UiConfigModo(tab_config); ???
 
+        tab_sensores = new UiCalSensores(this, monitor);
+        tab_sensores->setObjectName("tab_sensores");
+        tabWidget->addTab(tab_sensores, "");
+
+        tab_control = new UiCalControl(this, monitor);
+        tab_control->setObjectName("tab_control");
+        tabWidget->addTab(tab_control, "");
+
+        tab_otros = new UiCalOtros(this, monitor);
+        tab_otros->setObjectName("tab_otros");
+        tabWidget->addTab(tab_otros, "");
 
         retranslateUi();
         tabWidget->setCurrentIndex(0);
