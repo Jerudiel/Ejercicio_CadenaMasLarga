@@ -674,12 +674,12 @@ QString Consultas::leer_calibracion(){
     }
 }
 
-bool Consultas::guarda_cali(QString b1, QString b2, QString b3, QString b4, QString b5){
+bool Consultas::guarda_cali(QString b1, QString b2, QString b3, QString b4, QString b5, QString b6, QString b7){
     try {
         QString id_cali = obtener_id_calibracion();
         if(id_cali != ""){
             QString update_query = "UPDATE Calibracion SET f1 = " + b1 + ", f2 = " + b2 + ", f3 = " + b3 +
-                    ", f4 = " + b4 + ", f5 = " + b5 + " WHERE id = " + id_cali;
+                    ", f4 = " + b4 + ", f5 = " + b5 + ", f6 = " + b6 + ", f7 = " + b7 + " WHERE id = " + id_cali;
             QString resultados = consulta(update_query);
             if(resultados.at(1) != ""){
                 return true;
@@ -1104,5 +1104,62 @@ QString Consultas::obtener_id_fio2(){
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
         return "";
+    }
+}
+
+QString Consultas::obtener_id_com_pip(){
+    try {
+        QString quer = "SELECT id FROM com_pip";
+        QString resultados = consulta(quer);
+        QStringList res_list = resultados.split("?");
+        if(res_list.contains("result")){
+            return res_list.at(1);
+        }
+        else{
+            return "";
+        }
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        return "";
+    }
+}
+
+QString Consultas::leer_com_pip(){
+    try {
+        QString quer = "SELECT * FROM com_pip";
+        QString resultados = consulta(quer);
+        QStringList res_list = resultados.split("?");
+        if(res_list.contains("result")){
+            return res_list.at(1);
+        }
+        else{
+            return "";
+        }
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        return "";
+    }
+}
+
+bool Consultas::guarda_com_pip(QString b1){
+    try {
+        QString id_com_pip = obtener_id_com_pip();
+        if(id_com_pip != ""){
+            QString update_query = "UPDATE com_pip SET compensacion = " + b1 + " WHERE id = " + id_com_pip;
+            QString resultados = consulta(update_query);
+            if(resultados.at(1) != ""){
+                return true;
+            }
+            else{
+                qDebug("False guarda_com_pip");
+                return false;
+            }
+        }
+        else{
+            return false;
+        }
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        return false;
     }
 }

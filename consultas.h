@@ -47,7 +47,7 @@ public:
     bool cambiar_tipo_sensor(QString sentido);
     QString obtener_id_calibracion();
     QString leer_calibracion();
-    bool guarda_cali(QString b1, QString b2, QString b3, QString b4, QString b5);
+    bool guarda_cali(QString b1, QString b2, QString b3, QString b4, QString b5, QString b6, QString b7);
     QString obtener_id_offsets();
     QString leer_offsets();
     bool guarda_offsets(QString b1, QString b2, QString b3, QString b4, QString b5, QString b6, QString b7);
@@ -67,6 +67,9 @@ public:
     bool guarda_fio2(QString porce_cambio, QString of_02, QString m_aire, QString pwm_min);
     QString leer_fio2();
     QString obtener_id_fio2();
+    QString obtener_id_com_pip();
+    QString leer_com_pip();
+    bool guarda_com_pip(QString b1);
 
 
 
