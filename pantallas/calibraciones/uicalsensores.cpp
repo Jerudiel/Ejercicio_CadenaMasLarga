@@ -5,6 +5,11 @@ UiCalSensores::UiCalSensores(QWidget *parent, Monitor *monitor) : QWidget(parent
     try {
         this->monitor = monitor;
 
+        fuente = new QFont;
+        fuente->setPointSize(12);
+        fuente->setBold(true);
+        fuente->setWeight(75);
+
         lblFactInh = new QLabel(this);
         lblFactInh->setGeometry(QRect(10, 20, 130, 30));
         lblFactInh->setFont(*fuente);
