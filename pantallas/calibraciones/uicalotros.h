@@ -34,9 +34,12 @@ public:
     QLineEdit * lELMinAire;
     QLabel * lblLsAire;
     QLineEdit * lELsAire;
+    QLabel * lblOffPip;
+    QLineEdit * lEOffPip;
     QPushButton *btnAplicarAltura;
     QPushButton *btnAplicarTeclado;
     QPushButton *btnAplicarFio2;
+    QPushButton *btnAplicarComPip;
     QLabel *labelInfo;
     QTimer *timerTecladoAplicados;
 
@@ -46,10 +49,12 @@ public:
     void cargarAltura();
     void cargarTeclado();
     void cargarFio2();
+    void cargarOffPip();
 public slots:
     void aplicarCambiosAltura();
     void aplicarCambiosTeclado();
     void aplicarCambiosFio2();
+    void aplicarCambiosOffPip();
     void revisarCambiosTeclado();
 signals:
 

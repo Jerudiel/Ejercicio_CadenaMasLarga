@@ -84,7 +84,7 @@ UiCalSensores::UiCalSensores(QWidget *parent, Monitor *monitor) : QWidget(parent
         lblAjuExh->setObjectName("lblAjuExh");
 
         lEAjuExh = new QLineEdit(this);
-        lEAjuExh->setGeometry(QRect(450, 20, 100, 30));
+        lEAjuExh->setGeometry(QRect(470, 20, 100, 30));
         lEAjuExh->setFont(*fuente);
         lEAjuExh->setAlignment(Qt::AlignCenter);
         lEAjuExh->setObjectName("lEAjuExh");
@@ -97,20 +97,20 @@ UiCalSensores::UiCalSensores(QWidget *parent, Monitor *monitor) : QWidget(parent
         lblOffExh->setObjectName("lblOffExh");
 
         lEOffExh = new QLineEdit(this);
-        lEOffExh->setGeometry(QRect(450, 70, 100, 30));
+        lEOffExh->setGeometry(QRect(470, 70, 100, 30));
         lEOffExh->setFont(*fuente);
         lEOffExh->setAlignment(Qt::AlignCenter);
         lEOffExh->setObjectName("lEOffExh");
 
         btnAplicarCambios = new QPushButton(this);
-        btnAplicarCambios->setGeometry(QRect(40, 375, 225, 50));
+        btnAplicarCambios->setGeometry(QRect(200, 300, 225, 50));
         btnAplicarCambios->setFont(*fuente);
         btnAplicarCambios->setText("Aplicar");
         btnAplicarCambios->setObjectName("btnAplicarCambios");
         connect(btnAplicarCambios, SIGNAL(clicked()), this, SLOT(aplicarCambios()));
 
         labelInfo = new QLabel(this);
-        labelInfo->setGeometry(QRect(40, 450, 600, 50));
+        labelInfo->setGeometry(QRect(40, 400, 600, 50));
         labelInfo->setFont(*fuente);
         labelInfo->setAlignment(Qt::AlignCenter);
         labelInfo->setObjectName("labelInfo");

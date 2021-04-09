@@ -32,6 +32,11 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
         //variables que no estaban al inicio en la creacion de la clase
         ino_wdt_alarm = false;
 
+        offset_pip = 0;
+        QString tt_offset = consul->leer_com_pip();
+        QStringList tt_off_pip = tt_offset.split(",");
+        offset_pip = tt_off_pip.at(1).toFloat();
+
         vida_o2_21 = 0;
         vida_o2_100 = 0;
 
@@ -861,6 +866,16 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
     }
     catch(...){
         qWarning("ERROR AL CREAR CLASE MONITOR");
+    }
+}
+
+void Monitor::actualizar_off_pip(){
+    try {
+        QString ff = consul->leer_com_pip();
+        QStringList lf = ff.split(",");
+        offset_pip = lf.at(1).toFloat();
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -4669,7 +4684,14 @@ void Monitor::poner_datos(){
         }
         //qDebug() << "poner_datos funcion despues relacion";
         widgetTiTe->label_valor->setText("1:" + QString::number(relacion_te,'f',1));
-        signoPIP->bar->setValue(pip.toFloat());
+        //Jeru. nuevo offset pip
+        if(modoSel == 1 || modoSel == 3 || modoSel == 5){
+            float temp = pip.toFloat() + offset_pip;
+            signoPIP->bar->setValue(temp);
+        }
+        else{
+            signoPIP->bar->setValue(pip.toFloat());
+        }
         signoPEEP->bar->setValue(peep.toFloat());
         widgetFlujo->label_valor->setText(fp);
         //presion media

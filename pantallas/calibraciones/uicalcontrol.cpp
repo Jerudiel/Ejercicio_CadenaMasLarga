@@ -105,14 +105,14 @@ UiCalControl::UiCalControl(QWidget *parent, Monitor *monitor) : QWidget(parent)
         lEGBat->setObjectName("lEGBat");
 
         btnAplicarCambios = new QPushButton(this);
-        btnAplicarCambios->setGeometry(QRect(40, 375, 225, 50));
+        btnAplicarCambios->setGeometry(QRect(200, 300, 225, 50));
         btnAplicarCambios->setFont(*fuente);
         btnAplicarCambios->setText("Aplicar");
         btnAplicarCambios->setObjectName("btnAplicarCambios");
         connect(btnAplicarCambios, SIGNAL(clicked()), this, SLOT(aplicarCambios()));
 
         labelInfo = new QLabel(this);
-        labelInfo->setGeometry(QRect(40, 450, 600, 50));
+        labelInfo->setGeometry(QRect(40, 400, 600, 50));
         labelInfo->setFont(*fuente);
         labelInfo->setAlignment(Qt::AlignCenter);
         labelInfo->setObjectName("labelInfo");

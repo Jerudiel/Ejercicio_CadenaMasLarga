@@ -72,6 +72,7 @@ void UiCalibraciones::llenarConfiguracion(){
         tab_otros->cargarAltura();
         tab_otros->cargarTeclado();
         tab_otros->cargarFio2();
+        tab_otros->cargarOffPip();
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
 
@@ -105,6 +106,7 @@ void UiCalibraciones::cambioTab(int i){
             tab_otros->cargarAltura();
             tab_otros->cargarTeclado();
             tab_otros->cargarFio2();
+            tab_otros->cargarOffPip();
         }
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );

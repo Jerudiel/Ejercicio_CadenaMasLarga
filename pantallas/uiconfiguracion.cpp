@@ -200,6 +200,7 @@ void UiConfiguracion::cambioTab(int i){
             tab_calibrar->calibraciones->tab_otros->cargarAltura();
             tab_calibrar->calibraciones->tab_otros->cargarTeclado();
             tab_calibrar->calibraciones->tab_otros->cargarFio2();
+            tab_calibrar->calibraciones->tab_otros->cargarOffPip();
         }
         else if(i == tabWidget->indexOf(tab_datetime)){
             tab_datetime->cargarFecha();

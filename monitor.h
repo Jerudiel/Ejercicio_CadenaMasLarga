@@ -594,6 +594,9 @@ public:
 
     bool ino_wdt_alarm;
 
+    float offset_pip;
+    void actualizar_off_pip();
+
 public slots:
     void revisarErrorWDT();
 
