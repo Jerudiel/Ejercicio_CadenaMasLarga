@@ -4,13 +4,48 @@
 #include <QWidget>
 
 #include "monitor.h"
+#include <QFont>
+#include <QVector>
+#include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QTimer>
+#include <QStyleOption>
+#include <QPainter>
 
 class UiCalSensores : public QWidget
 {
     Q_OBJECT
 public:
     explicit UiCalSensores(QWidget *parent = nullptr, Monitor *monitor = nullptr);
+    Monitor *monitor;
+    QFont * fuente;
+    QVector< QVector< int > > rangos_offsets;
+    QLabel * lblFactInh;
+    QLineEdit * lEFactInh;
+    QLabel * lblUmBajo;
+    QLineEdit * lEUmBajo;
+    QLabel * lblFactExh;
+    QLineEdit * lEFactExh;
+    QLabel * lblUmBAlto;
+    QLineEdit * lEUmAlto;
+    QLabel * lblOffPres;
+    QLineEdit * lEOffPres;
+    QLabel * lblAjuExh;
+    QLineEdit * lEAjuExh;
+    QLabel * lblOffExh;
+    QLineEdit * lEOffExh;
+    QPushButton *btnAplicarCambios;
+    QLabel *labelInfo;
+    QTimer *timerCambiosAplicados;
 
+    void retranslateUi();
+    virtual void paintEvent(QPaintEvent *event);
+    void cargarFactores();
+
+public slots:
+    void aplicarCambios();
+    void revisarCambios();
 signals:
 
 };
