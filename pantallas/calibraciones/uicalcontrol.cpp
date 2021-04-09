@@ -3,6 +3,7 @@
 UiCalControl::UiCalControl(QWidget *parent, Monitor *monitor) : QWidget(parent)
 {
     try {
+        setStyleSheet("QLineEdit{ background: gray;} QPushButton{color: white;}");
         this->monitor = monitor;
 
         fuente = new QFont;

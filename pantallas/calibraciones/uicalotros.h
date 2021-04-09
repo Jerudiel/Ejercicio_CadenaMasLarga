@@ -4,13 +4,53 @@
 #include <QWidget>
 
 #include "monitor.h"
+#include <QFont>
+#include <QVector>
+#include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QTimer>
+#include <QStyleOption>
+#include <QPainter>
 
 class UiCalOtros : public QWidget
 {
     Q_OBJECT
 public:
     explicit UiCalOtros(QWidget *parent = nullptr, Monitor *monitor = nullptr);
+    Monitor *monitor;
+    QFont * fuente;
+    QLabel * lblAltura;
+    QLineEdit * lEAltura;
+    QLabel * lblPresionar;
+    QLineEdit * lEPresionar;
+    QLabel * lblSoltar;
+    QLineEdit * lESoltar;
+    QLabel * lblPorceCambio;
+    QLineEdit * lEPorceCambio;
+    QLabel * lblOffO2;
+    QLineEdit * lEOffO2;
+    QLabel * lblLMinAire;
+    QLineEdit * lELMinAire;
+    QLabel * lblLsAire;
+    QLineEdit * lELsAire;
+    QPushButton *btnAplicarAltura;
+    QPushButton *btnAplicarTeclado;
+    QPushButton *btnAplicarFio2;
+    QLabel *labelInfo;
+    QTimer *timerTecladoAplicados;
 
+    void retranslateUi();
+    virtual void paintEvent(QPaintEvent *event);
+
+    void cargarAltura();
+    void cargarTeclado();
+    void cargarFio2();
+public slots:
+    void aplicarCambiosAltura();
+    void aplicarCambiosTeclado();
+    void aplicarCambiosFio2();
+    void revisarCambiosTeclado();
 signals:
 
 };
