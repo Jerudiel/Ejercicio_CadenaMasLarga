@@ -262,7 +262,7 @@ void MainWindow::tecladoVirtual(QString trama){
 void MainWindow::recteclado(QString trama){
     try {
         //QString trama = serTeclado->leer();
-        if(!avisoVentiActivo && !avisoPresiActivo && !avisoTeclaActivo && ! monitor->ventiladorInoperante){
+        if(!avisoVentiActivo && !avisoPresiActivo && !avisoTeclaActivo){// && ! monitor->ventiladorInoperante
             //qDebug() << "teclado------1";
             if(trama != ""){
                 beep();
