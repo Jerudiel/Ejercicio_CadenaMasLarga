@@ -88,7 +88,7 @@ UiAlarmas::UiAlarmas(Monitor *monitor, QWidget *parent) : QWidget(parent)
         limiteMaxFre = 60;
         limiteMinFre = 5;
         limiteMinVolE = 1;
-        limiteMaxVolE = 20;
+        limiteMaxVolE = 30;
 
         alarmaPRE = new AlarmaQW(widget, "Alarma PSU", "Presión","cmH2O",this->monitor);
         alarmaPRE->setGeometry(QRect(50,80,110,330));
