@@ -62,44 +62,63 @@ UiCalOtros::UiCalOtros(QWidget *parent, Monitor *monitor) : QWidget(parent)
         lEPorceCambio->setAlignment(Qt::AlignCenter);
         lEPorceCambio->setObjectName("lEPorceCambio");
 
-        lblOffO2 = new QLabel(this);
-        lblOffO2->setGeometry(QRect(650, 70, 100, 30));
-        lblOffO2->setFont(*fuente);
-        lblOffO2->setStyleSheet("color: white;");
-        lblOffO2->setAlignment(Qt::AlignCenter);
-        lblOffO2->setObjectName("lblOffO2");
-
-        lEOffO2 = new QLineEdit(this);
-        lEOffO2->setGeometry(QRect(760, 70, 100, 30));
-        lEOffO2->setFont(*fuente);
-        lEOffO2->setAlignment(Qt::AlignCenter);
-        lEOffO2->setObjectName("lEOffO2");
-
-        lblLMinAire = new QLabel(this);
-        lblLMinAire->setGeometry(QRect(650, 120, 100, 30));
-        lblLMinAire->setFont(*fuente);
-        lblLMinAire->setStyleSheet("color: white;");
-        lblLMinAire->setAlignment(Qt::AlignCenter);
-        lblLMinAire->setObjectName("lblLMinAire");
-
-        lELMinAire = new QLineEdit(this);
-        lELMinAire->setGeometry(QRect(760, 120, 100, 30));
-        lELMinAire->setFont(*fuente);
-        lELMinAire->setAlignment(Qt::AlignCenter);
-        lELMinAire->setObjectName("lELMinAire");
+        //
 
         lblLsAire = new QLabel(this);
-        lblLsAire->setGeometry(QRect(650, 170, 100, 30));
+        lblLsAire->setGeometry(QRect(650, 70, 100, 30));
         lblLsAire->setFont(*fuente);
         lblLsAire->setStyleSheet("color: white;");
         lblLsAire->setAlignment(Qt::AlignCenter);
         lblLsAire->setObjectName("lblLsAire");
 
         lELsAire = new QLineEdit(this);
-        lELsAire->setGeometry(QRect(760, 170, 100, 30));
+        lELsAire->setGeometry(QRect(760, 70, 100, 30));
         lELsAire->setFont(*fuente);
         lELsAire->setAlignment(Qt::AlignCenter);
         lELsAire->setObjectName("lELsAire");
+
+        lblLiAire = new QLabel(this);
+        lblLiAire->setGeometry(QRect(650, 120, 100, 30));
+        lblLiAire->setFont(*fuente);
+        lblLiAire->setStyleSheet("color: white;");
+        lblLiAire->setAlignment(Qt::AlignCenter);
+        lblLiAire->setObjectName("lblLiAire");
+
+        lELiAire = new QLineEdit(this);
+        lELiAire->setGeometry(QRect(760, 120, 100, 30));
+        lELiAire->setFont(*fuente);
+        lELiAire->setAlignment(Qt::AlignCenter);
+        lELiAire->setObjectName("lELiAire");
+
+        //
+
+        lblLsO2 = new QLabel(this);
+        lblLsO2->setGeometry(QRect(650, 170, 100, 30));
+        lblLsO2->setFont(*fuente);
+        lblLsO2->setStyleSheet("color: white;");
+        lblLsO2->setAlignment(Qt::AlignCenter);
+        lblLsO2->setObjectName("lblLsO2");
+
+        lELsO2 = new QLineEdit(this);
+        lELsO2->setGeometry(QRect(760, 170, 100, 30));
+        lELsO2->setFont(*fuente);
+        lELsO2->setAlignment(Qt::AlignCenter);
+        lELsO2->setObjectName("lELsO2");
+
+        lblLiO2 = new QLabel(this);
+        lblLiO2->setGeometry(QRect(650, 220, 100, 30));
+        lblLiO2->setFont(*fuente);
+        lblLiO2->setStyleSheet("color: white;");
+        lblLiO2->setAlignment(Qt::AlignCenter);
+        lblLiO2->setObjectName("lblLiO2");
+
+        lELiO2 = new QLineEdit(this);
+        lELiO2->setGeometry(QRect(760, 220, 100, 30));
+        lELiO2->setFont(*fuente);
+        lELiO2->setAlignment(Qt::AlignCenter);
+        lELiO2->setObjectName("lELiO2");
+
+        //
 
         lblOffPip= new QLabel(this);
         lblOffPip->setGeometry(QRect(10, 150, 100, 30));
@@ -129,7 +148,7 @@ UiCalOtros::UiCalOtros(QWidget *parent, Monitor *monitor) : QWidget(parent)
         connect(btnAplicarTeclado, SIGNAL(clicked()), this, SLOT(aplicarCambiosTeclado()));
 
         btnAplicarFio2 = new QPushButton(this);
-        btnAplicarFio2->setGeometry(QRect(700, 220, 225, 50));
+        btnAplicarFio2->setGeometry(QRect(700, 275, 225, 50));
         btnAplicarFio2->setFont(*fuente);
         btnAplicarFio2->setText("Aplicar FIO2");
         btnAplicarFio2->setObjectName("btnAplicarFio2");
@@ -166,9 +185,10 @@ void UiCalOtros::retranslateUi(){
         lblPresionar->setText("Presionar: ");
         lblSoltar->setText("Soltar: ");
         lblPorceCambio->setText("% cambio: ");
-        lblOffO2->setText("OF_02: ");
-        lblLMinAire->setText("ls_aire: ");
-        lblLsAire->setText("lmin_aire: ");
+        lblLsAire->setText("ls_aire: ");
+        lblLiAire->setText("li_aire: ");
+        lblLsO2->setText("ls_o2: ");
+        lblLiO2->setText("li_o2: ");
         lblOffPip->setText("Off pip: ");
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
@@ -233,9 +253,10 @@ void UiCalOtros::cargarFio2(){
         QStringList parts = temp.split(",");
         labelInfo->setText("");
         lEPorceCambio->setText(parts.at(1));
-        lEOffO2->setText(parts.at(2));
-        lELMinAire->setText(parts.at(3));
-        lELsAire->setText(parts.at(4));
+        lELsAire->setText(parts.at(2));
+        lELiAire->setText(parts.at(3));
+        lELsO2->setText(parts.at(4));
+        lELiO2->setText(parts.at(5));
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
 
@@ -326,21 +347,23 @@ void UiCalOtros::aplicarCambiosTeclado(){
 void UiCalOtros::aplicarCambiosFio2(){
     try {
         QString porce_cambio = lEPorceCambio->text();
-        QString of_o2 = lEOffO2->text();
-        QString m_aire = lELMinAire->text();
-        QString ls_aire = lELsAire->text();
+        QString ls_aire_s = lELsAire->text();
+        QString li_aire_s = lELiAire->text();
+        QString ls_o2_s = lELsO2->text();
+        QString li_o2_s = lELiO2->text();
         bool entero = false;
         try {
             porce_cambio.toInt();
-            of_o2.toInt();
-            m_aire.toInt();
-            ls_aire.toInt();
+            ls_aire_s.toInt();
+            li_aire_s.toInt();
+            ls_o2_s.toInt();
+            li_o2_s.toInt();
             entero = true;
         }  catch (...) {
             entero = false;
         }
         if(entero){
-            bool temp = monitor->consul->guarda_fio2(lEPorceCambio->text(),lEOffO2->text(),lELMinAire->text(),lELsAire->text());
+            bool temp = monitor->consul->guarda_fio2(lEPorceCambio->text(),lELsAire->text(),lELiAire->text(),lELsO2->text(),lELiO2->text());
             if(temp){
                 labelInfo->setText("Cambios guardados fio2");
                 //cargar cambios en las fórmulas

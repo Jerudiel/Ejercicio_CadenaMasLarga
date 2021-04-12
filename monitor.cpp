@@ -19,7 +19,7 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
         versionVentiladorEsperada = "3.6";
         versionSenPresionEsperada = "2.8";
         versionTecladoEsperada = "0.5";
-        versionPi = "3.58";
+        versionPi = "3.59";
 
         mainwindow = parent;
         this->consul = consul;
@@ -716,7 +716,7 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
         //cargar valores fio2
         QString ff = consul->leer_fio2();
         QStringList lf = ff.split(",");
-        tramas->actualizar_formulas(lf[1], lf[2], lf[3], lf[4]);
+        tramas->actualizar_formulas(lf[1], lf[2], lf[3], lf[4], lf[5]);
 
         borrar_eventos();
 
@@ -884,7 +884,7 @@ void Monitor::actualizar_fio2(){
         //cargar valores fio2
         QString ff = consul->leer_fio2();
         QStringList lf = ff.split(",");
-        tramas->actualizar_formulas(lf[1], lf[2], lf[3], lf[4]);
+        tramas->actualizar_formulas(lf[1], lf[2], lf[3], lf[4], lf[5]);
         //mandar a cargar de nuevo las tramas
         actualizarParametros();
     }  catch (std::exception &e) {

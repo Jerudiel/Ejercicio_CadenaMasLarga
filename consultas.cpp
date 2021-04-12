@@ -1065,12 +1065,12 @@ QString Consultas::leer_fio2(){
     }
 }
 
-bool Consultas::guarda_fio2(QString porce_cambio, QString of_02, QString m_aire, QString pwm_min){
+bool Consultas::guarda_fio2(QString porce_cambio, QString ls_aire, QString li_aire, QString ls_o2, QString li_o2){
     try {
         QString id_fio2 = obtener_id_fio2();
         //qDebug() << "id fio2: " + id_fio2;
         if(id_fio2 != ""){
-            QString update_query = "UPDATE fio2 SET porce_cambio = " + porce_cambio + ", of_o2 = " + of_02 +  ", m_aire = " + m_aire + ", pwm_min = " + pwm_min + " WHERE id = " + id_fio2;
+            QString update_query = "UPDATE fio2 SET porce_cambio = " + porce_cambio + ", ls_aire = " + ls_aire +  ", li_aire = " + li_aire + ", ls_o2 = " + ls_o2 + ", li_o2 = " + li_o2 + " WHERE id = " + id_fio2;
             //qDebug() << "query fio2: " + update_query;
             QString resultados = consulta(update_query);
             if(resultados.at(1) != ""){

@@ -28,14 +28,19 @@ public:
     QLineEdit * lESoltar;
     QLabel * lblPorceCambio;
     QLineEdit * lEPorceCambio;
-    QLabel * lblOffO2;
-    QLineEdit * lEOffO2;
-    QLabel * lblLMinAire;
-    QLineEdit * lELMinAire;
+
     QLabel * lblLsAire;
     QLineEdit * lELsAire;
+    QLabel * lblLiAire;
+    QLineEdit * lELiAire;
+    QLabel * lblLsO2;
+    QLineEdit * lELsO2;
+    QLabel * lblLiO2;
+    QLineEdit * lELiO2;
+
     QLabel * lblOffPip;
     QLineEdit * lEOffPip;
+
     QPushButton *btnAplicarAltura;
     QPushButton *btnAplicarTeclado;
     QPushButton *btnAplicarFio2;

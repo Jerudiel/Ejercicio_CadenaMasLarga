@@ -34,7 +34,7 @@ public:
     QString obtener_trama_serpresion_config(int modo);
     QString obtener_trama_alarmas();
     QString obtener_trama_ventilador(int modo);
-    void actualizar_formulas(QString porce_cambio, QString of_o2, QString m_aire, QString pwm_min);
+    void actualizar_formulas(QString porce_cambio, QString ls_aire, QString li_aire, QString ls_o2, QString li_o2);
 
 };
 

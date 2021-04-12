@@ -134,10 +134,10 @@ QString Tramas::obtener_trama_ventilador(int modo)
     }
 }
 
-void Tramas::actualizar_formulas(QString porce_cambio, QString of_o2, QString m_aire, QString pwm_min)
+void Tramas::actualizar_formulas(QString porce_cambio, QString ls_aire, QString li_aire, QString ls_o2, QString li_o2)
 {
     try {
-        formulas->actualizar_fio2(porce_cambio, of_o2, m_aire, pwm_min);
+        formulas->actualizar_fio2(porce_cambio, ls_aire, li_aire, ls_o2, li_o2);
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }

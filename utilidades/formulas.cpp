@@ -11,10 +11,11 @@ Formulas::Formulas()
         flujo_aire_21 = 36;
         flujo_oxi_21 = 0;
 
-        li_aire = 0;
         porce_cambio = 0;
-        of_o2 = 0;
-        m_aire = 0;
+        ls_aire = 0;
+        li_aire = 0;
+        ls_o2 = 0;
+        li_o2 = 0;
 
 
         /*diccionario_o2 = QMap<int, int>( { {"a", 1}, {"b", 2}, {"c", 3} } );
@@ -68,22 +69,23 @@ int Formulas::obtener_valor_pwm(float flujo){
     }
 }
 
-int Formulas::obtener_valor_pwm_aire(int porcentaje){
+int Formulas::obtener_valor_pwm_aire(int fio2){
     try {
         int pwm_aire = 0;
-        if(porcentaje < porce_cambio){
+        if(fio2 < porce_cambio){
             pwm_aire = pwm_max;
         }
-        else if(porcentaje == porce_cambio){
+        else if(fio2 == porce_cambio){
             pwm_aire = pwm_max;
         }
         else{
-            if(porcentaje == 100){
+            if(fio2 == 100){
                 pwm_aire = pwm_min;
             }
             else{
                 //pwm_aire = 300 + (4*(100-porcentaje));
-                pwm_aire = m_aire - ((porcentaje - porce_cambio)*((m_aire - li_aire)/(100-porce_cambio)));
+                //pwm_aire = m_aire - ((porcentaje - porce_cambio)*((m_aire - li_aire)/(100-porce_cambio)));
+                pwm_aire = ls_aire + ((fio2 - porce_cambio)*((li_aire - ls_aire)/(100 - porce_cambio)));
             }
         }
         return pwm_aire;
@@ -93,20 +95,21 @@ int Formulas::obtener_valor_pwm_aire(int porcentaje){
     }
 }
 
-int Formulas::obtener_valor_pwm_oxigeno(int porcentaje){
+int Formulas::obtener_valor_pwm_oxigeno(int fio2){
     try {
         int pwm_oxigeno = 0;
-        if(porcentaje < porce_cambio){
-            if(porcentaje == 21){
+        if(fio2 < porce_cambio){
+            if(fio2 == 21){
                 pwm_oxigeno = pwm_min;
             }
             else{
                 //float cociente = 30/21.0;
                 //pwm_oxigeno = ((porcentaje - 22) * cociente) + 180;
-                pwm_oxigeno = of_o2 + (porcentaje * ((pwm_max - of_o2)/(porce_cambio)));
+                //pwm_oxigeno = of_o2 + (fio2 * ((pwm_max - of_o2)/(porce_cambio)));
+                pwm_oxigeno = li_aire + ((fio2 - 21)*((ls_o2 - li_o2)/(porce_cambio - 21)));
             }
         }
-        else if(porcentaje == porce_cambio){
+        else if(fio2 == porce_cambio){
             pwm_oxigeno = pwm_max;
         }
         else{
@@ -120,12 +123,13 @@ int Formulas::obtener_valor_pwm_oxigeno(int porcentaje){
     }
 }
 
-void Formulas::actualizar_fio2(QString porce_cambio_s, QString of_o2_s, QString m_aire_s, QString pwm_min_s){
+void Formulas::actualizar_fio2(QString porce_cambio_s, QString ls_aire_s, QString li_aire_s, QString ls_o2_s, QString li_o2_s){
     try {
         porce_cambio = porce_cambio_s.toInt();
-        of_o2 = of_o2_s.toInt();
-        m_aire = m_aire_s.toInt();
-        li_aire = pwm_min_s.toInt();
+        ls_aire = ls_aire_s.toInt();
+        li_aire = li_aire_s.toInt();
+        ls_o2 = ls_o2_s.toInt();
+        li_o2 = li_o2_s.toInt();
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }

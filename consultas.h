@@ -64,7 +64,7 @@ public:
     bool guarda_teclado(QString pres, QString solt);
     QString leer_teclado();
     QString obtener_id_teclado();
-    bool guarda_fio2(QString porce_cambio, QString of_02, QString m_aire, QString pwm_min);
+    bool guarda_fio2(QString porce_cambio, QString ls_aire, QString li_aire, QString ls_o2, QString li_o2);
     QString leer_fio2();
     QString obtener_id_fio2();
     QString obtener_id_com_pip();
