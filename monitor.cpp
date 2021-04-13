@@ -884,7 +884,6 @@ void Monitor::aplicarAltura(){
     }
 }
 
-
 void Monitor::actualizar_off_pip(){
     try {
         QString ff = consul->leer_com_pip();
@@ -1642,9 +1641,17 @@ void Monitor::tecla_pruebas(QString tecla){
                 siguiente_pruebas();
             }
         }
-        else if(tecla == "config"){
+        else if(tecla == "con"){
             //falta agregar el estado de las pruebas inciales
-            configPI->show();
+            if(!pruebas_iniciales){
+                if(configPI->isHidden()){
+                    configPI->show();
+                    //aquí se carga el valor de la altura
+                }
+                else{
+                    configPI->hide();
+                }
+            }
         }
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
