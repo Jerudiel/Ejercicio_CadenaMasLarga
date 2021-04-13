@@ -523,17 +523,22 @@ QString TramaVCPAP::obt_psoporte(){
 }
 
 QString TramaVCPAP::obt_palarmax(){
-    try {
+    try {          
         QString pmax_s = "";
+        int flujo_prog = flujo.toInt();
         int pmax_int = palarmax.toInt();
+        if(flujo_prog > 25){
+            pmax_int = pmax_int - (flujo_prog * 0.29) + 7.75;
+        }
+
         if(pmax_int >= 0 && pmax_int < 10){
-            pmax_s = "00" + palarmax;
+            pmax_s = "00" + QString::number(pmax_int);
         }
         else if(pmax_int >= 10 && pmax_int < 100){
-            pmax_s = "0" + palarmax;
+            pmax_s = "0" + QString::number(pmax_int);
         }
         else if(pmax_int >= 100 && pmax_int < 1000){
-            pmax_s = palarmax;
+            pmax_s = QString::number(pmax_int);
         }
         return pmax_s;
 
