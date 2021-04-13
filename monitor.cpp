@@ -19,7 +19,7 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
         versionVentiladorEsperada = "3.6";
         versionSenPresionEsperada = "2.8";
         versionTecladoEsperada = "0.5";
-        versionPi = "3.59";
+        versionPi = "3.60";
 
         mainwindow = parent;
         this->consul = consul;
@@ -624,6 +624,13 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
         oxis->hide();
         connect(oxis->btn_ok, SIGNAL(clicked()), this, SLOT(cerrarOxis()));
 
+        //config altura
+        configPI = new VentanaConfigPI(this, 500, 300, "Configuración");
+        configPI->move(0,0);
+        configPI->resize(mainwindow->width(), mainwindow->height());
+        configPI->hide();
+        connect(configPI->btn_guardar, SIGNAL(clicked()), this, SLOT(aplicarAltura()));
+
         infoAbierta = false;
 
         //qDebug() << "Termina de VentanaPruebas";
@@ -868,6 +875,15 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
         qWarning("ERROR AL CREAR CLASE MONITOR");
     }
 }
+
+void Monitor::aplicarAltura(){
+    try {
+        configPI->hide();
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+    }
+}
+
 
 void Monitor::actualizar_off_pip(){
     try {
@@ -1625,6 +1641,10 @@ void Monitor::tecla_pruebas(QString tecla){
             else{
                 siguiente_pruebas();
             }
+        }
+        else if(tecla == "config"){
+            //falta agregar el estado de las pruebas inciales
+            configPI->show();
         }
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );

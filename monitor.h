@@ -37,6 +37,7 @@
 #include "utilidades/widgetgraficalazo.h"
 #include "utilidades/ventanainsfuga.h"
 #include "utilidades/ventanainsoxi.h"
+#include "utilidades/ventanaconfigpi.h"
 
 class Monitor : public QWidget
 {
@@ -293,6 +294,8 @@ public:
     VentanaInsOxi *oxis;
 
     VentanaCalibrar *calibrar;
+
+    VentanaConfigPI *configPI;
 
     bool inicializacion;
 
@@ -664,6 +667,8 @@ public slots:
     void cerrarOxis();
 
     void iniciar_pruebas_2();
+
+    void aplicarAltura();
 
 signals:
     void calTeclado(QString trama);

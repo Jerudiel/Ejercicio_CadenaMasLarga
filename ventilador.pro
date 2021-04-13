@@ -62,6 +62,7 @@ SOURCES += \
     utilidades/ventanaaviso.cpp \
     utilidades/ventanaavisotest.cpp \
     utilidades/ventanacalibrar.cpp \
+    utilidades/ventanaconfigpi.cpp \
     utilidades/ventanaconfirmacion.cpp \
     utilidades/ventanainsfuga.cpp \
     utilidades/ventanainsoxi.cpp \
@@ -125,6 +126,7 @@ HEADERS += \
     utilidades/ventanaaviso.h \
     utilidades/ventanaavisotest.h \
     utilidades/ventanacalibrar.h \
+    utilidades/ventanaconfigpi.h \
     utilidades/ventanaconfirmacion.h \
     utilidades/ventanainsfuga.h \
     utilidades/ventanainsoxi.h \
