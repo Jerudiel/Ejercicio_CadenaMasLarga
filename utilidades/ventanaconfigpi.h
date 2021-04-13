@@ -16,6 +16,7 @@ class VentanaConfigPI : public QWidget
     Q_OBJECT
 public:
     explicit VentanaConfigPI(QWidget *parent = nullptr, int width=400, int height=500, QString titulo="");
+
     QString ERROR = "ERROR";
     QString OK = "OK";
     QString PROCESO = "PROCESO";

@@ -3,6 +3,7 @@
 VentanaConfigPI::VentanaConfigPI(QWidget *parent, int width, int height, QString titulo) : QWidget(parent)
 {
     try {
+
         btn = "border: 2px solid rgb(145,145,145); background-color: rgb(145,145,145); border-radius: 5px; color: black;";
         btnSeleccionado = "border: 2px solid rgb(255,112,61); background-color: rgb(145,145,145); border-radius: 5px; color: black;";
 
@@ -53,7 +54,7 @@ VentanaConfigPI::VentanaConfigPI(QWidget *parent, int width, int height, QString
 
         le_altura = new QLineEdit(this);
         fuente->setPointSize(12);
-        le_altura->setGeometry(QRect(offset_x + 300, offset_y + 0, 50, 30));
+        le_altura->setGeometry(QRect(offset_x + 300, offset_y + 0, 100, 30));
         le_altura->setFont(*fuente);
         le_altura->setStyleSheet("color: black; background-color: #D5D8DC;");
         le_altura->setAlignment(Qt::AlignLeft);
@@ -64,7 +65,7 @@ VentanaConfigPI::VentanaConfigPI(QWidget *parent, int width, int height, QString
         btn_guardar->setFont(*fuente);
         btn_guardar->setObjectName("btn_guardar");
         btn_guardar->setText("Guardar");
-        btn_guardar->setStyleSheet("border: 2px solid rgb(145,145,145); background-color: rgb(145,145,145); border-radius: 5px; color: black;");
+        btn_guardar->setStyleSheet(btnSeleccionado);
         btn_guardar->setGeometry(QRect(offset_x + 300, offset_y + 175, 150, 50));
     } catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );

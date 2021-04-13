@@ -1647,6 +1647,7 @@ void Monitor::tecla_pruebas(QString tecla){
                 if(configPI->isHidden()){
                     configPI->show();
                     //aquí se carga el valor de la altura
+
                 }
                 else{
                     configPI->hide();
