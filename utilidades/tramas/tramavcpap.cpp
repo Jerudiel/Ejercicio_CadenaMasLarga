@@ -528,7 +528,7 @@ QString TramaVCPAP::obt_palarmax(){
         int flujo_prog = flujo.toInt();
         int pmax_int = palarmax.toInt();
         if(flujo_prog > 25){
-            pmax_int = pmax_int - (flujo_prog * 0.29) + 7.75;
+            pmax_int = pmax_int + (flujo_prog * 0.29) - 7.75;
         }
 
         if(pmax_int >= 0 && pmax_int < 10){
