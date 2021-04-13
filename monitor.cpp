@@ -5190,6 +5190,9 @@ void Monitor::reiniciar_alarmas(){
             signoPEEP->bar->setPalette(*paleNormal);
             signoPEEP->label_title->setStyleSheet("color: white;");
 
+            signoPIP->bar->setPalette(*paleNormal);
+            signoPIP->label_title->setStyleSheet("color: white;");
+
             widgetVoli->label_uni->setStyleSheet("color: white;");
             widgetVoli->label_valor->setStyleSheet("color: white;");
             widgetVoli->label_nombre->setStyleSheet("background-color: white;\n"
