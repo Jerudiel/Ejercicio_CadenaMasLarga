@@ -61,6 +61,15 @@ VentanaConfigPI::VentanaConfigPI(QWidget *parent, int width, int height, QString
         le_altura->setText("-");
         le_altura->setObjectName("le_altura");
 
+        label_info = new QLabel(this);
+        fuente->setPointSize(12);
+        label_info->setGeometry(QRect(offset_x + 0, offset_y + 150, 250, 30));
+        label_info->setFont(*fuente);
+        label_info->setStyleSheet("color: black; background-color: #D5D8DC;");
+        label_info->setAlignment(Qt::AlignLeft);
+        label_info->setText(" ");
+        label_info->setObjectName("label_info");
+
         btn_guardar = new QPushButton(this);
         btn_guardar->setFont(*fuente);
         btn_guardar->setObjectName("btn_guardar");

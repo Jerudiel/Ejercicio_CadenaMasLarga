@@ -629,7 +629,11 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
         configPI->move(0,0);
         configPI->resize(mainwindow->width(), mainwindow->height());
         configPI->hide();
-        connect(configPI->btn_guardar, SIGNAL(clicked()), this, SLOT(aplicarAltura()));
+        //connect(configPI->btn_guardar, SIGNAL(clicked()), this, SLOT(aplicarAltura()));
+        altura_perilla = 1;
+        timerCambiosPerilla = new QTimer;
+        connect(timerCambiosPerilla, SIGNAL(timeout()), this, SLOT(limpiarInfoAltura()));
+        timerCambiosPerilla->setSingleShot(true);
 
         infoAbierta = false;
 
@@ -873,6 +877,82 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
     }
     catch(...){
         qWarning("ERROR AL CREAR CLASE MONITOR");
+    }
+}
+
+void Monitor::limpiarInfoAltura(){
+    try {
+        configPI->label_info->setText("");
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+    }
+}
+
+void Monitor::cambiarAltura(QString tecla){
+    try {
+        if(tecla == "men"){
+            int temp = configPI->le_altura->text().toInt();
+            temp += altura_perilla;
+            configPI->le_altura->setText(QString::number(temp));
+        }
+        else if(tecla == "mas"){
+            int temp = configPI->le_altura->text().toInt();
+            temp -= altura_perilla;
+            configPI->le_altura->setText(QString::number(temp));
+        }
+        else if(tecla == "mod"){
+            if(altura_perilla == 1){
+                altura_perilla = 10;
+            }
+            else if(altura_perilla == 10){
+                altura_perilla = 100;
+            }
+            else if(altura_perilla == 100){
+                altura_perilla = 1;
+            }
+            configPI->label_info->setText("Perilla: " + QString::number(altura_perilla));
+        }
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+
+    }
+}
+
+void Monitor::cargarAltura(){
+    try {
+        QString temp = consul->leer_altura();
+        QStringList parts = temp.split(",");
+        configPI->label_info->setText("");
+        configPI->le_altura->setText(parts.at(1));
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+
+    }
+}
+
+void Monitor::aplicarCambiosAltura(){
+    try {
+        QString altura = configPI->le_altura->text();
+        bool entero = false;
+        try {
+            altura.toInt();
+            entero = true;
+        }  catch (...) {
+            entero = false;
+        }
+        if(entero){
+            bool temp = consul->guarda_altura(configPI->le_altura->text());
+            if(temp){
+                configPI->label_info->setText("Altura guardada");
+            }
+            else{
+                configPI->label_info->setText("Error al guardar altura");
+            }
+            timerCambiosPerilla->start(2500);
+        }
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+
     }
 }
 
@@ -1634,11 +1714,16 @@ void Monitor::tecla_pruebas(QString tecla){
             }
         }
         else if(tecla == "ok"){
-            if(boton_seleccionado_pruebas == 0){
-                iniciar_pruebas();
+            if(!configPI->isHidden()){
+                aplicarCambiosAltura();
             }
             else{
-                siguiente_pruebas();
+                if(boton_seleccionado_pruebas == 0){
+                    iniciar_pruebas();
+                }
+                else{
+                    siguiente_pruebas();
+                }
             }
         }
         else if(tecla == "con"){
@@ -1647,12 +1732,15 @@ void Monitor::tecla_pruebas(QString tecla){
                 if(configPI->isHidden()){
                     configPI->show();
                     //aquí se carga el valor de la altura
-
+                    cargarAltura();
                 }
                 else{
                     configPI->hide();
                 }
             }
+        }
+        else if(tecla == "mas" || tecla == "men" || tecla == "mod"){
+            cambiarAltura(tecla);
         }
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );

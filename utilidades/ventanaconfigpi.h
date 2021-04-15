@@ -52,6 +52,7 @@ public:
     bool estadoFinal;
     QLabel * label_altura;
     QLineEdit *le_altura;
+    QLabel * label_info;
 
     QPushButton * btn_guardar;
 

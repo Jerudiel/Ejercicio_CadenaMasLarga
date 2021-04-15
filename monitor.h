@@ -600,6 +600,12 @@ public:
     float offset_pip;
     void actualizar_off_pip();
 
+    void cargarAltura();
+    void aplicarCambiosAltura();
+    void cambiarAltura(QString tecla);
+    int altura_perilla;
+    QTimer *timerCambiosPerilla;
+
 public slots:
     void revisarErrorWDT();
 
@@ -670,6 +676,7 @@ public slots:
 
     void aplicarAltura();
 
+    void limpiarInfoAltura();
 signals:
     void calTeclado(QString trama);
 };
