@@ -941,14 +941,37 @@ void Monitor::aplicarCambiosAltura(){
             entero = false;
         }
         if(entero){
-            bool temp = consul->guarda_altura(configPI->le_altura->text());
+            /*bool temp = consul->guarda_altura(configPI->le_altura->text());
             if(temp){
-                configPI->label_info->setText("Altura guardada");
+                //configPI->label_info->setText("Altura guardada");
+                configPI->label_info->setText("Aplicando cambios");
             }
             else{
                 configPI->label_info->setText("Error al guardar altura");
+            }*/
+            configPI->label_info->setText("Aplicando cambios");
+            //timerCambiosPerilla->start(2500);
+            //formato
+            QString temp_s = "";
+            int altura_int = altura.toInt();
+            if(0 <= altura_int && altura_int < 10){
+                temp_s = "0000" + altura;
             }
-            timerCambiosPerilla->start(2500);
+            else if(10 <= altura_int && altura_int < 100){
+                temp_s = "000" + altura;
+            }
+            else if(100 <= altura_int && altura_int < 1000){
+                temp_s = "00" + altura;
+            }
+            else if(1000 <= altura_int && altura_int < 10000){
+                temp_s = "0" + altura;
+            }
+            else if(10000 <= altura_int && altura_int < 100000){
+                temp_s = altura;
+            }
+            temp_s += "\n";
+            serPresion->escribir(temp_s);
+
         }
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
@@ -4160,6 +4183,23 @@ void Monitor::recePresion(QString trama){
                         tramaCambiosCalibrar = "Falló calibración.";
                     }
                 }
+                else if(trama[0] == "J"){
+                    if(trama[1] == "0"){
+                        configPI->label_info->setText("Guardando altura");
+                        bool temp = consul->guarda_altura(configPI->le_altura->text());
+                        if(temp){
+                            configPI->label_info->setText("Altura guardada");
+                        }
+                        else{
+                            configPI->label_info->setText("Error al guardar altura");
+                        }
+                    }
+                    else if(trama[1] == "1"){
+                        configPI->label_info->setText("Error al aplicar altura");
+                    }
+                    timerCambiosPerilla->start(2500);
+                }
+
             }
         }
     }  catch (std::exception &e) {
