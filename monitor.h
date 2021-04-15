@@ -433,13 +433,6 @@ public:
     void cambiagraficas();
     //void grafica_lazos();
     void limpiar_graficas();
-    void obtener_rangos_lazos();
-    void obtener_rangos_lazos_pcmv();
-    void obtener_rangos_lazos_vcmv();
-    void obtener_rangos_lazos_psimv();
-    void obtener_rangos_lazos_vsimv();
-    void obtener_rangos_lazos_pcpap();
-    void obtener_rangos_lazos_vcpap();
     void abrir_menu_graficas();
     void abrir_menu();
     void tecla_menu(QString tecla);
@@ -626,7 +619,6 @@ public slots:
 
     void actualizarDatosVentilador();
     void controlGrafica();
-    void aplicaTest();
     void revisarBanderasVentilador();
     void revisarConfigVentilador();
     void revisarOffsetVentilador();

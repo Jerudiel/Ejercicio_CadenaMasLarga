@@ -19,7 +19,7 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
         versionVentiladorEsperada = "3.6";
         versionSenPresionEsperada = "2.8";
         versionTecladoEsperada = "0.5";
-        versionPi = "3.61";
+        versionPi = "3.62";
 
         mainwindow = parent;
         this->consul = consul;
@@ -332,7 +332,6 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
 
         connect(btn_ventilador, SIGNAL(clicked()), this, SLOT(actualizarDatosVentilador()));
         connect(btn_grafica, SIGNAL(clicked()), this, SLOT(controlGrafica()));
-        connect(btn_test, SIGNAL(clicked()), this, SLOT(aplicaTest()));
 
         //qDebug() << "Se va a crear AlarmaAudLed!";
 
@@ -701,14 +700,6 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
         dic_trama_valvulas->insert(1, "T"+pwm_0+pwm_0+pwm_0+"01" + "\n");
         dic_trama_valvulas->insert(2, "T"+pwm_0+pwm_100+pwm_100+exa_1+estado_trama_valvulas + "\n");
         dic_trama_valvulas->insert(3, "T"+pwm_0+pwm_0+pwm_0+"01" + "\n");
-//        dic_trama_valvulas->insert(4, "T"+pwm_50+pwm_0+pwm_100+exa_1+estado_trama_valvulas + "\n");
-//        dic_trama_valvulas->insert(5, "T"+pwm_0+pwm_0+pwm_0+"01" + "\n");
-//        dic_trama_valvulas->insert(6, "T"+pwm_100+pwm_100+pwm_0+exa_1+estado_trama_valvulas + "\n");
-//        dic_trama_valvulas->insert(7, "T"+pwm_0+pwm_0+pwm_0+"01" + "\n");
-//        dic_trama_valvulas->insert(8, "T"+pwm_100+pwm_50+pwm_0+exa_1+estado_trama_valvulas + "\n");
-//        dic_trama_valvulas->insert(9, "T"+pwm_0+pwm_0+pwm_0+"01" + "\n");
-//        dic_trama_valvulas->insert(10, "T"+pwm_50+pwm_100+pwm_0+exa_1+estado_trama_valvulas + "\n");
-//        dic_trama_valvulas->insert(11, "T"+pwm_0+pwm_0+pwm_0+"01"+ "\n");
 
         esperando_presion_tope = false;
         esperando_presion_salida = false;
@@ -1462,14 +1453,6 @@ void Monitor::cambiagraficas(){
     }
 }
 
-/*void Monitor::grafica_lazos(){
-    try {
-
-    }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
-    }
-}*/
-
 void Monitor::limpiar_graficas(){
     try {
         if(! cambiagrafi){
@@ -1487,157 +1470,6 @@ void Monitor::limpiar_graficas(){
             graficaVF->limpiar();
             graficaVF->grafica->replot();
         }
-    }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
-    }
-}
-
-void Monitor::obtener_rangos_lazos(){
-    try {
-        if(modoSel == 0){
-            obtener_rangos_lazos_pcmv();
-        }
-        else if(modoSel == 1){
-            obtener_rangos_lazos_vcmv();
-        }
-        else if(modoSel == 2){
-            obtener_rangos_lazos_psimv();
-        }
-        else if(modoSel == 3){
-            obtener_rangos_lazos_vsimv();
-        }
-        else if(modoSel == 4){
-            obtener_rangos_lazos_pcpap();
-        }
-        else if(modoSel == 5){
-            obtener_rangos_lazos_vcpap();
-        }
-    }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
-    }
-}
-
-void Monitor::obtener_rangos_lazos_pcmv(){
-    try {
-        int pinsp = tramas->trama_PCMV->pinsp.toInt();
-        int peep = tramas->trama_PCMV->peep.toInt();
-        min_lazo_pres_x = 0;
-        max_lazo_pres_x = (pinsp + peep) + ((pinsp+peep)*0.1);
-        int temp_v = ((pinsp*peep)*30)/1000;
-        min_lazo_vol_y = static_cast<int>(-(temp_v*0.1));
-        max_lazo_vol_y = static_cast<int>(temp_v);
-
-        int temp_vol = ((pinsp+peep)*30);
-        min_lazo_vol_x = static_cast<int>(-(temp_vol*0.1));
-        max_lazo_vol_x = static_cast<int>(temp_v);
-        float temp_ti = QString::number(tramas->trama_PCMV->tinsp.toFloat(),'f',1).toFloat();
-        float temp_flujo = (temp_vol * 60/1000)/temp_ti;
-        min_lazo_flujo_y = static_cast<int>(-(temp_flujo+(temp_flujo*0.1)));
-        max_lazo_flujo_y = static_cast<int>(temp_flujo*(temp_flujo*0.1));
-    }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
-    }
-}
-
-void Monitor::obtener_rangos_lazos_vcmv(){
-    try {
-        int vt = tramas->trama_VCMV->vtinsp.toInt();
-        int flujo = tramas->trama_VCMV->flujo.toInt();
-        min_lazo_pres_x = 0;
-        max_lazo_pres_x = 40;
-        min_lazo_vol_y = static_cast<int>(0 - (vt*0.1));
-        max_lazo_vol_y = static_cast<int>(vt + (vt*0.1));
-
-        min_lazo_vol_x = static_cast<int>(0 - (vt*0.1));
-        max_lazo_vol_x = static_cast<int>(vt + (vt*0.1));
-
-        min_lazo_flujo_y = static_cast<int>(-(flujo + (flujo*0.1)));
-        max_lazo_flujo_y = static_cast<int>(flujo + (flujo*0.1));
-    }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
-    }
-}
-
-void Monitor::obtener_rangos_lazos_psimv(){
-    try {
-        int pinsp = static_cast<int>(tramas->trama_PSIMV->pinsp.toInt());
-        int peep = static_cast<int>(tramas->trama_PSIMV->peep.toInt());
-        min_lazo_pres_x = 0;
-        max_lazo_pres_x = (pinsp + peep) + ((pinsp + peep) * 0.1);
-        float temp_v = ((pinsp + peep) * 30) / 1000.0;
-        min_lazo_vol_y = static_cast<int>(-(temp_v * 0.1));
-        max_lazo_vol_y = static_cast<int>(temp_v);
-
-        float temp_vol = ((pinsp + peep) * 30);
-        min_lazo_vol_x = static_cast<int>(-(temp_v * 0.1));
-        max_lazo_vol_x = static_cast<int>(temp_v);
-        float temp_ti = QString::number(tramas->trama_PSIMV->tinsp.toFloat(),'f',1).toFloat();
-        float temp_flujo = QString::number((temp_vol * 60 / 1000) / temp_ti,'f',1).toFloat();
-        min_lazo_flujo_y = static_cast<int>(-(temp_flujo + (temp_flujo*0.1)));
-        max_lazo_flujo_y = static_cast<int>(temp_flujo + (temp_flujo*0.1));
-    }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
-    }
-}
-
-void Monitor::obtener_rangos_lazos_vsimv(){
-    try {
-        int vt = tramas->trama_VSIMV->vtinsp.toInt();
-        int flujo = tramas->trama_VSIMV->flujo.toInt();
-        min_lazo_pres_x = 0;
-        max_lazo_pres_x = 40;
-        min_lazo_vol_y = static_cast<int>(0 - (vt*0.1));
-        max_lazo_vol_y = static_cast<int>(vt + (vt*0.1));
-
-        min_lazo_vol_x = static_cast<int>(0 - (vt*0.1));
-        max_lazo_vol_x = static_cast<int>(vt + (vt*0.1));
-
-        min_lazo_flujo_y = static_cast<int>(-(flujo + (flujo*0.1)));
-        max_lazo_flujo_y = static_cast<int>(flujo + (flujo*0.1));
-    }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
-    }
-}
-
-void Monitor::obtener_rangos_lazos_pcpap(){
-    try {
-        int pinsp = static_cast<int>(tramas->trama_PCPAP->ps.toInt());
-        int peep = static_cast<int>(tramas->trama_PCPAP->cpap.toInt());
-        min_lazo_pres_x = 0;
-        max_lazo_pres_x = (pinsp + peep) + ((pinsp + peep) * 0.1);
-        float temp_v = ((pinsp + peep) * 30) / 1000.0;
-        min_lazo_vol_y = static_cast<int>(-(temp_v * 0.1));
-        max_lazo_vol_y = static_cast<int>(temp_v);
-
-        float temp_vol = ((pinsp + peep) * 30);
-        min_lazo_vol_x = static_cast<int>(-(temp_v * 0.1));
-        max_lazo_vol_x = static_cast<int>(temp_v);
-        float temp_ti = QString::number(tramas->trama_PSIMV->tinsp.toFloat(),'f',1).toFloat();
-        float temp_flujo = QString::number((temp_vol * 60 / 1000) / temp_ti,'f',1).toFloat();
-        min_lazo_flujo_y = static_cast<int>(-(temp_flujo + (temp_flujo*0.1)));
-        max_lazo_flujo_y = static_cast<int>(temp_flujo + (temp_flujo*0.1));
-    }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
-    }
-}
-
-void Monitor::obtener_rangos_lazos_vcpap(){
-    try {
-        int pinsp = static_cast<int>(tramas->trama_VCPAP->ps.toInt());
-        int peep = static_cast<int>(tramas->trama_VCPAP->cpap.toInt());
-        min_lazo_pres_x = 0;
-        max_lazo_pres_x = (pinsp + peep) + ((pinsp + peep) * 0.1);
-        float temp_v = ((pinsp + peep) * 30) / 1000.0;
-        min_lazo_vol_y = static_cast<int>(-(temp_v * 0.1));
-        max_lazo_vol_y = static_cast<int>(temp_v);
-
-        float temp_vol = ((pinsp + peep) * 30);
-        min_lazo_vol_x = static_cast<int>(-(temp_v * 0.1));
-        max_lazo_vol_x = static_cast<int>(temp_v);
-        float temp_ti = 3;
-        float temp_flujo = QString::number((temp_vol * 60 / 1000) / temp_ti,'f',1).toFloat();
-        min_lazo_flujo_y = static_cast<int>(-(temp_flujo + (temp_flujo*0.1)));
-        max_lazo_flujo_y = static_cast<int>(temp_flujo + (temp_flujo*0.1));
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
@@ -2497,22 +2329,6 @@ void Monitor::cargaValoresDBAlarmas(QStringList valores){
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
-
-/*void Monitor::edoPresiActivo(bool estado){
-    try {
-        mainwindow->edoPresiActivo(estado);
-    }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
-    }
-}
-
-void Monitor::edoVentiActivo(bool estado){
-    try {
-        mainwindow->edoVentiActivo(estado);
-    }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
-    }
-}*/
 
 void Monitor::obtener_trama_config(){
     try {
@@ -3592,21 +3408,6 @@ void Monitor::muestraAvisoTest(QString mensajes){
         indiceMsg1 = vAvisoT->agregarMensaje("PRUEBA DE SENSORES");
         vAvisoT->show();
         vTestActiva = true;
-    }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
-    }
-}
-
-void Monitor::aplicaTest(){
-    try {
-        if(estadoAlarmaVol){
-            alarmaControl->detenAlarma(alarmaControl->VOLMINIMO);
-            estadoAlarmaVol = false;
-        }
-        else{
-            alarmaControl->iniciaAlarma(alarmaControl->VOLMINIMO);
-            estadoAlarmaVol = true;
-        }
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
@@ -5067,20 +4868,19 @@ void Monitor::actualizarDatosVentilador(){
                     if(timerTPresion5S->isActive()){
                         timerTPresion5S->stop();
                     }
-                    //serPresion->detener_sensor_presion();
+                    /*serPresion->detener_sensor_presion();
                     serPresion->serPuerto->clear(QSerialPort::Input);
                     QThread::msleep(500);
                     serPresion->escribir("A3\n");
                     banderaModoSenPresion = 4;
-                    timerTPresion1S->start(1500);
-//                    serPresion->escribir("A3\n");
-//                    QThread::msleep(2500);
-//                    banderaModoSenPresion = 0;
-//                    timerTPresion1S->start(5000);
-//                    serPresion->serPuerto->clear(QSerialPort::Input);
-//                    QThread::msleep(200);
-//                    serPresion->escribir(trama_c_senpresion);
-//                    qDebug() << "Detiene sepresion y envia trama c";
+                    timerTPresion1S->start(1500);*/
+                    //----------
+                    serPresion->serPuerto->clear(QSerialPort::Input);
+                    QThread::msleep(500);
+                    timerTPresion1S->start(2500);
+                    banderaModoSenPresion = 0;
+                    serPresion->escribir(trama_c_senpresion);
+                    qDebug() << "Envia trama c -";
                 }
                 else{
                     if(falla_actualizacion){
@@ -5092,18 +4892,17 @@ void Monitor::actualizarDatosVentilador(){
                         if(timerTPresion5S->isActive()){
                             timerTPresion5S->stop();
                         }
-                        //serPresion->detener_sensor_presion();
+                        /*serPresion->detener_sensor_presion();
                         serPresion->serPuerto->clear(QSerialPort::Input);
                         serPresion->escribir("A3\n");
                         banderaModoSenPresion = 4;
-                        timerTPresion1S->start(1500);
-//                        QThread::msleep(2500);
-//                        banderaModoSenPresion = 0;
-//                        timerTPresion1S->start(5000);
-//                        serPresion->serPuerto->clear(QSerialPort::Input);
-//                        QThread::msleep(200);
-//                        serPresion->escribir(trama_c_senpresion);
-//                        qDebug() << "Detiene sepresion y envia trama c";
+                        timerTPresion1S->start(1500);*/
+                        serPresion->serPuerto->clear(QSerialPort::Input);
+                        QThread::msleep(500);
+                        timerTPresion1S->start(2500);
+                        banderaModoSenPresion = 0;
+                        serPresion->escribir(trama_c_senpresion);
+                        qDebug() << "Envia trama c -";
                     }
                 }
             }
