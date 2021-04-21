@@ -1573,11 +1573,13 @@ void Monitor::tecla_pruebas(QString tecla){
                 aplicarCambiosAltura();
             }
             else{
-                if(boton_seleccionado_pruebas == 0){
-                    iniciar_pruebas();
-                }
-                else{
-                    siguiente_pruebas();
+                if(!pruebas_iniciales){
+                    if(boton_seleccionado_pruebas == 0){
+                        iniciar_pruebas();
+                    }
+                    else{
+                        siguiente_pruebas();
+                    }
                 }
             }
         }
@@ -1660,6 +1662,7 @@ void Monitor::iniciar_pruebas(){
                 serVent->envia_trama_config("O0\n");
                 contador_timerOxigeno = 0;
                 timerOxigeno->start(1000);
+                pruebas_iniciales = true;
                 serPresion->escribir("G1\n");
             }
         }
@@ -2907,12 +2910,14 @@ void Monitor::receVent(QString trama){
                             pruebas->label_oxigeno_estado->setStyleSheet("color: red; background-color: #D5D8DC;");
                             pruebas->label_info->setText("Error en el sensor");
                             consul->agregar_evento("PRUEBAS",obtener_modo(), "OXIGENO ERROR SENSOR");
+                            pruebas_iniciales = false;
                         }
                         else if(trama[2] == "1"){
                             pruebas->label_oxigeno_estado->setText("Error");
                             pruebas->label_oxigeno_estado->setStyleSheet("color: red; background-color: #D5D8DC;");
                             pruebas->label_info->setText("Sensor no usable.");
                             consul->agregar_evento("PRUEBAS",obtener_modo(), "OXIGENO SENSOR NO USABLE");
+                            pruebas_iniciales = false;
                         }
                         else{
                             int entero = trama.mid(2,1).toInt();
@@ -2921,6 +2926,7 @@ void Monitor::receVent(QString trama){
                                 pruebas->label_oxigeno_estado->setStyleSheet("color: yellow; background-color: #D5D8DC;");
                                 pruebas->label_info->setText("Sensor viejo.");
                                 consul->agregar_evento("PRUEBAS",obtener_modo(), "OXIGENO SENSOR VIEJO");
+                                pruebas_iniciales = false;
                             }
                             else{
                                 vida_o2_21 = entero;
@@ -2937,6 +2943,7 @@ void Monitor::receVent(QString trama){
                     }
                     else{
                         serPresion->escribir("G0\n");
+                        pruebas_iniciales = false;
                         if(timerOxigeno->isActive()){
                             timerOxigeno->stop();
                         }
