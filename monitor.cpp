@@ -17,9 +17,9 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
 {
     try {
         versionVentiladorEsperada = "3.6";
-        versionSenPresionEsperada = "2.8";
+        versionSenPresionEsperada = "3.0";
         versionTecladoEsperada = "0.5";
-        versionPi = "3.61";
+        versionPi = "3.62";
 
         mainwindow = parent;
         this->consul = consul;
@@ -969,7 +969,7 @@ void Monitor::aplicarCambiosAltura(){
             else if(10000 <= altura_int && altura_int < 100000){
                 temp_s = altura;
             }
-            temp_s += "\n";
+            temp_s ="J" + temp_s + "\n";
             serPresion->escribir(temp_s);
 
         }
