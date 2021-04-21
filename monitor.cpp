@@ -17,9 +17,9 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
 {
     try {
         versionVentiladorEsperada = "3.6";
-        versionSenPresionEsperada = "2.8";
+        versionSenPresionEsperada = "3.0";
         versionTecladoEsperada = "0.5";
-        versionPi = "3.62";
+        versionPi = "3.63";
 
         mainwindow = parent;
         this->consul = consul;
@@ -391,6 +391,11 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
         timerOffsetsVent = new QTimer;
         connect(timerOffsetsVent, SIGNAL(timeout()), this, SLOT(revisarOffsetVentilador()));
         timerOffsetsVent->start(4000);
+
+        cambiosMIni = false;
+        timerMIniVent = new QTimer;
+        connect(timerMIniVent, SIGNAL(timeout()), this, SLOT(revisarMIniVentilador()));
+        contadorMIniVentilador = 0;
 
         //qDebug() << "Se va a enviar trama por serVent!";
 
@@ -1684,9 +1689,11 @@ void Monitor::siguiente_pruebas(){
                 //aqui se debe mostrar la sinstrucciones del oximetro
                 oxis->mostrar();
                 infoAbierta = true;
+                pruebas->btn_siguiente->setText("Cerrar");
             }
             else{
                 qDebug() << "Pruebas no terminadas";
+                pruebas->btn_siguiente->setText("Siguiente");
                 pruebas->close();
                 ventanaAbierta = false;
                 consul->agregar_evento("INICIO", obtener_modo(), "ENTRA A VENTILACION SIN PASAR PRUEBAS INICIALES");
@@ -2894,9 +2901,12 @@ void Monitor::receVent(QString trama){
                         cambiosOffsets = true;
                         if(timerOffsetsVent->isActive()){
                             timerOffsetsVent->stop();
-                            serVent->envia_trama_config("P\n");
+                            /*serVent->envia_trama_config("P\n");
                             timerConVentilador->start(7000);
-                            ventiladorListo = true;
+                            ventiladorListo = true;*/
+                            //
+                            timerMIniVent->start(4000);
+                            serVent->envia_trama_config(tramaVentilador);
                         }
                     }
                 }
@@ -3000,17 +3010,28 @@ void Monitor::receVent(QString trama){
                         volverIntetarComandoM = false;
                         volverIntentarModo = false;
                         if(trama.mid(44,1) == "0"){
-                            reenviar_paro = false;
-                            if(! configurandoSenPresion){
-                                estadoVentilador = false;
-                                label_debug->setText("Standby...");
-                                consul->agregar_evento("VENTILADOR", obtener_modo(), "DETIENE LA VENTILACION F");
-                                tpresionModo = 0;
+                            if(!cambiosMIni){
+                                cambiosMIni = true;
+                                if(timerMIniVent->isActive()){
+                                    timerMIniVent->stop();
+                                }
+                                serVent->envia_trama_config("P\n");
+                                timerConVentilador->start(7000);
+                                ventiladorListo = true;
                             }
                             else{
-                               label_debug->setText("Deteniendo...");
-                               tpresionModo = 0;
-                               estadoVentilador = false;
+                                reenviar_paro = false;
+                                if(! configurandoSenPresion){
+                                    estadoVentilador = false;
+                                    label_debug->setText("Standby...");
+                                    consul->agregar_evento("VENTILADOR", obtener_modo(), "DETIENE LA VENTILACION F");
+                                    tpresionModo = 0;
+                                }
+                                else{
+                                   label_debug->setText("Deteniendo...");
+                                   tpresionModo = 0;
+                                   estadoVentilador = false;
+                                }
                             }
                         }
                         else if(trama.mid(44,1) == "1"){
@@ -4825,6 +4846,33 @@ void Monitor::revisarOffsetVentilador(){
                     muestraAvisoVentilador("NO HAY CONEXION CON EL VENTILADOR - Offsets");
                     consul->agregar_evento("COMUNICACION", obtener_modo(), "ERROR NO RESPONDE CONTROL III");
                     timerOffsetsVent->stop();
+                }
+            }
+        }
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+    }
+}
+
+void Monitor::revisarMIniVentilador(){
+    try {
+        if(cambiosMIni){
+            if(timerMIniVent->isActive()){
+                timerMIniVent->stop();
+                contadorMIniVentilador = 0;
+            }
+        }
+        else{
+            if(contadorMIniVentilador < 4){
+                contadorMIniVentilador++;
+                serVent->envia_trama_config(tramaVentilador);
+            }
+            else{
+                if(vAvisoV == nullptr){
+                    qDebug() << "MIniVentilador Error";
+                    muestraAvisoVentilador("NO HAY CONEXION CON EL VENTILADOR - MIni");
+                    consul->agregar_evento("COMUNICACION", obtener_modo(), "ERROR NO RESPONDE CONTROL IV");
+                    timerMIniVent->stop();
                 }
             }
         }

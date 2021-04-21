@@ -599,6 +599,10 @@ public:
     int altura_perilla;
     QTimer *timerCambiosPerilla;
 
+    bool cambiosMIni;
+    QTimer *timerMIniVent;
+    int contadorMIniVentilador;
+
 public slots:
     void revisarErrorWDT();
 
@@ -622,6 +626,7 @@ public slots:
     void revisarBanderasVentilador();
     void revisarConfigVentilador();
     void revisarOffsetVentilador();
+    void revisarMIniVentilador();
     void revisarConexionVentilador();
 
     void limpiarBuffer();
