@@ -603,6 +603,13 @@ public:
     QTimer *timerMIniVent;
     int contadorMIniVentilador;
 
+    void get_mode_keyboard();
+    void change_mode(int mode);
+    void get_config_key(int key);
+    void set_config_key(int key, QString press, QString release);
+
+
+
 public slots:
     void revisarErrorWDT();
 
