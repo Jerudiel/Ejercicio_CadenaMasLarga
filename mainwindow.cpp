@@ -29,6 +29,8 @@ MainWindow::MainWindow(ServerWS *server, QWidget *parent, bool debug_t, bool deb
 
             connect(monitor, SIGNAL(calTeclado(QString)), this, SLOT(calibrarTeclado(QString)));
 
+            connect(monitor, SIGNAL(get_mode_keyboard_frame(QString)), this, SLOT(get_mode_keyboard_command(QString)));
+
             //qDebug() << "pantalla monitor a contenedor principal";
             contenedorPrincipal->addWidget(monitor);
 
@@ -335,6 +337,9 @@ void MainWindow::recteclado(QString trama){
                             else if(trama.contains("Umbral:")){
                                 monitor->revisar_cal_teclado(trama);
                             }
+                            else if(trama.contains("Modo:")){
+                                monitor->check_mode_keyboard(trama);
+                            }
                             else{
                                 configuracion->teclado(trama);
                             }
@@ -477,4 +482,10 @@ void MainWindow::calibrarTeclado(QString trama){
     }
 }
 
-
+void MainWindow::get_mode_keyboard_command(QString trama){
+    try {
+        serTeclado->escribir(trama);
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+    }
+}

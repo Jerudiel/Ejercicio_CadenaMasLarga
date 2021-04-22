@@ -62,6 +62,9 @@ public:
 
     void get_mode();
 
+    void show_message(QString message);
+    QTimer *timerMessage;
+
     virtual void paintEvent(QPaintEvent *event);
 
 public slots:
@@ -72,6 +75,7 @@ public slots:
     void out();
     void set_mode();
     void apply();
+    void eraseMessage();
 signals:
 
 };

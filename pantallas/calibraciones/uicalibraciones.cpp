@@ -77,7 +77,7 @@ void UiCalibraciones::llenarConfiguracion(){
         tab_otros->cargarTeclado();
         tab_otros->cargarFio2();
         tab_otros->cargarOffPip();
-        tab_teclado->get_mode();
+        //tab_teclado->get_mode();
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
 
@@ -113,6 +113,9 @@ void UiCalibraciones::cambioTab(int i){
             tab_otros->cargarTeclado();
             tab_otros->cargarFio2();
             tab_otros->cargarOffPip();
+        }
+        else if(i == tabWidget->indexOf(tab_teclado)){
+            tab_teclado->get_mode();
         }
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );

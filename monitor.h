@@ -604,9 +604,17 @@ public:
     int contadorMIniVentilador;
 
     void get_mode_keyboard();
+    void check_mode_keyboard(QString trama);
     void change_mode(int mode);
     void get_config_key(int key);
     void set_config_key(int key, QString press, QString release);
+
+    bool isReadyModeKeyboard;
+    int valueModeKeyboard;
+    bool isReadyConfigKey;
+    int valuePressKey;
+    int valueReleaseKey;
+    bool isWaitingMode;
 
 
 
@@ -683,6 +691,7 @@ public slots:
     void limpiarInfoAltura();
 signals:
     void calTeclado(QString trama);
+    void get_mode_keyboard_frame(QString frame);
 };
 
 #endif // MONITOR_H

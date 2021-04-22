@@ -247,6 +247,10 @@ UiCalTeclado::UiCalTeclado(QWidget *parent, Monitor *monitor) : QWidget(parent)
         advert = "";
         tempAdvert = "";
 
+        timerMessage = new QTimer;
+        timerMessage->setSingleShot(true);
+        connect(timerMessage, SIGNAL(timeout()), this, SLOT(eraseMessage()));
+
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
@@ -278,6 +282,8 @@ void UiCalTeclado::paintEvent(QPaintEvent* /*event*/)
 void UiCalTeclado::get_mode(){
     try {
         //pedir modo trama: gmod\n
+        monitor->isReadyModeKeyboard = false;
+        monitor->isWaitingMode = true;
         monitor->get_mode_keyboard();
         //aqui debe iniciar el timer mode
         advert = "Obteniendo modo";
@@ -319,20 +325,41 @@ void UiCalTeclado::check_config_key(){
 
 void UiCalTeclado::check_mode(){
     try {
-        if(contGetMode < 15){
-            if(contGetMode % 3 == 0){
-                tempAdvert = advert;
-                lblDebug->setText(advert);
+        if(!monitor->isReadyModeKeyboard){
+            if(contGetMode < 15){
+                if(contGetMode % 3 == 0){
+                    tempAdvert = advert;
+                    lblDebug->setText(advert);
+                }
+                else{
+                    tempAdvert.append(".");
+                    lblDebug->setText(tempAdvert);
+                }
+                contGetMode++;
             }
             else{
-                tempAdvert.append(".");
-                lblDebug->setText(tempAdvert);
+                //no llego el comando
+                contGetMode = 0;
+                if(timerGetMode->isActive()){
+                    timerGetMode->stop();
+                }
+                show_message("Problema al cargar el modo");
             }
-            contGetMode++;
         }
         else{
-            //no llego el comando
+            //se recibio respuesta, cehcarla y detener el timer
+            if(timerGetMode->isActive()){
+                timerGetMode->stop();
+            }
             contGetMode = 0;
+            //activar funcion que muestra el mensaje y lo borra 3 segundos después
+            if(monitor->valueModeKeyboard == 0){
+                switchMode->ponerChecked(false);
+            }
+            else{
+                switchMode->ponerChecked(true);
+            }
+            show_message("Modo cargado");
         }
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
@@ -352,6 +379,25 @@ void UiCalTeclado::out(){
 void UiCalTeclado::apply(){
     try {
 
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+
+    }
+}
+
+void UiCalTeclado::show_message(QString message){
+    try {
+        lblDebug->setText(message);
+        timerMessage->start(3000);
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+
+    }
+}
+
+void UiCalTeclado::eraseMessage(){
+    try {
+        lblDebug->setText("");
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
 

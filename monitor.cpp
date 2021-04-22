@@ -19,7 +19,7 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
         versionVentiladorEsperada = "3.6";
         versionSenPresionEsperada = "3.0";
         versionTecladoEsperada = "1.0";
-        versionPi = "3.63";
+        versionPi = "3.64";
 
         mainwindow = parent;
         this->consul = consul;
@@ -860,6 +860,13 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
         calTecladoPres = 0;
         calTecladoSolt = 0;
 
+        isReadyModeKeyboard = false;
+        valueModeKeyboard = 0;
+        isReadyConfigKey = false;
+        valuePressKey = 0;
+        valueReleaseKey = 0;
+        isWaitingMode = false;
+
         intentar_otro_pwm = true;
         timerOtroPWM = new QTimer;
         timerOtroPWM->setSingleShot(true);
@@ -873,6 +880,62 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
     }
     catch(...){
         qWarning("ERROR AL CREAR CLASE MONITOR");
+    }
+}
+
+void Monitor::get_mode_keyboard(){
+    try {
+        //dar formato de la trama y hacer un emit a mainwindow
+        QString tt = "gmod\n";
+        emit get_mode_keyboard_frame(tt);
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+    }
+}
+
+void Monitor::check_mode_keyboard(QString trama){
+    try {
+        //checar si estoy esperando el modo o cambiando el modo
+        if(isWaitingMode){
+            isWaitingMode = false;
+
+            //obtener el valor
+            QStringList ttt = trama.split(":");
+            valueModeKeyboard = ttt.at(1).toInt();
+
+            isReadyModeKeyboard = true;
+
+        }
+        else{
+
+        }
+
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+    }
+}
+
+void Monitor::change_mode(int mode){
+    try {
+
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+    }
+}
+
+void Monitor::get_config_key(int key){
+    try {
+
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+    }
+}
+
+void Monitor::set_config_key(int key, QString press, QString release){
+    try {
+
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 

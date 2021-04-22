@@ -62,6 +62,6 @@ public slots:
     void revisarConexionTeclado();
     void tecladoVirtual(QString trama);
     void calibrarTeclado(QString trama);
-
+    void get_mode_keyboard_command(QString trama);
 };
 #endif // MAINWINDOW_H
