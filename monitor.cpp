@@ -907,7 +907,7 @@ void Monitor::check_mode_keyboard(QString trama){
 
         }
         else{
-
+            qDebug() << "No se esperaba un cambio de modo en el teclado";
         }
 
     }  catch (std::exception &e) {
@@ -917,7 +917,15 @@ void Monitor::check_mode_keyboard(QString trama){
 
 void Monitor::change_mode(int mode){
     try {
-
+        //dar formato de la trama y hacer un emit a mainwindow
+         QString tt = "";
+        if(mode == 0){
+            tt = "smod0\n";
+        }
+        else{
+            tt = "smod1\n";
+        }
+        emit get_mode_keyboard_frame(tt);
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }

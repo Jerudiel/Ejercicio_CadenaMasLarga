@@ -298,6 +298,19 @@ void UiCalTeclado::get_mode(){
 
 void UiCalTeclado::set_mode(){
     try {
+        //cambiar el modo de configuración
+        monitor->isReadyModeKeyboard = false;
+        monitor->isWaitingMode = true;
+        advert = "Cambiando modo";
+        tempAdvert = advert;
+        lblDebug->setText(advert);
+        timerGetMode->start();
+        if(switchMode->estaChecked()){
+            monitor->change_mode(1);
+        }
+        else{
+            monitor->change_mode(0);
+        }
 
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
