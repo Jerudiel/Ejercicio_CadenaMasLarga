@@ -987,6 +987,16 @@ void Monitor::set_config_key(int key, QString press, QString release){
     }
 }
 
+void Monitor::get_config_keyboard(){
+    try {
+        //dar formato de la trama y hacer un emit a mainwindow
+        QString tt = "get\n";
+        emit get_umbral_keyboard(tt);
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+    }
+}
+
 void Monitor::limpiarInfoAltura(){
     try {
         configPI->label_info->setText("");

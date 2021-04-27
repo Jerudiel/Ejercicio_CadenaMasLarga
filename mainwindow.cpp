@@ -31,6 +31,7 @@ MainWindow::MainWindow(ServerWS *server, QWidget *parent, bool debug_t, bool deb
 
             connect(monitor, SIGNAL(get_mode_keyboard_frame(QString)), this, SLOT(get_mode_keyboard_command(QString)));
             connect(monitor, SIGNAL(get_umbral_key(QString)), this, SLOT(get_umbral_key_command(QString)));
+            connect(monitor, SIGNAL(get_umbral_keyboard(QString)), this, SLOT(get_umbral_keyboard_command(QString)));
 
             //qDebug() << "pantalla monitor a contenedor principal";
             contenedorPrincipal->addWidget(monitor);
@@ -495,6 +496,14 @@ void MainWindow::get_mode_keyboard_command(QString trama){
 }
 
 void MainWindow::get_umbral_key_command(QString trama){
+    try {
+        serTeclado->escribir(trama);
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+    }
+}
+
+void MainWindow::get_umbral_keyboard_command(QString trama){
     try {
         serTeclado->escribir(trama);
     }  catch (std::exception &e) {

@@ -253,6 +253,20 @@ UiCalTeclado::UiCalTeclado(QWidget *parent, Monitor *monitor) : QWidget(parent)
 
         elementSel = 0;
 
+        mapKey = new QMap<QString, int>;
+        mapKey->insert("OK", 0);
+        mapKey->insert("MON", 1);
+        mapKey->insert("CAN", 2);
+        mapKey->insert("CON", 3);
+        mapKey->insert("INIDET", 4);
+        mapKey->insert("ADI", 5);
+        mapKey->insert("ALA", 6);
+        mapKey->insert("EST", 7);
+        mapKey->insert("ARR", 8);
+        mapKey->insert("IZQ", 9);
+        mapKey->insert("DER", 10);
+        mapKey->insert("ABA", 11);
+
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
@@ -323,7 +337,24 @@ void UiCalTeclado::set_mode(){
 void UiCalTeclado::get_config_key(int element){
     try {
         elementSel = element;
+        monitor->isReadyConfigKey = false;
+        monitor->isWaitingKey = true;
         monitor->get_config_key(element);
+        advert = "Obteniendo info";
+        tempAdvert = advert;
+        lblDebug->setText(advert);
+        timerConfigKey->start();
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+
+    }
+}
+
+void UiCalTeclado::get_config_global(){
+    try {
+        monitor->isReadyConfigKeyboard = false;
+        monitor->isWaitingConfigKeyboard = true;
+        monitor->get_config_keyboard();
         advert = "Obteniendo info";
         tempAdvert = advert;
         lblDebug->setText(advert);
@@ -336,7 +367,40 @@ void UiCalTeclado::get_config_key(int element){
 
 void UiCalTeclado::check_config_key(){
     try {
-
+        if(!monitor->isReadyConfigKey){
+            if(contConfigKey < 15){
+                if(contConfigKey % 3 == 0){
+                    tempAdvert = advert;
+                    lblDebug->setText(advert);
+                }
+                else{
+                    tempAdvert.append(".");
+                    lblDebug->setText(tempAdvert);
+                }
+                contConfigKey++;
+            }
+            else{
+                //no llego el comando
+                contConfigKey = 0;
+                if(timerConfigKey->isActive()){
+                    timerConfigKey->stop();
+                }
+                show_message("Problema al cargar info de tecla");
+            }
+        }
+        else{
+            //se recibio respuesta, cehcarla y detener el timer
+            if(timerConfigKey->isActive()){
+                timerConfigKey->stop();
+            }
+            contConfigKey = 0;
+            //buscar en diccionario/map ?
+            int indice_tecla = mapKey->value(monitor->nameConfigKey);
+            //
+            lEPush->setText(QString::number(monitor->valuePressKey));
+            lERelease->setText(QString::number(monitor->valueReleaseKey));
+            show_message("Info de tecla" + monitor->nameConfigKey + "cargada");
+        }
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
 
@@ -376,14 +440,60 @@ void UiCalTeclado::check_mode(){
             if(monitor->valueModeKeyboard == 0){
                 switchMode->ponerChecked(false);
                 //pedir el estado de la tecla seleccionada
-
+                monitor->isReadyConfigKey = false;
+                monitor->isWaitingKey = true;
+                monitor->get_config_key(elementSel);
+                advert = "Obteniendo info";
+                tempAdvert = advert;
+                lblDebug->setText(advert);
+                timerConfigKey->start();
             }
             else{
                 switchMode->ponerChecked(true);
                 //pedir el estado global
-
+                get_config_global();
             }
             show_message("Modo cargado");
+        }
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+
+    }
+}
+
+void UiCalTeclado::check_config_global(){
+    try {
+        if(!monitor->isReadyConfigKeyboard){
+            if(contConfigGlobal < 15){
+                if(contConfigGlobal % 3 == 0){
+                    tempAdvert = advert;
+                    lblDebug->setText(advert);
+                }
+                else{
+                    tempAdvert.append(".");
+                    lblDebug->setText(tempAdvert);
+                }
+                contConfigGlobal++;
+            }
+            else{
+                //no llego el comando
+                contConfigGlobal = 0;
+                if(timerConfigGlobal->isActive()){
+                    timerConfigGlobal->stop();
+                }
+                show_message("Problema al cargar config teclado");
+            }
+        }
+        else{
+            //se recibio respuesta, cehcarla y detener el timer
+            if(timerConfigGlobal->isActive()){
+                timerConfigGlobal->stop();
+            }
+            contConfigGlobal = 0;
+            //activar funcion que muestra el mensaje y lo borra 3 segundos después
+            lEPush->setText(QString::number(monitor->valuePressKeyboard));
+            lERelease->setText(QString::number(monitor->valueReleaseKeyboard));
+            show_message("Config cargada");
         }
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
@@ -402,7 +512,16 @@ void UiCalTeclado::out(){
 
 void UiCalTeclado::apply(){
     try {
+        //ver que sean enteros los valores ingresados y menor a 100
+        //checar el modo
+        if(switchMode->estaChecked()){
+            //es modo global
 
+        }
+        else{
+            //es modo individual
+            //checar el elemento seleccionado y leer los valores de los lineedit
+        }
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
 

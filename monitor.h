@@ -609,6 +609,7 @@ public:
     void change_mode(int mode);
     void get_config_key(int key);
     void set_config_key(int key, QString press, QString release);
+    void get_config_keyboard();
 
     bool isReadyModeKeyboard;
     int valueModeKeyboard;
@@ -620,6 +621,10 @@ public:
     int valuePressKey;
     int valueReleaseKey;
 
+    bool isWaitingConfigKeyboard;
+    bool isReadyConfigKeyboard;
+    int valuePressKeyboard;
+    int valueReleaseKeyboard;
 
 
 
@@ -699,6 +704,7 @@ signals:
     void calTeclado(QString trama);
     void get_mode_keyboard_frame(QString frame);
     void get_umbral_key(QString frame);
+    void get_umbral_keyboard(QString frame);
 };
 
 #endif // MONITOR_H

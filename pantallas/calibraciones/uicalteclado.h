@@ -13,6 +13,7 @@
 #include <QStyleOption>
 #include <QPainter>
 #include <QDir>
+#include <QMap>
 #include "utilidades/myswitch.h"
 
 class UiCalTeclado : public QWidget
@@ -52,15 +53,20 @@ public:
     int contConfigKey;
     QTimer *timerGetMode;
     int contGetMode;
+    QTimer *timerConfigGlobal;
+    int contConfigGlobal;
 
     int elementSel;
     int mode;
     bool state;
 
+    QMap<QString, int> *mapKey;
+
     QString advert;
     QString tempAdvert;
 
     void get_mode();
+    void get_config_global();
 
     void show_message(QString message);
     QTimer *timerMessage;
@@ -72,6 +78,7 @@ public slots:
     void get_config_key(int element);
     void check_config_key();
     void check_mode();
+    void check_config_global();
     void out();
     void set_mode();
     void apply();
