@@ -863,9 +863,14 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
         isReadyModeKeyboard = false;
         valueModeKeyboard = 0;
         isReadyConfigKey = false;
+        isWaitingMode = false;
+
         valuePressKey = 0;
         valueReleaseKey = 0;
-        isWaitingMode = false;
+        isWaitingKey = 0;
+        isReadyConfigKey = 0;
+        nameConfigKey = "";
+
 
         intentar_otro_pwm = true;
         timerOtroPWM = new QTimer;
@@ -933,6 +938,41 @@ void Monitor::change_mode(int mode){
 
 void Monitor::get_config_key(int key){
     try {
+        //gchXX\n
+        QString temp_num = "";
+        if(key < 10){
+            temp_num = "0" + QString::number(key);
+        }
+        else{
+            temp_num = QString::number(key);
+        }
+        QString tt_trama = "gch" + temp_num + "\n";
+        emit get_umbral_key(tt_trama);
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+    }
+}
+
+void Monitor::check_umbral_key(QString trama){
+    try {
+        //checar si estoy esperando el modo o cambiando el modo
+        if(isWaitingKey){
+            isWaitingKey = false;
+
+            //obtener el valor
+            QStringList ttt = trama.split(":");
+            QStringList tt = ttt.at(0).split("'");
+            nameConfigKey = tt.at(1);
+            QStringList t = ttt.at(1).split(",");
+            valuePressKey = t.at(0).toInt();
+            valueReleaseKey = t.at(1).toInt();
+
+            isReadyConfigKey = true;
+
+        }
+        else{
+            qDebug() << "No se esperaba un cambio de umbral de tecla";
+        }
 
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );

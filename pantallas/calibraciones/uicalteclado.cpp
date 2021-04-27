@@ -251,6 +251,8 @@ UiCalTeclado::UiCalTeclado(QWidget *parent, Monitor *monitor) : QWidget(parent)
         timerMessage->setSingleShot(true);
         connect(timerMessage, SIGNAL(timeout()), this, SLOT(eraseMessage()));
 
+        elementSel = 0;
+
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
@@ -320,7 +322,12 @@ void UiCalTeclado::set_mode(){
 
 void UiCalTeclado::get_config_key(int element){
     try {
-
+        elementSel = element;
+        monitor->get_config_key(element);
+        advert = "Obteniendo info";
+        tempAdvert = advert;
+        lblDebug->setText(advert);
+        timerConfigKey->start();
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
 
@@ -368,9 +375,13 @@ void UiCalTeclado::check_mode(){
             //activar funcion que muestra el mensaje y lo borra 3 segundos después
             if(monitor->valueModeKeyboard == 0){
                 switchMode->ponerChecked(false);
+                //pedir el estado de la tecla seleccionada
+
             }
             else{
                 switchMode->ponerChecked(true);
+                //pedir el estado global
+
             }
             show_message("Modo cargado");
         }
