@@ -62,6 +62,8 @@ public:
     int mode;
     bool state;
 
+    bool wasAGetMode;
+
     QMap<QString, int> *mapKey;
 
     QString advert;

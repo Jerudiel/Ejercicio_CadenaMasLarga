@@ -284,6 +284,7 @@ UiCalTeclado::UiCalTeclado(QWidget *parent, Monitor *monitor) : QWidget(parent)
         elementSel = 0;
         lastElementSel = 0;
         isFirstTimeSel = true;
+        wasAGetMode = false;
 
         mapKey = new QMap<QString, int>;
         mapKey->insert("OK", 0);
@@ -439,13 +440,17 @@ void UiCalTeclado::check_config_key(){
             set_checked_button(indice_tecla, true);
             elementSel = indice_tecla;
 
-            if(isFirstTimeSel){
-                isFirstTimeSel = false;
+            if(wasAGetMode){
+                wasAGetMode = false;
+                if(isFirstTimeSel){
+                    isFirstTimeSel = false;
+                }
+                else{
+                    set_checked_button(lastElementSel, false);
+                }
+                lastElementSel = elementSel;
             }
-            else{
-                set_checked_button(lastElementSel, false);
-            }
-            lastElementSel = elementSel;
+
             //
             lEPush->setText(QString::number(monitor->valuePressKey));
             lERelease->setText(QString::number(monitor->valueReleaseKey));
@@ -490,6 +495,7 @@ void UiCalTeclado::check_mode(){
             if(monitor->valueModeKeyboard == 0){
                 switchMode->ponerChecked(false);
                 //pedir el estado de la tecla seleccionada
+                wasAGetMode = true;
                 monitor->isReadyConfigKey = false;
                 monitor->isWaitingKey = true;
                 monitor->get_config_key(elementSel);
