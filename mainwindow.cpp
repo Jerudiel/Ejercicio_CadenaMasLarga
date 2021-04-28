@@ -331,24 +331,41 @@ void MainWindow::recteclado(QString trama){
                             serTeclado->serPuerto->clear();
                         }
                         else if(contenedorPrincipal->currentWidget() == configuracion){
-                            if(trama == "mon"){
-                                abrePantallaMonitor();
-                            }
-                            else if(trama == "ala"){
-                                abrePantallaAlarmas();
-                            }
-                            else if(trama.contains("Umbral:")){
-                                //monitor->revisar_cal_teclado(trama);
-                                monitor->check_umbral_keyboard(trama);
-                            }
-                            else if(trama.contains("Modo:")){
-                                monitor->check_mode_keyboard(trama);
-                            }
-                            else if(trama.contains("Umbral")){
-                                monitor->check_umbral_key(trama);
+                            if(monitor->isConfigKeyboard){
+                                if(trama.contains("Umbral:")){
+                                    //monitor->revisar_cal_teclado(trama);
+                                    monitor->check_umbral_keyboard(trama);
+                                }
+                                else if(trama.contains("Modo:")){
+                                    monitor->check_mode_keyboard(trama);
+                                }
+                                else if(trama.contains("Umbral")){
+                                    monitor->check_umbral_key(trama);
+                                }
+                                else{
+                                    monitor->watchDataKeyboard(trama);
+                                }
                             }
                             else{
-                                configuracion->teclado(trama);
+                                if(trama == "mon"){
+                                    abrePantallaMonitor();
+                                }
+                                else if(trama == "ala"){
+                                    abrePantallaAlarmas();
+                                }
+                                else if(trama.contains("Umbral:")){
+                                    //monitor->revisar_cal_teclado(trama);
+                                    monitor->check_umbral_keyboard(trama);
+                                }
+                                else if(trama.contains("Modo:")){
+                                    monitor->check_mode_keyboard(trama);
+                                }
+                                else if(trama.contains("Umbral")){
+                                    monitor->check_umbral_key(trama);
+                                }
+                                else{
+                                    configuracion->teclado(trama);
+                                }
                             }
                             serTeclado->serPuerto->clear();
                         }

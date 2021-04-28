@@ -613,6 +613,7 @@ public:
     void get_config_keyboard();
     void set_config_keyboard(QString press, QString release);
     QString set_format_frame(int value, int size);
+    void watchDataKeyboard(QString trama);
 
     bool isReadyModeKeyboard;
     int valueModeKeyboard;
@@ -629,7 +630,10 @@ public:
     int valuePressKeyboard;
     int valueReleaseKeyboard;
 
+    bool isConfigKeyboard;
 
+    bool isReadyKeyFromKeyboard;
+    QString valueFromKeyboard;
 
 
 public slots:

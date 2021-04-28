@@ -259,6 +259,14 @@ UiCalTeclado::UiCalTeclado(QWidget *parent, Monitor *monitor) : QWidget(parent)
         lblDebug->setObjectName("lblDebug");
         lblDebug->setText("Debug");
 
+        lblDataKeyboard = new QLabel(this);
+        lblDataKeyboard->setGeometry(QRect(600, 150, 375, 350));
+        lblDataKeyboard->setFont(*font);
+        lblDataKeyboard->setStyleSheet("color: white; background-color: gray;");
+        lblDataKeyboard->setAlignment(Qt::AlignLeft);
+        lblDataKeyboard->setObjectName("lblDataKeyboard");
+        lblDataKeyboard->setText("");
+
         timerConfigKey = new QTimer;
         timerConfigKey->setInterval(500);
         connect(timerConfigKey, SIGNAL(timeout()), this, SLOT(check_config_key()));
@@ -300,6 +308,10 @@ UiCalTeclado::UiCalTeclado(QWidget *parent, Monitor *monitor) : QWidget(parent)
         mapKey->insert("DER", 10);
         mapKey->insert("ABA", 11);
 
+        timerNewDataKeyboard = new QTimer;
+        timerNewDataKeyboard->setInterval(500);
+        connect(timerNewDataKeyboard, SIGNAL(timeout()), this, SLOT(check_new_data_keyboard()));
+
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
@@ -330,6 +342,9 @@ void UiCalTeclado::paintEvent(QPaintEvent* /*event*/)
 
 void UiCalTeclado::get_mode(){
     try {
+        monitor->isConfigKeyboard = true;
+        dataKeyboard = "";
+        lblDataKeyboard->setText(dataKeyboard);
         //pedir modo trama: gmod\n
         monitor->isReadyModeKeyboard = false;
         monitor->isWaitingMode = true;
@@ -445,7 +460,7 @@ void UiCalTeclado::check_config_key(){
                 if(isFirstTimeSel){
                     isFirstTimeSel = false;
                 }
-                else{
+                else if(elementSel != lastElementSel){
                     set_checked_button(lastElementSel, false);
                 }
                 lastElementSel = elementSel;
@@ -557,9 +572,22 @@ void UiCalTeclado::check_config_global(){
     }
 }
 
+void UiCalTeclado::check_new_data_keyboard(){
+    try {
+        if(monitor->isReadyKeyFromKeyboard){
+            dataKeyboard.append(monitor->valueFromKeyboard + "\n");
+            lblDataKeyboard->setText(dataKeyboard);
+        }
+
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+
+    }
+}
+
 void UiCalTeclado::out(){
     try {
-
+        monitor->isConfigKeyboard = true;
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
 

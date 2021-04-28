@@ -19,7 +19,7 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
         versionVentiladorEsperada = "3.6";
         versionSenPresionEsperada = "3.0";
         versionTecladoEsperada = "1.0";
-        versionPi = "3.66";
+        versionPi = "3.67T";
 
         mainwindow = parent;
         this->consul = consul;
@@ -870,7 +870,10 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
         isWaitingKey = 0;
         isReadyConfigKey = 0;
         nameConfigKey = "";
+        isConfigKeyboard = false;
 
+        isReadyKeyFromKeyboard = false;
+        valueFromKeyboard = "";
 
         intentar_otro_pwm = true;
         timerOtroPWM = new QTimer;
@@ -1077,6 +1080,15 @@ void Monitor::check_umbral_keyboard(QString trama){
             qDebug() << "No se esperaba un cambio de umbral global";
         }
 
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+    }
+}
+
+void Monitor::watchDataKeyboard(QString trama){
+    try {
+        isReadyKeyFromKeyboard = true;
+        valueFromKeyboard = trama;
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }

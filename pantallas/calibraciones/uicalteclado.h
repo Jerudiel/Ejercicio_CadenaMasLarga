@@ -81,6 +81,10 @@ public:
 
     void set_checked_button(int index, bool state);
 
+    QTimer *timerNewDataKeyboard;
+    QString dataKeyboard;
+    QLabel *lblDataKeyboard;
+
 public slots:
     //void set_config_key();
     void get_config_key(int element);
@@ -91,6 +95,7 @@ public slots:
     void set_mode();
     void apply();
     void eraseMessage();
+    void check_new_data_keyboard();
 signals:
 
 };
