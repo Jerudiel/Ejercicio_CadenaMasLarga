@@ -331,7 +331,9 @@ void MainWindow::recteclado(QString trama){
                             serTeclado->serPuerto->clear();
                         }
                         else if(contenedorPrincipal->currentWidget() == configuracion){
+                            //qDebug() << "keyboard-1";
                             if(monitor->isConfigKeyboard){
+                                //qDebug() << "keyboard-2";
                                 if(trama.contains("Umbral:")){
                                     //monitor->revisar_cal_teclado(trama);
                                     monitor->check_umbral_keyboard(trama);
@@ -343,10 +345,12 @@ void MainWindow::recteclado(QString trama){
                                     monitor->check_umbral_key(trama);
                                 }
                                 else{
+                                    //qDebug() << "keyboard-3";
                                     monitor->watchDataKeyboard(trama);
                                 }
                             }
                             else{
+                                //qDebug() << "keyboard-4";
                                 if(trama == "mon"){
                                     abrePantallaMonitor();
                                 }

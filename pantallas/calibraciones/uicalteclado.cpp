@@ -264,6 +264,7 @@ UiCalTeclado::UiCalTeclado(QWidget *parent, Monitor *monitor) : QWidget(parent)
         lblDataKeyboard->setFont(*font);
         lblDataKeyboard->setStyleSheet("color: white; background-color: gray;");
         lblDataKeyboard->setAlignment(Qt::AlignLeft);
+        lblDataKeyboard->setWordWrap(true);
         lblDataKeyboard->setObjectName("lblDataKeyboard");
         lblDataKeyboard->setText("");
 
@@ -311,6 +312,7 @@ UiCalTeclado::UiCalTeclado(QWidget *parent, Monitor *monitor) : QWidget(parent)
         timerNewDataKeyboard = new QTimer;
         timerNewDataKeyboard->setInterval(500);
         connect(timerNewDataKeyboard, SIGNAL(timeout()), this, SLOT(check_new_data_keyboard()));
+        timerNewDataKeyboard->start();
 
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
@@ -574,7 +576,9 @@ void UiCalTeclado::check_config_global(){
 
 void UiCalTeclado::check_new_data_keyboard(){
     try {
+        //qDebug() << "check_new_data_keyboard";
         if(monitor->isReadyKeyFromKeyboard){
+            monitor->isReadyKeyFromKeyboard = false;
             dataKeyboard.append(monitor->valueFromKeyboard + "\n");
             lblDataKeyboard->setText(dataKeyboard);
         }
