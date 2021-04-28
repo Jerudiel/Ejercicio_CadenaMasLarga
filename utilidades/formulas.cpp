@@ -106,7 +106,7 @@ int Formulas::obtener_valor_pwm_oxigeno(int fio2){
                 //float cociente = 30/21.0;
                 //pwm_oxigeno = ((porcentaje - 22) * cociente) + 180;
                 //pwm_oxigeno = of_o2 + (fio2 * ((pwm_max - of_o2)/(porce_cambio)));
-                pwm_oxigeno = li_aire + ((fio2 - 21)*((ls_o2 - li_o2)/(porce_cambio - 21)));
+                pwm_oxigeno = li_o2 + ((fio2 - 21)*((ls_o2 - li_o2)/(porce_cambio - 21)));
             }
         }
         else if(fio2 == porce_cambio){

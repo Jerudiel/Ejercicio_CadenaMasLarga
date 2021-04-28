@@ -13,11 +13,14 @@ UiCalTeclado::UiCalTeclado(QWidget *parent, Monitor *monitor) : QWidget(parent)
         font->setWeight(75);
 
         styleButton = "QPushButton:pressed { border: 4px solid rgb(255,112,61); background-color: gray; border-radius: 5px; color: black;}"
-                         "QPushButton { border: 2px solid grey; background-color: grey; border-radius: 5px; color: black;}";
+                      "QPushButton { border: 4px solid grey; background-color: grey; border-radius: 5px; color: black;}"
+                      "QPushButton:checked {border: 4px solid rgb(255,112,61); background-color: rgb(255,112,61); border-radius: 5px; color: black;}";
 
         btnOk = new QPushButton(this);
         btnOk->setGeometry(QRect(30,50, 60, 60));
         btnOk->setObjectName("btnOk");
+        btnOk->setCheckable(true);
+        btnOk->setChecked(false);
         btnOk->setStyleSheet(styleButton);
         QPixmap pixmap(ruta+"/graficos/teclado/ok.png");
         QIcon btnOkIcon(pixmap);
@@ -30,6 +33,8 @@ UiCalTeclado::UiCalTeclado(QWidget *parent, Monitor *monitor) : QWidget(parent)
         btnCan = new QPushButton(this);
         btnCan->setGeometry(QRect(100,50, 60, 60));
         btnCan->setObjectName("btnCan");
+        btnCan->setCheckable(true);
+        btnCan->setChecked(false);
         //btnCan->setText("X");
         btnCan->setStyleSheet(styleButton);
         QPixmap pixmap2(ruta+"/graficos/teclado/can.png");
@@ -43,6 +48,8 @@ UiCalTeclado::UiCalTeclado(QWidget *parent, Monitor *monitor) : QWidget(parent)
         btnPlay = new QPushButton(this);
         btnPlay->setGeometry(QRect(170,50, 60, 60));
         btnPlay->setObjectName("btnPlay");
+        btnPlay->setCheckable(true);
+        btnPlay->setChecked(false);
         //btnIniDet->setText("Play");
         btnPlay->setStyleSheet(styleButton);
         QPixmap pixmap3(ruta+"/graficos/teclado/playpause.png");
@@ -56,6 +63,8 @@ UiCalTeclado::UiCalTeclado(QWidget *parent, Monitor *monitor) : QWidget(parent)
         btnSetAlarm = new QPushButton(this);
         btnSetAlarm->setGeometry(QRect(240,50, 60, 60));
         btnSetAlarm->setObjectName("btnSetAlarm");
+        btnSetAlarm->setCheckable(true);
+        btnSetAlarm->setChecked(false);
         //btnLimpAla->setText("L A");
         btnSetAlarm->setStyleSheet(styleButton);
         QPixmap pixmap4(ruta+"/graficos/teclado/alarmlimp.png");
@@ -70,6 +79,8 @@ UiCalTeclado::UiCalTeclado(QWidget *parent, Monitor *monitor) : QWidget(parent)
         btnMon = new QPushButton(this);
         btnMon->setGeometry(QRect(30,120, 60, 60));
         btnMon->setObjectName("btnMon");
+        btnMon->setCheckable(true);
+        btnMon->setChecked(false);
         //btnPrin->setText("M");
         btnMon->setStyleSheet(styleButton);
         QPixmap pixmap5(ruta+"/graficos/teclado/home.png");
@@ -83,6 +94,8 @@ UiCalTeclado::UiCalTeclado(QWidget *parent, Monitor *monitor) : QWidget(parent)
         btnCon = new QPushButton(this);
         btnCon->setGeometry(QRect(100,120, 60, 60));
         btnCon->setObjectName("btnCon");
+        btnCon->setCheckable(true);
+        btnCon->setChecked(false);
         //btnConfig->setText("C");
         btnCon->setStyleSheet(styleButton);
         QPixmap pixmap6(ruta+"/graficos/teclado/config.png");
@@ -96,6 +109,8 @@ UiCalTeclado::UiCalTeclado(QWidget *parent, Monitor *monitor) : QWidget(parent)
         btnAlarm = new QPushButton(this);
         btnAlarm->setGeometry(QRect(170,120, 60, 60));
         btnAlarm->setObjectName("btnAlarm");
+        btnAlarm->setCheckable(true);
+        btnAlarm->setChecked(false);
         //btnAla->setText("A");
         btnAlarm->setStyleSheet(styleButton);
         QPixmap pixmap7(ruta+"/graficos/teclado/ala.png");
@@ -110,6 +125,8 @@ UiCalTeclado::UiCalTeclado(QWidget *parent, Monitor *monitor) : QWidget(parent)
         btnLeft = new QPushButton(this);
         btnLeft->setGeometry(QRect(50,260, 60, 60));
         btnLeft->setObjectName("btnLeft");
+        btnLeft->setCheckable(true);
+        btnLeft->setChecked(false);
         //btnIzq->setText("<-");
         btnLeft->setStyleSheet(styleButton);
         QPixmap pixmap8(ruta+"/graficos/teclado/izq.png");
@@ -123,6 +140,8 @@ UiCalTeclado::UiCalTeclado(QWidget *parent, Monitor *monitor) : QWidget(parent)
         btnUp = new QPushButton(this);
         btnUp->setGeometry(QRect(120,190, 60, 60));
         btnUp->setObjectName("btnUp");
+        btnUp->setCheckable(true);
+        btnUp->setChecked(false);
         //btnArr->setText("^");
         btnUp->setStyleSheet(styleButton);
         QPixmap pixmap9(ruta+"/graficos/teclado/arr.png");
@@ -136,6 +155,8 @@ UiCalTeclado::UiCalTeclado(QWidget *parent, Monitor *monitor) : QWidget(parent)
         btnRight = new QPushButton(this);
         btnRight->setGeometry(QRect(190,260, 60, 60));
         btnRight->setObjectName("btnRight");
+        btnRight->setCheckable(true);
+        btnRight->setChecked(false);
         //btnDer->setText("->");
         btnRight->setStyleSheet(styleButton);
         QPixmap pixmap10(ruta+"/graficos/teclado/der.png");
@@ -149,6 +170,8 @@ UiCalTeclado::UiCalTeclado(QWidget *parent, Monitor *monitor) : QWidget(parent)
         btnDown = new QPushButton(this);
         btnDown->setGeometry(QRect(120,330, 60, 60));
         btnDown->setObjectName("btnDown");
+        btnDown->setCheckable(true);
+        btnDown->setChecked(false);
         //btnAba->setText("v");
         btnDown->setStyleSheet(styleButton);
         QPixmap pixmap11(ruta+"/graficos/teclado/aba.png");
@@ -163,6 +186,8 @@ UiCalTeclado::UiCalTeclado(QWidget *parent, Monitor *monitor) : QWidget(parent)
         btnDesAlarm = new QPushButton(this);
         btnDesAlarm->setGeometry(QRect(240,190, 60, 60));
         btnDesAlarm->setObjectName("btnDesAlarm");
+        btnDesAlarm->setCheckable(true);
+        btnDesAlarm->setChecked(false);
         //btnDesAla->setText("D A");
         btnDesAlarm->setStyleSheet(styleButton);
         QPixmap pixmap12(ruta+"/graficos/teclado/alarmdes.png");
@@ -227,7 +252,7 @@ UiCalTeclado::UiCalTeclado(QWidget *parent, Monitor *monitor) : QWidget(parent)
         connect(btnApply, &QPushButton::clicked, this, &UiCalTeclado::apply);
 
         lblDebug = new QLabel(this);
-        lblDebug->setGeometry(QRect(350, 300, 250, 60));
+        lblDebug->setGeometry(QRect(350, 300, 400, 60));
         lblDebug->setFont(*font);
         lblDebug->setStyleSheet("color: white;");
         lblDebug->setAlignment(Qt::AlignCenter);
@@ -244,6 +269,11 @@ UiCalTeclado::UiCalTeclado(QWidget *parent, Monitor *monitor) : QWidget(parent)
         connect(timerGetMode, SIGNAL(timeout()), this, SLOT(check_mode()));
         contGetMode = 0;
 
+        timerConfigGlobal = new QTimer;
+        timerConfigGlobal->setInterval(500);
+        connect(timerConfigGlobal, SIGNAL(timeout()), this, SLOT(check_config_global()));
+        contConfigGlobal = 0;
+
         advert = "";
         tempAdvert = "";
 
@@ -252,6 +282,8 @@ UiCalTeclado::UiCalTeclado(QWidget *parent, Monitor *monitor) : QWidget(parent)
         connect(timerMessage, SIGNAL(timeout()), this, SLOT(eraseMessage()));
 
         elementSel = 0;
+        lastElementSel = 0;
+        isFirstTimeSel = true;
 
         mapKey = new QMap<QString, int>;
         mapKey->insert("OK", 0);
@@ -344,6 +376,14 @@ void UiCalTeclado::get_config_key(int element){
         tempAdvert = advert;
         lblDebug->setText(advert);
         timerConfigKey->start();
+        //desactivar el último boton activado
+        if(isFirstTimeSel){
+            isFirstTimeSel = false;
+        }
+        else{
+            set_checked_button(lastElementSel, false);
+            lastElementSel = elementSel;
+        }
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
 
@@ -358,7 +398,7 @@ void UiCalTeclado::get_config_global(){
         advert = "Obteniendo info";
         tempAdvert = advert;
         lblDebug->setText(advert);
-        timerConfigKey->start();
+        timerConfigGlobal->start();
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
 
@@ -399,7 +439,7 @@ void UiCalTeclado::check_config_key(){
             //
             lEPush->setText(QString::number(monitor->valuePressKey));
             lERelease->setText(QString::number(monitor->valueReleaseKey));
-            show_message("Info de tecla" + monitor->nameConfigKey + "cargada");
+            show_message("Info de tecla " + monitor->nameConfigKey + " cargada");
         }
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
@@ -516,15 +556,93 @@ void UiCalTeclado::apply(){
         //checar el modo
         if(switchMode->estaChecked()){
             //es modo global
-
+            if(are_ints()){
+                //preparar los valores
+                monitor->isReadyConfigKeyboard = false;
+                monitor->isWaitingConfigKeyboard = true;
+                advert = "Aplicando config";
+                tempAdvert = advert;
+                lblDebug->setText(advert);
+                timerConfigGlobal->start();
+                monitor->set_config_keyboard(lEPush->text(), lERelease->text());
+            }
+            else{
+                show_message("Los valores no son enteros.");
+            }
         }
         else{
             //es modo individual
+            if(are_ints()){
+                monitor->isReadyConfigKey = false;
+                monitor->isWaitingKey = true;
+                advert = "Aplicando config";
+                tempAdvert = advert;
+                lblDebug->setText(advert);
+                timerConfigKey->start();
+                monitor->set_config_key(elementSel,lEPush->text(), lERelease->text());
+            }
+            else{
+                show_message("Los valores no son enteros.");
+            }
             //checar el elemento seleccionado y leer los valores de los lineedit
         }
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
 
+    }
+}
+
+bool UiCalTeclado::are_ints(){
+    try {
+        lEPush->text().toInt();
+        lERelease->text().toInt();
+        return true;
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        return false;
+    }
+}
+
+void UiCalTeclado::set_checked_button(int index, bool state){
+    try {
+        if(index == 0){
+            btnOk->setChecked(state);
+        }
+        else if(index == 1){
+            btnMon->setChecked(state);
+        }
+        else if(index == 2){
+            btnCan->setChecked(state);
+        }
+        else if(index == 3){
+            btnCon->setChecked(state);
+        }
+        else if(index == 4){
+            btnPlay->setChecked(state);
+        }
+        else if(index == 5){
+            btnSetAlarm->setChecked(state);
+        }
+        else if(index == 6){
+            btnAlarm->setChecked(state);
+        }
+        else if(index == 7){
+            btnDesAlarm->setChecked(state);
+        }
+        else if(index == 8){
+            btnUp->setChecked(state);
+        }
+        else if(index == 9){
+            btnLeft->setChecked(state);
+        }
+        else if(index == 10){
+            btnRight->setChecked(state);
+        }
+        else if(index == 11){
+            btnDown->setChecked(state);
+        }
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 

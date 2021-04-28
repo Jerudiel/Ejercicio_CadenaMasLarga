@@ -57,6 +57,8 @@ public:
     int contConfigGlobal;
 
     int elementSel;
+    int lastElementSel;
+    bool isFirstTimeSel;
     int mode;
     bool state;
 
@@ -72,6 +74,10 @@ public:
     QTimer *timerMessage;
 
     virtual void paintEvent(QPaintEvent *event);
+
+    bool are_ints();
+
+    void set_checked_button(int index, bool state);
 
 public slots:
     //void set_config_key();

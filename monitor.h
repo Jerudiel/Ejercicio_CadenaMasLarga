@@ -606,10 +606,13 @@ public:
     void get_mode_keyboard();
     void check_mode_keyboard(QString trama);
     void check_umbral_key(QString trama);
+    void check_umbral_keyboard(QString trama);
     void change_mode(int mode);
     void get_config_key(int key);
     void set_config_key(int key, QString press, QString release);
     void get_config_keyboard();
+    void set_config_keyboard(QString press, QString release);
+    QString set_format_frame(int value, int size);
 
     bool isReadyModeKeyboard;
     int valueModeKeyboard;
@@ -705,6 +708,7 @@ signals:
     void get_mode_keyboard_frame(QString frame);
     void get_umbral_key(QString frame);
     void get_umbral_keyboard(QString frame);
+    void send_frame(QString frame);
 };
 
 #endif // MONITOR_H

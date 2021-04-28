@@ -65,5 +65,6 @@ public slots:
     void get_mode_keyboard_command(QString trama);
     void get_umbral_key_command(QString trama);
     void get_umbral_keyboard_command(QString trama);
+    void send_frame_keyboard(QString trama);
 };
 #endif // MAINWINDOW_H
