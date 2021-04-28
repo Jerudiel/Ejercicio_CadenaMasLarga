@@ -255,7 +255,7 @@ UiCalTeclado::UiCalTeclado(QWidget *parent, Monitor *monitor) : QWidget(parent)
         lblDebug->setGeometry(QRect(350, 300, 400, 60));
         lblDebug->setFont(*font);
         lblDebug->setStyleSheet("color: white;");
-        lblDebug->setAlignment(Qt::AlignCenter);
+        lblDebug->setAlignment(Qt::AlignLeft);
         lblDebug->setObjectName("lblDebug");
         lblDebug->setText("Debug");
 
@@ -436,6 +436,16 @@ void UiCalTeclado::check_config_key(){
             contConfigKey = 0;
             //buscar en diccionario/map ?
             int indice_tecla = mapKey->value(monitor->nameConfigKey);
+            set_checked_button(indice_tecla, true);
+            elementSel = indice_tecla;
+
+            if(isFirstTimeSel){
+                isFirstTimeSel = false;
+            }
+            else{
+                set_checked_button(lastElementSel, false);
+            }
+            lastElementSel = elementSel;
             //
             lEPush->setText(QString::number(monitor->valuePressKey));
             lERelease->setText(QString::number(monitor->valueReleaseKey));
