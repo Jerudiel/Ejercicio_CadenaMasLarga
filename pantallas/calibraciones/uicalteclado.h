@@ -14,6 +14,7 @@
 #include <QPainter>
 #include <QDir>
 #include <QMap>
+#include <QThread>
 #include <QScrollArea>
 #include <QVBoxLayout>
 #include "utilidades/myswitch.h"

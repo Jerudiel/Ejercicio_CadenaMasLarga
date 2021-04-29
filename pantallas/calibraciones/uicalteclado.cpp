@@ -251,9 +251,6 @@ UiCalTeclado::UiCalTeclado(QWidget *parent, Monitor *monitor) : QWidget(parent)
         btnApply->setText("APLICAR");
         connect(btnApply, &QPushButton::clicked, this, &UiCalTeclado::apply);
 
-
-
-
         lblDebug = new QLabel(this);
         lblDebug->setGeometry(QRect(350, 300, 400, 60));
         lblDebug->setFont(*font);
@@ -262,18 +259,26 @@ UiCalTeclado::UiCalTeclado(QWidget *parent, Monitor *monitor) : QWidget(parent)
         lblDebug->setObjectName("lblDebug");
         lblDebug->setText("Debug");
 
-        scroll = new QScrollArea;
-        scroll
+        scroll = new QScrollArea(this);
+        scroll->setGeometry(QRect(600, 150, 375, 300));
+        scroll->setWidgetResizable(true);
+        scroll->verticalScrollBar()->setSliderPosition(scroll->verticalScrollBar()->maximum());
+        QWidget *content = new QWidget(this);
+        scroll->setWidget(content);
+        vBoxLay = new QVBoxLayout(content);
 
-
-        lblDataKeyboard = new QLabel(this);
-        lblDataKeyboard->setGeometry(QRect(600, 150, 375, 350));
+        lblDataKeyboard = new QLabel(content);
+        lblDataKeyboard->setGeometry(QRect(600, 150, 375, 300));
         lblDataKeyboard->setFont(*font);
         lblDataKeyboard->setStyleSheet("color: white; background-color: gray;");
         lblDataKeyboard->setAlignment(Qt::AlignLeft);
         lblDataKeyboard->setWordWrap(true);
         lblDataKeyboard->setObjectName("lblDataKeyboard");
         lblDataKeyboard->setText("");
+
+        vBoxLay->addWidget(lblDataKeyboard);
+
+
 
         timerConfigKey = new QTimer;
         timerConfigKey->setInterval(500);
@@ -585,9 +590,19 @@ void UiCalTeclado::check_new_data_keyboard(){
     try {
         //qDebug() << "check_new_data_keyboard";
         if(monitor->isReadyKeyFromKeyboard){
+            //poner checked la tecla
+            int indice_tecla = mapKey->value(monitor->valueFromKeyboard.toUpper());
+            qDebug() << "check_new_data_keyboard - Indice: " + QString::number(indice_tecla);
+            qDebug() << "check_new_data_keyboard - tecla: " + monitor->valueFromKeyboard.toUpper();
+            set_checked_button(indice_tecla, true);
             monitor->isReadyKeyFromKeyboard = false;
             dataKeyboard.append(monitor->valueFromKeyboard + "\n");
             lblDataKeyboard->setText(dataKeyboard);
+            scroll->verticalScrollBar()->setSliderPosition(scroll->verticalScrollBar()->maximum());
+            //sleep de 200 ms
+            QThread::msleep(350);
+            //poner un checked la tecla
+            set_checked_button(indice_tecla, false);
         }
 
     }  catch (std::exception &e) {
@@ -598,7 +613,7 @@ void UiCalTeclado::check_new_data_keyboard(){
 
 void UiCalTeclado::out(){
     try {
-        monitor->isConfigKeyboard = true;
+        monitor->isConfigKeyboard = false;
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
 
