@@ -19,7 +19,7 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
         versionVentiladorEsperada = "3.6";
         versionSenPresionEsperada = "3.0";
         versionTecladoEsperada = "1.0";
-        versionPi = "3.66";
+        versionPi = "3.67";
 
         mainwindow = parent;
         this->consul = consul;
