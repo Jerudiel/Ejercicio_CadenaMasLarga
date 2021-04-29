@@ -14,6 +14,8 @@
 #include <QPainter>
 #include <QDir>
 #include <QMap>
+#include <QScrollArea>
+#include <QVBoxLayout>
 #include "utilidades/myswitch.h"
 
 class UiCalTeclado : public QWidget
@@ -47,7 +49,10 @@ public:
 
     QPushButton *btnOut;
     QPushButton *btnApply;
+
+    QScrollArea *scroll;
     QLabel *lblDebug;
+    QVBoxLayout *vBoxLay;
 
     QTimer *timerConfigKey;
     int contConfigKey;

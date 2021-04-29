@@ -251,6 +251,9 @@ UiCalTeclado::UiCalTeclado(QWidget *parent, Monitor *monitor) : QWidget(parent)
         btnApply->setText("APLICAR");
         connect(btnApply, &QPushButton::clicked, this, &UiCalTeclado::apply);
 
+
+
+
         lblDebug = new QLabel(this);
         lblDebug->setGeometry(QRect(350, 300, 400, 60));
         lblDebug->setFont(*font);
@@ -258,6 +261,10 @@ UiCalTeclado::UiCalTeclado(QWidget *parent, Monitor *monitor) : QWidget(parent)
         lblDebug->setAlignment(Qt::AlignLeft);
         lblDebug->setObjectName("lblDebug");
         lblDebug->setText("Debug");
+
+        scroll = new QScrollArea;
+        scroll
+
 
         lblDataKeyboard = new QLabel(this);
         lblDataKeyboard->setGeometry(QRect(600, 150, 375, 350));
