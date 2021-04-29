@@ -27,7 +27,12 @@ MainWindow::MainWindow(ServerWS *server, QWidget *parent, bool debug_t, bool deb
             //qDebug() << "Se crea pantalla monitor";
             monitor = new Monitor(this, consul, debug_c, debug_s);
 
-            connect(monitor, SIGNAL(calTeclado(QString)), this, SLOT(calibrarTeclado(QString)));
+            //connect(monitor, SIGNAL(calTeclado(QString)), this, SLOT(calibrarTeclado(QString)));
+
+            //connect(monitor, SIGNAL(get_mode_keyboard_frame(QString)), this, SLOT(get_mode_keyboard_command(QString)));
+            //connect(monitor, SIGNAL(get_umbral_key(QString)), this, SLOT(get_umbral_key_command(QString)));
+            //connect(monitor, SIGNAL(get_umbral_keyboard(QString)), this, SLOT(get_umbral_keyboard_command(QString)));
+            connect(monitor, SIGNAL(send_frame(QString)), this, SLOT(send_frame_keyboard(QString)));
 
             //qDebug() << "pantalla monitor a contenedor principal";
             contenedorPrincipal->addWidget(monitor);
@@ -326,17 +331,45 @@ void MainWindow::recteclado(QString trama){
                             serTeclado->serPuerto->clear();
                         }
                         else if(contenedorPrincipal->currentWidget() == configuracion){
-                            if(trama == "mon"){
-                                abrePantallaMonitor();
-                            }
-                            else if(trama == "ala"){
-                                abrePantallaAlarmas();
-                            }
-                            else if(trama.contains("Umbral:")){
-                                monitor->revisar_cal_teclado(trama);
+                            //qDebug() << "keyboard-1";
+                            if(monitor->isConfigKeyboard){
+                                //qDebug() << "keyboard-2";
+                                if(trama.contains("Umbral:")){
+                                    //monitor->revisar_cal_teclado(trama);
+                                    monitor->check_umbral_keyboard(trama);
+                                }
+                                else if(trama.contains("Modo:")){
+                                    monitor->check_mode_keyboard(trama);
+                                }
+                                else if(trama.contains("Umbral")){
+                                    monitor->check_umbral_key(trama);
+                                }
+                                else{
+                                    //qDebug() << "keyboard-3";
+                                    monitor->watchDataKeyboard(trama);
+                                }
                             }
                             else{
-                                configuracion->teclado(trama);
+                                //qDebug() << "keyboard-4";
+                                if(trama == "mon"){
+                                    abrePantallaMonitor();
+                                }
+                                else if(trama == "ala"){
+                                    abrePantallaAlarmas();
+                                }
+                                else if(trama.contains("Umbral:")){
+                                    //monitor->revisar_cal_teclado(trama);
+                                    monitor->check_umbral_keyboard(trama);
+                                }
+                                else if(trama.contains("Modo:")){
+                                    monitor->check_mode_keyboard(trama);
+                                }
+                                else if(trama.contains("Umbral")){
+                                    monitor->check_umbral_key(trama);
+                                }
+                                else{
+                                    configuracion->teclado(trama);
+                                }
                             }
                             serTeclado->serPuerto->clear();
                         }
@@ -469,7 +502,7 @@ void MainWindow::abrePantallaConfiguracion(){
     }
 }
 
-void MainWindow::calibrarTeclado(QString trama){
+/*void MainWindow::calibrarTeclado(QString trama){
     try {
         serTeclado->escribir(trama);
     }  catch (std::exception &e) {
@@ -477,4 +510,34 @@ void MainWindow::calibrarTeclado(QString trama){
     }
 }
 
+void MainWindow::get_mode_keyboard_command(QString trama){
+    try {
+        serTeclado->escribir(trama);
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+    }
+}
 
+void MainWindow::get_umbral_key_command(QString trama){
+    try {
+        serTeclado->escribir(trama);
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+    }
+}
+
+void MainWindow::get_umbral_keyboard_command(QString trama){
+    try {
+        serTeclado->escribir(trama);
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+    }
+}*/
+
+void MainWindow::send_frame_keyboard(QString trama){
+    try {
+        serTeclado->escribir(trama);
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+    }
+}

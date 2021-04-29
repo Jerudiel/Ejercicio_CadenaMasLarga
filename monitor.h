@@ -603,6 +603,39 @@ public:
     QTimer *timerMIniVent;
     int contadorMIniVentilador;
 
+    void get_mode_keyboard();
+    void check_mode_keyboard(QString trama);
+    void check_umbral_key(QString trama);
+    void check_umbral_keyboard(QString trama);
+    void change_mode(int mode);
+    void get_config_key(int key);
+    void set_config_key(int key, QString press, QString release);
+    void get_config_keyboard();
+    void set_config_keyboard(QString press, QString release);
+    QString set_format_frame(int value, int size);
+    void watchDataKeyboard(QString trama);
+
+    bool isReadyModeKeyboard;
+    int valueModeKeyboard;
+    bool isWaitingMode;
+
+    bool isWaitingKey;
+    bool isReadyConfigKey;
+    QString nameConfigKey;
+    int valuePressKey;
+    int valueReleaseKey;
+
+    bool isWaitingConfigKeyboard;
+    bool isReadyConfigKeyboard;
+    int valuePressKeyboard;
+    int valueReleaseKeyboard;
+
+    bool isConfigKeyboard;
+
+    bool isReadyKeyFromKeyboard;
+    QString valueFromKeyboard;
+
+
 public slots:
     void revisarErrorWDT();
 
@@ -676,6 +709,10 @@ public slots:
     void limpiarInfoAltura();
 signals:
     void calTeclado(QString trama);
+    void get_mode_keyboard_frame(QString frame);
+    void get_umbral_key(QString frame);
+    void get_umbral_keyboard(QString frame);
+    void send_frame(QString frame);
 };
 
 #endif // MONITOR_H

@@ -18,6 +18,7 @@ SOURCES += \
     pantallas/calibraciones/uicalibraciones.cpp \
     pantallas/calibraciones/uicalotros.cpp \
     pantallas/calibraciones/uicalsensores.cpp \
+    pantallas/calibraciones/uicalteclado.cpp \
     pantallas/modos/uimodopcmv.cpp \
     pantallas/modos/uimodopcpap.cpp \
     pantallas/modos/uimodopsimv.cpp \
@@ -82,6 +83,7 @@ HEADERS += \
     pantallas/calibraciones/uicalibraciones.h \
     pantallas/calibraciones/uicalotros.h \
     pantallas/calibraciones/uicalsensores.h \
+    pantallas/calibraciones/uicalteclado.h \
     pantallas/modos/uimodopcmv.h \
     pantallas/modos/uimodopcpap.h \
     pantallas/modos/uimodopsimv.h \

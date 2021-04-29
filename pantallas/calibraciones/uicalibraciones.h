@@ -18,6 +18,7 @@
 #include "pantallas/calibraciones/uicalsensores.h"
 #include "pantallas/calibraciones/uicalcontrol.h"
 #include "pantallas/calibraciones/uicalotros.h"
+#include "pantallas/calibraciones/uicalteclado.h"
 
 class UiCalibraciones : public QWidget
 {
@@ -39,6 +40,7 @@ public:
     UiCalSensores *tab_sensores;
     UiCalControl *tab_control;
     UiCalOtros *tab_otros;
+    UiCalTeclado *tab_teclado;
 
     int elementSel;
 

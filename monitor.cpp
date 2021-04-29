@@ -860,6 +860,21 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
         calTecladoPres = 0;
         calTecladoSolt = 0;
 
+        isReadyModeKeyboard = false;
+        valueModeKeyboard = 0;
+        isReadyConfigKey = false;
+        isWaitingMode = false;
+
+        valuePressKey = 0;
+        valueReleaseKey = 0;
+        isWaitingKey = 0;
+        isReadyConfigKey = 0;
+        nameConfigKey = "";
+        isConfigKeyboard = false;
+
+        isReadyKeyFromKeyboard = false;
+        valueFromKeyboard = "";
+
         intentar_otro_pwm = true;
         timerOtroPWM = new QTimer;
         timerOtroPWM->setSingleShot(true);
@@ -873,6 +888,209 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
     }
     catch(...){
         qWarning("ERROR AL CREAR CLASE MONITOR");
+    }
+}
+
+void Monitor::get_mode_keyboard(){
+    try {
+        //dar formato de la trama y hacer un emit a mainwindow
+        QString tt = "gmod\n";
+        //emit get_mode_keyboard_frame(tt);
+        emit send_frame(tt);
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+    }
+}
+
+void Monitor::check_mode_keyboard(QString trama){
+    try {
+        //checar si estoy esperando el modo o cambiando el modo
+        if(isWaitingMode){
+            isWaitingMode = false;
+
+            //obtener el valor
+            QStringList ttt = trama.split(":");
+            valueModeKeyboard = ttt.at(1).toInt();
+
+            isReadyModeKeyboard = true;
+
+        }
+        else{
+            qDebug() << "No se esperaba un cambio de modo en el teclado";
+        }
+
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+    }
+}
+
+void Monitor::change_mode(int mode){
+    try {
+        //dar formato de la trama y hacer un emit a mainwindow
+         QString tt = "";
+        if(mode == 0){
+            tt = "smod0\n";
+        }
+        else{
+            tt = "smod1\n";
+        }
+        //emit get_mode_keyboard_frame(tt);
+        emit send_frame(tt);
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+    }
+}
+
+void Monitor::get_config_key(int key){
+    try {
+        //gchXX\n
+        QString temp_num = "";
+        if(key < 10){
+            temp_num = "0" + QString::number(key);
+        }
+        else{
+            temp_num = QString::number(key);
+        }
+        QString tt_trama = "gch" + temp_num + "\n";
+        //emit get_umbral_key(tt_trama);
+        emit send_frame(tt_trama);
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+    }
+}
+
+void Monitor::check_umbral_key(QString trama){
+    try {
+        //checar si estoy esperando el modo o cambiando el modo
+        if(isWaitingKey){
+            isWaitingKey = false;
+
+            //obtener el valor
+            QStringList ttt = trama.split(":");
+            QStringList tt = ttt.at(0).split("'");
+            nameConfigKey = tt.at(1);
+            QStringList t = ttt.at(1).split(",");
+            valuePressKey = t.at(0).toInt();
+            valueReleaseKey = t.at(1).toInt();
+
+            isReadyConfigKey = true;
+
+        }
+        else{
+            qDebug() << "No se esperaba un cambio de umbral de tecla";
+        }
+
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+    }
+}
+
+void Monitor::set_config_key(int key, QString press, QString release){
+    try {
+        //schXXTTTRRR\n
+        QString ttFrame = "sch" + set_format_frame(key, 2) + set_format_frame(press.toInt(), 3) + set_format_frame(release.toInt(), 3) + "\n";
+        if(ttFrame.size() == 12){
+            emit send_frame(ttFrame);
+        }
+        else{
+            qDebug() << "Error al crear trama config teclado global";
+        }
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+    }
+}
+
+void Monitor::set_config_keyboard(QString press, QString release){
+    try {
+        //setTTTRRR\n
+        QString ttFrame = "sch" + set_format_frame(press.toInt(), 3) + set_format_frame(release.toInt(), 3) + "\n";
+        if(ttFrame.size() == 10){
+            emit send_frame(ttFrame);
+        }
+        else{
+            qDebug() << "Error al crear trama config teclado individual";
+        }
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+    }
+}
+
+QString Monitor::set_format_frame(int value, int size){
+    try {
+        if(size == 2){
+            if(value < 10){
+                return "0" + QString::number(value);
+            }
+            else if(10 <= value && value < 100){
+                return QString::number(value);
+            }
+            else{
+                return "";
+            }
+        }
+        else if(size == 3){
+            if(value < 10){
+                return "00" + QString::number(value);
+            }
+            else if(10 <= value && value < 100){
+                return "0" + QString::number(value);
+            }
+            else if(100 <= value && value < 1000){
+                return QString::number(value);
+            }
+            else{
+                return "";
+            }
+        }
+        else{
+            return "";
+        }
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+    }
+}
+
+void Monitor::get_config_keyboard(){
+    try {
+        //dar formato de la trama y hacer un emit a mainwindow
+        QString tt = "get\n";
+        //emit get_umbral_keyboard(tt);
+        emit send_frame(tt);
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+    }
+}
+
+void Monitor::check_umbral_keyboard(QString trama){
+    try {
+        //checar si estoy esperando el modo o cambiando el modo
+        if(isWaitingConfigKeyboard){
+            isWaitingConfigKeyboard = false;
+
+            //obtener el valor
+            QStringList ttt = trama.split(":");
+            QStringList t = ttt.at(1).split(",");
+            valuePressKeyboard = t.at(0).toInt();
+            valueReleaseKeyboard = t.at(1).toInt();
+
+            isReadyConfigKeyboard = true;
+
+        }
+        else{
+            qDebug() << "No se esperaba un cambio de umbral global";
+        }
+
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+    }
+}
+
+void Monitor::watchDataKeyboard(QString trama){
+    try {
+        isReadyKeyFromKeyboard = true;
+        valueFromKeyboard = trama;
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 

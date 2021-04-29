@@ -54,6 +54,10 @@ UiCalibraciones::UiCalibraciones(Monitor * monitor, QWidget *parent) : QWidget(p
         tab_otros->setObjectName("tab_otros");
         tabWidget->addTab(tab_otros, "");
 
+        tab_teclado = new UiCalTeclado(this, monitor);
+        tab_teclado->setObjectName("tab_teclado");
+        tabWidget->addTab(tab_teclado, "");
+
         retranslateUi();
         tabWidget->setCurrentIndex(0);
         connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(cambioTab(int)));
@@ -73,6 +77,7 @@ void UiCalibraciones::llenarConfiguracion(){
         tab_otros->cargarTeclado();
         tab_otros->cargarFio2();
         tab_otros->cargarOffPip();
+        //tab_teclado->get_mode();
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
 
@@ -85,6 +90,7 @@ void UiCalibraciones::retranslateUi(){
         tabWidget->setTabText(tabWidget->indexOf(tab_sensores), "SENSORES");
         tabWidget->setTabText(tabWidget->indexOf(tab_control), "CONTROL");
         tabWidget->setTabText(tabWidget->indexOf(tab_otros), "RPI");
+        tabWidget->setTabText(tabWidget->indexOf(tab_teclado), "TECLADO");
         qDebug() << "Cargar nombres a tabs calibraciones";
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
@@ -107,6 +113,9 @@ void UiCalibraciones::cambioTab(int i){
             tab_otros->cargarTeclado();
             tab_otros->cargarFio2();
             tab_otros->cargarOffPip();
+        }
+        else if(i == tabWidget->indexOf(tab_teclado)){
+            tab_teclado->get_mode();
         }
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
