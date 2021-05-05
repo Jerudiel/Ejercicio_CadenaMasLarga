@@ -621,7 +621,8 @@ bool Consultas::cambiar_tipo_sensor(QString sentido){
     try {
         QString id_giro = obtener_id_tipo_sensor();
         if(id_giro != ""){
-            QString update_query = "UPDATE Tipo_Sensor SET sentido = " + sentido + " WHERE id = " + id_giro;
+            QString update_query = "UPDATE Tipo_Sensor SET tipo = " + sentido + " WHERE id = " + id_giro;
+            qDebug() << "query - cambiar_tipo_sensor " + update_query;
             QString resultados = consulta(update_query);
             if(resultados.at(1) != ""){
                 return true;

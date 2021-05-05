@@ -165,17 +165,21 @@ void UiInfoSistema::cambiarSenPre(){
     try {
         if(switchSenPre->estaChecked()){
             monitor->consul->cambiar_tipo_sensor("1");
+            qDebug() << "cambiarSenPre - checked: 1";
         }
         else{
             monitor->consul->cambiar_tipo_sensor("0");
+            qDebug() << "cambiarSenPre - checked: 0";
         }
         QString temp = monitor->consul->leer_tipo_sensor();
+        qDebug() << "cambiarSenPre - temp: " + temp;
         if(temp[2] == "0"){
             monitor->tipo_sensor_presion = false;
         }
         else{
             monitor->tipo_sensor_presion = true;
         }
+
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
 
