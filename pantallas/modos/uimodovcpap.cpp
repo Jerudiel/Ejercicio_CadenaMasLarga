@@ -78,6 +78,8 @@ UiModoVCPAP::UiModoVCPAP() : QWidget()
         respaldo_flujo = new WidgetParametro(RespaldoApnea,"Flujo","l/min", 100.0, 0, "1" , 0, 9,0, false);
         respaldo_flujo->setObjectName("respaldo_flujo");
         respaldo_flujo->setGeometry(QRect(220, 75, 150, 140));
+        respaldo_flujo->set_lim_inf(10);
+        respaldo_flujo->set_lim_sup(100);
 
         labelIE = new QLabel(this);
         labelIE->setGeometry(QRect(750, 5, 250, 50));

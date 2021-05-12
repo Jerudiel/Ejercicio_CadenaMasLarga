@@ -27,6 +27,8 @@ UiModoVSIMV::UiModoVSIMV() : QWidget()
         vsimv_flujo = new WidgetParametro(this, "Flujo", "l/min", 100.0, 0, "1", 0, 4, 0, false);
         vsimv_flujo->setObjectName("vsimv_flujo");
         vsimv_flujo->setGeometry(QRect(250, 150, 150, 140));
+        vsimv_flujo->set_lim_inf(10);
+        vsimv_flujo->set_lim_sup(100);
 
         vsimv_meseta = new WidgetParametro(this, "Meseta", "seg", 10.0, 0, "0.1", 0, 6, 1, false);
         vsimv_meseta->setObjectName("vsimv_meseta");

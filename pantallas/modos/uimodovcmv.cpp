@@ -23,6 +23,8 @@ UiModoVCMV::UiModoVCMV() : QWidget()
         vcmv_flujo = new WidgetParametro(this, "Flujo", "l/min", 100.0, 0, "1", 0, 3, 0, false);
         vcmv_flujo->setObjectName("vcmv_flujo");
         vcmv_flujo->setGeometry(QRect(250, 0, 150, 140));
+        vcmv_flujo->set_lim_inf(10);
+        vcmv_flujo->set_lim_sup(100);
 
         vcmv_meseta = new WidgetParametro(this, "Meseta", "seg", 10.0, 0.0, "0.1", 0, 4, 1, false);
         vcmv_meseta->setObjectName("vcmv_meseta");

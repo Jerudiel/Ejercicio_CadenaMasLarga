@@ -544,6 +544,7 @@ void AlarmaAudLed::detenAlarma(int tipo){
         }
         else{
             if(! prioAltaAct){
+                qDebug() << "Despues de detener, reanuda con wave_media";
                 cambioAudio = true;
                 //reproductor->stop();
                 reproductorMulti->stop();
@@ -557,6 +558,9 @@ void AlarmaAudLed::detenAlarma(int tipo){
                 //reproductor->play();
                 //reproductorMulti->play();
                 cambioAudio = false;
+            }
+            else{
+                qDebug() << "Despues de detener, se mantiene wave_alta reproduciendo";
             }
         }
     }  catch (std::exception &e) {
