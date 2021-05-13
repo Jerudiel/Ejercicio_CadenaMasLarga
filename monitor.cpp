@@ -390,7 +390,7 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
 
         timerOffsetsVent = new QTimer;
         connect(timerOffsetsVent, SIGNAL(timeout()), this, SLOT(revisarOffsetVentilador()));
-        timerOffsetsVent->start(4000);
+        //timerOffsetsVent->start(4000);
 
         cambiosMIni = false;
         timerMIniVent = new QTimer;
@@ -526,7 +526,7 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
         dict_color_muestra_alarma->insert("Frecuencia", "yellow");
         dict_color_muestra_alarma->insert("Apnea", "yellow");
         dict_color_muestra_alarma->insert("Vol min MAX", "red");
-        dict_color_muestra_alarma->insert("Vol min MIN", "yellow");
+        dict_color_muestra_alarma->insert("Vol min MIN", "red");
         dict_color_muestra_alarma->insert("Presion MAX", "yellow");
         dict_color_muestra_alarma->insert("Vol tidal MAX", "yellow");
         dict_color_muestra_alarma->insert("Vol tidal MIN", "yellow");
@@ -666,17 +666,17 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
         dic_presion_tope->insert(1,30);
         dic_presion_tope->insert(2,30);
         dic_tiempo_presion = new QMap<int, int>;
-        dic_tiempo_presion->insert(0,20000);
-        dic_tiempo_presion->insert(1,15000);
-        dic_tiempo_presion->insert(2,15000);
+        dic_tiempo_presion->insert(0,10000);
+        dic_tiempo_presion->insert(1,10000);
+        dic_tiempo_presion->insert(2,10000);
         dic_tiempo_presion_fuga = new QMap<int, int>;
         dic_tiempo_presion_fuga->insert(0,2000);
         dic_tiempo_presion_fuga->insert(1,2000);
         dic_tiempo_presion_fuga->insert(2,2000);
         dic_tiempo_presion_salida = new QMap<int, int>;
-        dic_tiempo_presion_salida->insert(0,5000);
-        dic_tiempo_presion_salida->insert(1,2000);
-        dic_tiempo_presion_salida->insert(2,2000);
+        dic_tiempo_presion_salida->insert(0,4000);
+        dic_tiempo_presion_salida->insert(1,4000);
+        dic_tiempo_presion_salida->insert(2,4000);
 
         timerPresion = new QTimer;
         connect(timerPresion, SIGNAL(timeout()), this, SLOT(prueba_presion()));
@@ -1459,7 +1459,7 @@ void Monitor::revisarListoApagar(){
 
 void Monitor::ventilador_detenido(){
     try {
-        //qDebug() << "entra a ventilador_detenido";
+        //qDebug() << "entra a ventilador_detenido---";
         if(recibe_a0 && ! estadoVentilador){
             //qDebug() << "entra a ventilador_detenido, valor a0: " + QString::number(recibe_a0) + " estadoVentilador: " + QString::number(estadoVentilador);
             label_debug->setText("Standby");
@@ -1500,6 +1500,7 @@ void Monitor::mostrar_confirmacion(QString texto){
 
 void Monitor::espera_si_confirmacion(){
     try {
+        qDebug() << "espera_si_confirmacion";
         if(timerConfirmacion->isActive()){
             timerConVentilador->stop();
         }
@@ -1549,6 +1550,7 @@ void Monitor::espera_si_confirmacion(){
 
 void Monitor::espera_no_confirmacion(){
     try {
+        qDebug() << "espera_no_confirmacion";
         if(espera_parar){
             espera_parar = false;
         }
@@ -3417,13 +3419,15 @@ void Monitor::receVent(QString trama){
                             qDebug() << "Origen";
                             origenListo = true;
                             serVent->envia_trama_config(tramaOffsets);
-                            timerOffsetsVent->start();
+                            //timerOffsetsVent->start();
+                            timerOffsetsVent->start(4000);
                             consul->agregar_evento("INICIO", obtener_modo(), "CORRECTO CONTROL");
                         }
                         else{
                             estadoVentilador = true;
                             ventiladorListo = true;
                             origenListo = true;
+                            cambiosMIni = true;
                             consul->agregar_evento("INICIO", obtener_modo(), "RECUPERACION");
                         }
                     }

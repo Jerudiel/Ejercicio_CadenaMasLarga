@@ -7,7 +7,7 @@ AlarmaAudLed::AlarmaAudLed(InfoAlarma *infoAlarmas)
         audio_corriendo = false;
 
         QString ruta = QDir::currentPath();
-        qDebug() << "ruat alarmas: " + ruta ;
+        //qDebug() << "ruat alarmas: " + ruta ;
         wave_alta = QUrl::fromLocalFile(ruta + "/audios/prioridad_alta.wav");
         wave_media = QUrl::fromLocalFile(ruta + "/audios/prioridad_media.wav");
         wave_baja =  QUrl::fromLocalFile(ruta + "/audios/prioridad_baja.wav");
@@ -50,7 +50,7 @@ AlarmaAudLed::AlarmaAudLed(InfoAlarma *infoAlarmas)
         reproductorMulti->setVolume(100);
 
         //reproductorMulti->play();
-        qDebug() << "reproduciendo desde el inicio";
+        //qDebug() << "reproduciendo desde el inicio";
         //
 
         state_alarm_vol = false;
@@ -171,7 +171,7 @@ void AlarmaAudLed::durationChanged(qint64 duracion){
 
 void AlarmaAudLed::positionChanged(qint64 posicion){
     try {
-        //qDebug() << "entra a  positionChanged";
+        //qDebug() << "entra a  positionChanged : " + QString::number(posicion) + " de " + QString::number(duracion_sonido);
         /*if(duracion_sonido - posicion < 100){
             qDebug() << "duracion_sonido: " + QString::number(duracion_sonido);
             qDebug() << "posicion: " + QString::number(posicion);
@@ -195,14 +195,14 @@ void AlarmaAudLed::positionChanged(qint64 posicion){
 
 void AlarmaAudLed::termina_reproductor(){
     try {
-        qDebug() << "entra a  termina_reproductor";
+        //qDebug() << "entra a  termina_reproductor";
         if(audio_corriendo && ! enPausa && ! cambioAudio){
             if(!reproductor->isPlaying()){
                 reproductor->setSource(wave_actual);
                 connect(reproductor, SIGNAL(playingChanged()) ,this, SLOT(termina_reproductor()));
                 reproductor->play();
-                qDebug() << "termina_reproductor, volver a reproducir";
-                qDebug() << "wave: " + wave_actual.toString();
+                //qDebug() << "termina_reproductor, volver a reproducir";
+                //qDebug() << "wave: " + wave_actual.toString();
             }
         }
     }  catch (std::exception &e) {
@@ -317,6 +317,7 @@ void AlarmaAudLed::cambiaEstadoAlarma(int alarma, bool estado){
 
 void AlarmaAudLed::iniciaAlarma(int tipo){
     try {
+        //qDebug() << "iniciaAalrma function int tipo: " + QString::number(tipo);
         if(tipo == PRESION){
             edoAlarPresion = true;
             state_alarm_pre = true;
@@ -479,6 +480,7 @@ void AlarmaAudLed::iniciaAlarma(int tipo){
 
 void AlarmaAudLed::detenAlarma(int tipo){
     try {
+        //qDebug() << "detenAlarma int tipo: " + QString::number(tipo);
         if(tipo == PRESION){
             edoAlarPresion = false;
             state_alarm_pre = false;
@@ -541,10 +543,11 @@ void AlarmaAudLed::detenAlarma(int tipo){
                 reproductor->stop();
             }*/
             reproductorMulti->stop();
+            //qDebug() << "manda a detener, no hay alarmas";
         }
         else{
             if(! prioAltaAct){
-                qDebug() << "Despues de detener, reanuda con wave_media";
+                //qDebug() << "Despues de detener, reanuda con wave_media";
                 cambioAudio = true;
                 //reproductor->stop();
                 reproductorMulti->stop();
@@ -559,9 +562,9 @@ void AlarmaAudLed::detenAlarma(int tipo){
                 //reproductorMulti->play();
                 cambioAudio = false;
             }
-            else{
+            /*else{
                 qDebug() << "Despues de detener, se mantiene wave_alta reproduciendo";
-            }
+            }*/
         }
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
@@ -571,7 +574,7 @@ void AlarmaAudLed::detenAlarma(int tipo){
 
 bool AlarmaAudLed::alarmaActiva(){
     try {
-        return edoAlarPresion && edoAlarFr && edoAlarVol && edoAlarVolMin && edoAlarBateria && edoAlarGases && edoAlarFio2 && edoAlarPreCon && edoAlarApnea && edoAlarInoperante && edoAlarAlimentacion && edoAlarDesconexion;
+        return edoAlarPresion || edoAlarFr || edoAlarVol || edoAlarVolMin || edoAlarBateria || edoAlarGases || edoAlarFio2 || edoAlarPreCon || edoAlarApnea || edoAlarInoperante || edoAlarAlimentacion || edoAlarDesconexion;
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
         return false;
@@ -580,6 +583,7 @@ bool AlarmaAudLed::alarmaActiva(){
 
 bool AlarmaAudLed::pausaAlarma(){
     try {
+        //qDebug() << "pausaAlarma";
         enPausa = true;
         /*if(reproductor->isPlaying()){
             reproductor->stop();
@@ -598,6 +602,7 @@ bool AlarmaAudLed::pausaAlarma(){
 
 void AlarmaAudLed::reanudaAlarma(){
     try {
+        //qDebug() << "reanudaAlarma";
         audio_corriendo = alarmaActiva();
         enPausa = false;
         timerAlarma->stop();
