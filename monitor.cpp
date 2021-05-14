@@ -16,10 +16,10 @@
 Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s) : QWidget(parent)
 {
     try {
-        versionVentiladorEsperada = "3.6";
-        versionSenPresionEsperada = "3.0";
+        versionVentiladorEsperada = "3.7";
+        versionSenPresionEsperada = "3.1";
         versionTecladoEsperada = "1.0";
-        versionPi = "3.69";
+        versionPi = "3.70";
 
         mainwindow = parent;
         this->consul = consul;
@@ -2839,6 +2839,8 @@ void Monitor::receVent(QString trama){
                     }
                     estadoAlarmasVentilador = trama[2];
                     estadoAlarmasVentiladorControl = trama[3];
+                    qDebug() << "estadoAlarmasVentilador" + estadoAlarmasVentilador;
+                    qDebug() << "estadoAlarmasVentiladorControl" + estadoAlarmasVentiladorControl;
 
                     nivel_oxigeno = trama.mid(4,3);
                     modo_nobreak = trama[7];
@@ -4083,22 +4085,22 @@ void Monitor::recePresion(QString trama){
                             if(trama[1] == "1"){
                                 if(vAviso == nullptr){
                                     qDebug() << "recePresion - error en el sensor de presion";
-                                    muestraAviso("EN EL SENSOR DE PRESION");
+                                    //muestraAviso("EN EL SENSOR DE PRESION");
                                     consul->agregar_evento("SENSORES", obtener_modo(), "ERROR SENSOR PRESION");
                                 }
                             }
                             else if(trama[1] == "2"){
                                 if(vAviso == nullptr){
-                                    qDebug() << "recePresion - error en el sensor de flujo";
-                                    muestraAviso("EN EL SENSOR DE FLUJO");
-                                    consul->agregar_evento("SENSORES", obtener_modo(), "ERROR SENSOR FLUJO");
+                                    qDebug() << "recePresion - error en el sensor de flujo inhalación";
+                                    //muestraAviso("EN EL SENSOR DE FLUJO");
+                                    consul->agregar_evento("SENSORES", obtener_modo(), "ERROR SENSOR FLUJO INHALACION");
                                 }
                             }
                             else if(trama[1] == "3"){
                                 if(vAviso == nullptr){
-                                    qDebug() << "recePresion - error en ambos sensores";
-                                    muestraAviso("EN AMBOS SENSORES");
-                                    consul->agregar_evento("SENSORES", obtener_modo(), "ERROR SENSORES");
+                                    qDebug() << "recePresion - error en el sensor de flujo exhalación";
+                                    //muestraAviso("EN AMBOS SENSORES");
+                                    consul->agregar_evento("SENSORES", obtener_modo(), "ERROR SENSOR FLUJO EXHALACION");
                                 }
                             }
                         }
@@ -4136,7 +4138,17 @@ void Monitor::recePresion(QString trama){
                             if(! timerErrorWDT->isActive()){
                                 revisarErroresWDT();
                                 serPresion->escribir("P");
-                                consul->agregar_evento("COMUNICACION", obtener_modo(), "- E WDT -");
+                                QString type_error = "";
+                                if(error_sensores_sensor_presion){
+                                      type_error = "S. PRESION";
+                                }
+                                else if(error_sensores_sensor_inhalacion){
+                                      type_error = "S. INHALACION";
+                                }
+                                else if(error_sensores_sensor_exhalacion){
+                                      type_error = "S. EXHALACION";
+                                }
+                                consul->agregar_evento("COMUNICACION", obtener_modo(), "- E WDT - " + type_error);
                                 timerErrorWDT->start(7000);
                             }
 //                            label_debug->setText("Error WDT");
@@ -4169,6 +4181,7 @@ void Monitor::recePresion(QString trama){
 //                            }
                         }
                         estadoAlarmasSensores = trama[2];
+                        qDebug() << "estadoAlarmasSensores: " + estadoAlarmasSensores;
                     }
                 }
                 else if(trama[0] == "H"){
