@@ -260,7 +260,7 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
         label_fecha->setFont(*fuente);
         label_fecha->setStyleSheet("color: rgb(255, 255, 255);");
         label_fecha->setObjectName("label_fecha");
-        label_fecha->setText("Hola");
+        label_fecha->setText("");
         menuLayout->addWidget(label_fecha);
         barLayout->addLayout(menuLayout);
 
@@ -3683,7 +3683,7 @@ void Monitor::validaUnSeg(){
                 contador_respuesta_config_senrpesion = 0;
                 label_debug->setText("Pulse Actualizar");
                 timerTPresion1S->stop();
-                consul->agregar_evento("COMUNICACION",obtener_modo(),"ERROR, NO RESPUESTA SENSORES I");
+                consul->agregar_evento("COMUNICACION",obtener_modo(),"ERROR - NO RESPUESTA SENSORES I");
                 //serPresion->iniciar_sensor_presion();
                 //---Aquí poner algo para volver a poner a funcionar lose sensores pero sin aplicar cambios
                 serPresion->escribir("A4\n");
