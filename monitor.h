@@ -635,6 +635,21 @@ public:
     bool isReadyKeyFromKeyboard;
     QString valueFromKeyboard;
 
+    void activarAlarmaComunicacionControl1();
+    void activarAlarmaComunicacionControl2();
+    void desactivarAlarmaComunicacionControl1();
+    void desactivarAlarmaComunicacionControl2();
+
+    bool estadoAlarmaComunicacion;
+    bool primera_vez_comunicacion_control;
+    QString ultimo_estado_comunicacion_control_1;
+    QString ultimo_estado_comunicacion_control_2;
+
+    bool primera_vez_comunicacion_sensores;
+    QString ulimo_estadoAlarmasSensores;
+
+    void activarAlarmaComunicacionSensores(int tipo);
+    void desactivarAlarmaComunicacionSensores(int tipo);
 
 public slots:
     void revisarErrorWDT();

@@ -65,6 +65,7 @@ AlarmaAudLed::AlarmaAudLed(InfoAlarma *infoAlarmas)
         state_alarma_inoperante = false;
         state_alarma_alimentacion = false;
         state_alarma_desconexion = false;
+        state_alarma_comunicacion = false;
 
         icono_vol = nullptr;
         icono_fr = nullptr;
@@ -81,6 +82,7 @@ AlarmaAudLed::AlarmaAudLed(InfoAlarma *infoAlarmas)
         edoAlarInoperante = false;
         edoAlarAlimentacion = false;
         edoAlarDesconexion = false;
+        edoAlarComunicacion = false;
 
         cambioAudio = false;
 
@@ -109,6 +111,7 @@ AlarmaAudLed::AlarmaAudLed(InfoAlarma *infoAlarmas)
         edoToogleInoperante = false;
         edoToogleAlimentacion = false;
         edoToogleDesconexion = false;
+        edoToogleComunicacion = false;
 
         toggleFR = false;
         toggleVOL = false;
@@ -371,6 +374,11 @@ void AlarmaAudLed::iniciaAlarma(int tipo){
             edoAlarDesconexion = true;
             state_alarma_desconexion = true;
         }
+        else if(tipo == COMUNICACION){
+            prioAltaAct = true;
+            edoAlarComunicacion = true;
+            state_alarma_comunicacion = true;
+        }
 
         if(enPausa){
             reanudaAlarma();
@@ -536,6 +544,11 @@ void AlarmaAudLed::detenAlarma(int tipo){
             edoAlarDesconexion = false;
             state_alarma_desconexion = false;
         }
+        else if(tipo == COMUNICACION){
+            prioAltaAct = false;
+            edoAlarComunicacion = false;
+            state_alarma_comunicacion = false;
+        }
 
         bool audio_corriendo = alarmaActiva();
         if(! audio_corriendo){
@@ -574,7 +587,7 @@ void AlarmaAudLed::detenAlarma(int tipo){
 
 bool AlarmaAudLed::alarmaActiva(){
     try {
-        return edoAlarPresion || edoAlarFr || edoAlarVol || edoAlarVolMin || edoAlarBateria || edoAlarGases || edoAlarFio2 || edoAlarPreCon || edoAlarApnea || edoAlarInoperante || edoAlarAlimentacion || edoAlarDesconexion;
+        return edoAlarPresion || edoAlarFr || edoAlarVol || edoAlarVolMin || edoAlarBateria || edoAlarGases || edoAlarFio2 || edoAlarPreCon || edoAlarApnea || edoAlarInoperante || edoAlarAlimentacion || edoAlarDesconexion || edoAlarComunicacion;
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
         return false;
@@ -640,6 +653,7 @@ void AlarmaAudLed::reiniciarAlarmas(){
         audio_corriendo = false;
         edoAlarAlimentacion = false;
         edoAlarDesconexion = false;
+        edoAlarComunicacion = false;
         //toggle
         if(timerToggle->isActive()){
             timerToggle->stop();

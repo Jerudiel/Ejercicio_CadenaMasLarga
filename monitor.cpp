@@ -549,6 +549,10 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
         dict_color_muestra_alarma->insert("P. O2 ALTO", "red");
         dict_color_muestra_alarma->insert("FIO2 BAJO", "red");
         dict_color_muestra_alarma->insert("FIO2 ALTO", "red");
+        dict_color_muestra_alarma->insert("CON. SENSORES 1", "red");
+        dict_color_muestra_alarma->insert("CON. SENSORES 2", "red");
+        dict_color_muestra_alarma->insert("CON. CONTROL 1", "red");
+        dict_color_muestra_alarma->insert("CON. CONTROL 2", "red");
 
         min_grafica_presion = 0;
         max_grafica_presion = 35;
@@ -570,6 +574,11 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
 
         ultimo_estado_nobreak = "";
         primera_vez_nobreak = true;
+
+        estadoAlarmaComunicacion = false;
+        primera_vez_comunicacion_control = true;
+        ultimo_estado_comunicacion_control_1 = "";
+        ultimo_estado_comunicacion_control_2 = "";
 
         recuperado = false;
         ventanaAbierta = false;
@@ -2827,6 +2836,88 @@ QString Monitor::formato3bytes(QString val){
     }
 }
 
+void Monitor::activarAlarmaComunicacionControl1(){
+    try {
+        if(!buscar_en_lista("CON. CONTROL 1")){
+            agregar_en_lista("CON. CONTROL 1", 1);
+            consul->agregar_evento("COMUNICACION", obtener_modo(), "CON. CONTROL 1");
+            qDebug() << "___Agrega error en comunicación de la tarjeta de control, no ve a la de sensores";
+            if(! estadoAlarmaComunicacion){
+                estadoAlarmaComunicacion = true;
+                alarmaControl->iniciaAlarma(alarmaControl->COMUNICACION);
+            }
+        }
+        else{
+            //ya esta en la lista
+            actualizar_en_lista("CON. CONTROL 1", 1);
+            consul->agregar_evento("COMUNICACION", obtener_modo(), "CON. CONTROL 1");
+            qDebug() << "___Agrega error en comunicación de la tarjeta de control, no ve a la de sensores";
+            if(! estadoAlarmaComunicacion){
+                estadoAlarmaComunicacion = true;
+                alarmaControl->iniciaAlarma(alarmaControl->COMUNICACION);
+            }
+        }
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+    }
+}
+
+void Monitor::desactivarAlarmaComunicacionControl1(){
+    try {
+        if(buscar_en_lista("CON. CONTROL 1") && diccionario_alarma->value("CON. CONTROL 1") == 1){
+            actualizar_en_lista("CON. CONTROL 1", 0);
+            qDebug() << "___Elimina error en comunicación de la tarjeta de control, no ve a la de sensores";
+            if(estadoAlarmaComunicacion && ! buscar_en_lista("CON. CONTROL 1")){
+                estadoAlarmaComunicacion = false;
+                alarmaControl->detenAlarma(alarmaControl->COMUNICACION);
+            }
+        }
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+    }
+}
+
+void Monitor::activarAlarmaComunicacionControl2(){
+    try {
+        if(!buscar_en_lista("CON. CONTROL 2")){
+            agregar_en_lista("CON. CONTROL 2", 1);
+            consul->agregar_evento("COMUNICACION", obtener_modo(), "CON. CONTROL 2");
+            qDebug() << "___Agrega error en comunicación de la tarjeta de control, no ve a RPI";
+            if(! estadoAlarmaComunicacion){
+                estadoAlarmaComunicacion = true;
+                alarmaControl->iniciaAlarma(alarmaControl->COMUNICACION);
+            }
+        }
+        else{
+            //ya esta en la lista
+            actualizar_en_lista("CON. CONTROL 2", 1);
+            consul->agregar_evento("COMUNICACION", obtener_modo(), "CON. CONTROL 2");
+            qDebug() << "___Agrega error en comunicación de la tarjeta de control, no ve a RPI";
+            if(! estadoAlarmaComunicacion){
+                estadoAlarmaComunicacion = true;
+                alarmaControl->iniciaAlarma(alarmaControl->COMUNICACION);
+            }
+        }
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+    }
+}
+
+void Monitor::desactivarAlarmaComunicacionControl2(){
+    try {
+        if(buscar_en_lista("CON. CONTROL 2") && diccionario_alarma->value("CON. CONTROL 2") == 1){
+            actualizar_en_lista("CON. CONTROL 2", 0);
+            qDebug() << "___Elimina error en comunicación de la tarjeta de control, no ve a RPI";
+            if(estadoAlarmaComunicacion && ! buscar_en_lista("CON. CONTROL 2")){
+                estadoAlarmaComunicacion = false;
+                alarmaControl->detenAlarma(alarmaControl->COMUNICACION);
+            }
+        }
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+    }
+}
+
 void Monitor::receVent(QString trama){
     try {
         //QString trama = serVent->leer();
@@ -2837,10 +2928,52 @@ void Monitor::receVent(QString trama){
                     if(! banderaConexionVentilador){
                         banderaConexionVentilador = true;
                     }
-                    estadoAlarmasVentilador = trama[2];
-                    estadoAlarmasVentiladorControl = trama[3];
-                    qDebug() << "estadoAlarmasVentilador" + estadoAlarmasVentilador;
-                    qDebug() << "estadoAlarmasVentiladorControl" + estadoAlarmasVentiladorControl;
+                    estadoAlarmasVentilador = trama[2]; //con la de sensores
+                    estadoAlarmasVentiladorControl = trama[3]; //conmigo
+                    // 0-ok y 1-Error
+                    //qDebug() << "estadoAlarmasVentilador: " + estadoAlarmasVentilador;
+                    //qDebug() << "estadoAlarmasVentiladorControl: " + estadoAlarmasVentiladorControl;
+                    //checar si es la primera vez que entra
+                    if(primera_vez_comunicacion_control){
+                        primera_vez_comunicacion_control = false;
+                        ultimo_estado_comunicacion_control_1 = estadoAlarmasVentilador;
+                        ultimo_estado_comunicacion_control_2 = estadoAlarmasVentiladorControl;
+                        if(estadoAlarmasVentilador == "1"){
+                            //error en la comunicacion 1
+                            activarAlarmaComunicacionControl1();
+                        }
+                        if(estadoAlarmasVentiladorControl == "1"){
+                            //error en la comunicacion 2
+                            activarAlarmaComunicacionControl2();
+                        }
+                    }
+                    else{
+                        //entrar aqui cuando haya un cambio en los estados
+                        if(ultimo_estado_comunicacion_control_1 != estadoAlarmasVentilador){
+                            if(estadoAlarmasVentilador == "1"){
+                                //error 1
+                                activarAlarmaComunicacionControl1();
+                            }
+                            else{
+                                //no error, checar si ya estaba activa
+                                desactivarAlarmaComunicacionControl1();
+                            }
+                        }
+                        //
+                        if(ultimo_estado_comunicacion_control_2 != estadoAlarmasVentiladorControl){
+                            if(estadoAlarmasVentiladorControl == "1"){
+                                //error 2
+                                activarAlarmaComunicacionControl2();
+                            }
+                            else{
+                                //no error, checar si ya estaba activa
+                                desactivarAlarmaComunicacionControl2();
+                            }
+                        }
+                        ultimo_estado_comunicacion_control_1 = estadoAlarmasVentilador;
+                        ultimo_estado_comunicacion_control_2 = estadoAlarmasVentiladorControl;
+                    }
+
 
                     nivel_oxigeno = trama.mid(4,3);
                     modo_nobreak = trama[7];
@@ -2952,7 +3085,8 @@ void Monitor::receVent(QString trama){
                                    qDebug() << "___Elimina Modo bat.";
                                    if(estadoAlarmaAlimentacion){
                                        estadoAlarmaAlimentacion = false;
-                                       alarmaControl->iniciaAlarma(alarmaControl->ALIMENTACION);
+                                       //alarmaControl->iniciaAlarma(alarmaControl->ALIMENTACION);
+                                       alarmaControl->detenAlarma(alarmaControl->ALIMENTACION);
                                    }
                                    ult_temp_nivel_bat = nivel_batt.toFloat()*20;
                                 }
@@ -3848,6 +3982,85 @@ void Monitor::validaCincoSeg(){
     }
 }
 
+void Monitor::activarAlarmaComunicacionSensores(int tipo){
+    try {
+        if(tipo == 1){
+            //activar sensores 1
+            if(!buscar_en_lista("CON. SENSORES 1")){
+                agregar_en_lista("CON. SENSORES 1", 1);
+                consul->agregar_evento("COMUNICACION", obtener_modo(), "CON. SENSORES 1");
+                qDebug() << "___Agrega error en comunicación de la tarjeta de sensores, no ve a tarjeta control";
+                if(! estadoAlarmaComunicacion){
+                    estadoAlarmaComunicacion = true;
+                    alarmaControl->iniciaAlarma(alarmaControl->COMUNICACION);
+                }
+            }
+            else{
+                //ya esta en la lista
+                actualizar_en_lista("CON. SENSORES 1", 1);
+                consul->agregar_evento("COMUNICACION", obtener_modo(), "CON. SENSORES 1");
+                qDebug() << "___Agrega error en comunicación de la tarjeta de sensores, no ve a tarjeta control";
+                if(! estadoAlarmaComunicacion){
+                    estadoAlarmaComunicacion = true;
+                    alarmaControl->iniciaAlarma(alarmaControl->COMUNICACION);
+                }
+            }
+        }
+        else if(tipo == 2){
+            //activar sensores 2
+            if(!buscar_en_lista("CON. SENSORES 2")){
+                agregar_en_lista("CON. SENSORES 2", 1);
+                consul->agregar_evento("COMUNICACION", obtener_modo(), "CON. SENSORES 2");
+                qDebug() << "___Agrega error en comunicación de la tarjeta de sensores, no ve a RPI";
+                if(! estadoAlarmaComunicacion){
+                    estadoAlarmaComunicacion = true;
+                    alarmaControl->iniciaAlarma(alarmaControl->COMUNICACION);
+                }
+            }
+            else{
+                //ya esta en la lista
+                actualizar_en_lista("CON. SENSORES 2", 1);
+                consul->agregar_evento("COMUNICACION", obtener_modo(), "CON. SENSORES 2");
+                qDebug() << "___Agrega error en comunicación de la tarjeta de sensores, no ve a RPI";
+                if(! estadoAlarmaComunicacion){
+                    estadoAlarmaComunicacion = true;
+                    alarmaControl->iniciaAlarma(alarmaControl->COMUNICACION);
+                }
+            }
+        }
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+    }
+}
+
+void Monitor::desactivarAlarmaComunicacionSensores(int tipo){
+    try {
+        if(tipo == 1){
+            //
+            if(buscar_en_lista("CON. SENSORES 1") && diccionario_alarma->value("CON. SENSORES 1") == 1){
+                actualizar_en_lista("CON. SENSORES 1", 0);
+                qDebug() << "___Elimina error en comunicación de la tarjeta de sensores, no ve a tarjeta control";
+                if(estadoAlarmaComunicacion && ! buscar_en_lista("CON. SENSORES 1")){
+                    estadoAlarmaComunicacion = false;
+                    alarmaControl->detenAlarma(alarmaControl->COMUNICACION);
+                }
+            }
+        }
+        else if(tipo == 2){
+            if(buscar_en_lista("CON. SENSORES 2") && diccionario_alarma->value("CON. SENSORES 2") == 1){
+                actualizar_en_lista("CON. SENSORES 2", 0);
+                qDebug() << "___Elimina error en comunicación de la tarjeta de sensores, no ve a RPI";
+                if(estadoAlarmaComunicacion && ! buscar_en_lista("CON. SENSORES 1")){
+                    estadoAlarmaComunicacion = false;
+                    alarmaControl->detenAlarma(alarmaControl->COMUNICACION);
+                }
+            }
+        }
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+    }
+}
+
 void Monitor::recePresion(QString trama){
     try {
         //QString trama = serPresion->leer();
@@ -4041,7 +4254,7 @@ void Monitor::recePresion(QString trama){
                         consul->guarda_cali(b1, b2, b3, b4, b5, b6, b7);
                         if(trama.mid(1,3) != versionSenPresionEsperada){
                             if(vAviso == nullptr){
-                                muestraAviso("VERSION OBSOLETA\n ACTUALIZAR VERSION SENSORES");
+                                muestraAviso("VERSION OBSOLETA \n ACTUALIZAR VERSION SENSORES");
                                 consul->agregar_evento("INICIO", obtener_modo(),"INCORRECTO SENSORES");
                             }
                         }
@@ -4182,6 +4395,55 @@ void Monitor::recePresion(QString trama){
                         }
                         estadoAlarmasSensores = trama[2];
                         qDebug() << "estadoAlarmasSensores: " + estadoAlarmasSensores;
+                        if(primera_vez_comunicacion_sensores){
+                            primera_vez_comunicacion_sensores = false;
+                            if(estadoAlarmasSensores != "0"){
+                                //ver cuáles encender
+                                if(estadoAlarmasSensores == "1"){
+                                    activarAlarmaComunicacionSensores(1);
+                                }
+                                else if(estadoAlarmasSensores == "2"){
+                                    activarAlarmaComunicacionSensores(2);
+                                }
+                                else if(estadoAlarmasSensores == "3"){
+                                    activarAlarmaComunicacionSensores(1);
+                                    activarAlarmaComunicacionSensores(2);
+                                }
+                            }
+                            ulimo_estadoAlarmasSensores = estadoAlarmasSensores;
+                        }
+                        else{
+                            if(ulimo_estadoAlarmasSensores != estadoAlarmasSensores){
+                                if(estadoAlarmasSensores != "0"){
+                                    //ver cuáles encender
+                                    if(estadoAlarmasSensores == "1"){
+                                        activarAlarmaComunicacionSensores(1);
+                                    }
+                                    else if(estadoAlarmasSensores == "2"){
+                                        activarAlarmaComunicacionSensores(2);
+                                    }
+                                    else if(estadoAlarmasSensores == "3"){
+                                        activarAlarmaComunicacionSensores(1);
+                                        activarAlarmaComunicacionSensores(2);
+                                    }
+                                }
+                                else{
+                                    //apagar las que sean necesarias
+                                    if(estadoAlarmasSensores == "0"){
+                                        //apagar todas
+                                        desactivarAlarmaComunicacionSensores(1);
+                                        desactivarAlarmaComunicacionSensores(2);
+                                    }
+                                    else if(estadoAlarmasSensores == "1"){
+                                        desactivarAlarmaComunicacionSensores(2);
+                                    }
+                                    else if(estadoAlarmasSensores == "2"){
+                                        desactivarAlarmaComunicacionSensores(1);
+                                    }
+                                }
+                            }
+                            ulimo_estadoAlarmasSensores = estadoAlarmasSensores;
+                        }
                     }
                 }
                 else if(trama[0] == "H"){

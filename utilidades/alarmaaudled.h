@@ -30,6 +30,7 @@ public:
     int INOPERANTE = 9;
     int ALIMENTACION = 10;
     int DESCONEXION = 11;
+    int COMUNICACION = 12;
 
     int INDEX_BAJA = 0;
     int INDEX_MEDIA = 1;
@@ -63,6 +64,7 @@ public:
     bool state_alarma_inoperante;
     bool state_alarma_alimentacion;
     bool state_alarma_desconexion;
+    bool state_alarma_comunicacion;
 
     QLabel *icono_vol;
     QLabel *icono_fr;
@@ -79,6 +81,7 @@ public:
     bool edoAlarInoperante;
     bool edoAlarAlimentacion;
     bool edoAlarDesconexion;
+    bool edoAlarComunicacion;
 
     bool cambioAudio;
 
@@ -104,6 +107,7 @@ public:
     bool edoToogleInoperante;
     bool edoToogleAlimentacion;
     bool edoToogleDesconexion;
+    bool edoToogleComunicacion;
 
     bool toggleFR;
     bool toggleVOL;
