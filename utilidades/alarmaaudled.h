@@ -130,6 +130,9 @@ public:
 
     void reiniciarAlarmas();
 
+    bool alarmaAltaActiva();
+    bool alarmaMediaActiva();
+
 
 public slots:
     void termina_reproductor();

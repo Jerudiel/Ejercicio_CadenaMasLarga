@@ -19,7 +19,7 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
         versionVentiladorEsperada = "3.7";
         versionSenPresionEsperada = "3.1";
         versionTecladoEsperada = "1.0";
-        versionPi = "3.70";
+        versionPi = "3.71";
 
         mainwindow = parent;
         this->consul = consul;
@@ -549,10 +549,10 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
         dict_color_muestra_alarma->insert("P. O2 ALTO", "red");
         dict_color_muestra_alarma->insert("FIO2 BAJO", "red");
         dict_color_muestra_alarma->insert("FIO2 ALTO", "red");
-        dict_color_muestra_alarma->insert("CON. SENSORES 1", "red");
-        dict_color_muestra_alarma->insert("CON. SENSORES 2", "red");
-        dict_color_muestra_alarma->insert("CON. CONTROL 1", "red");
-        dict_color_muestra_alarma->insert("CON. CONTROL 2", "red");
+        dict_color_muestra_alarma->insert("C. SEN 1", "red");
+        dict_color_muestra_alarma->insert("C. SEN 2", "red");
+        dict_color_muestra_alarma->insert("C. CTRL 1", "red");
+        dict_color_muestra_alarma->insert("C. CTRL 2", "red");
 
         min_grafica_presion = 0;
         max_grafica_presion = 35;
@@ -2838,9 +2838,9 @@ QString Monitor::formato3bytes(QString val){
 
 void Monitor::activarAlarmaComunicacionControl1(){
     try {
-        if(!buscar_en_lista("CON. CONTROL 1")){
-            agregar_en_lista("CON. CONTROL 1", 1);
-            consul->agregar_evento("COMUNICACION", obtener_modo(), "CON. CONTROL 1");
+        if(!buscar_en_lista("C. CTRL 1")){
+            agregar_en_lista("C. CTRL 1", 1);
+            consul->agregar_evento("COMUNICACION", obtener_modo(), "C. CTRL 1");
             qDebug() << "___Agrega error en comunicación de la tarjeta de control, no ve a la de sensores";
             if(! estadoAlarmaComunicacion){
                 estadoAlarmaComunicacion = true;
@@ -2849,8 +2849,8 @@ void Monitor::activarAlarmaComunicacionControl1(){
         }
         else{
             //ya esta en la lista
-            actualizar_en_lista("CON. CONTROL 1", 1);
-            consul->agregar_evento("COMUNICACION", obtener_modo(), "CON. CONTROL 1");
+            actualizar_en_lista("C. CTRL 1", 1);
+            consul->agregar_evento("COMUNICACION", obtener_modo(), "C. CTRL 1");
             qDebug() << "___Agrega error en comunicación de la tarjeta de control, no ve a la de sensores";
             if(! estadoAlarmaComunicacion){
                 estadoAlarmaComunicacion = true;
@@ -2864,10 +2864,10 @@ void Monitor::activarAlarmaComunicacionControl1(){
 
 void Monitor::desactivarAlarmaComunicacionControl1(){
     try {
-        if(buscar_en_lista("CON. CONTROL 1") && diccionario_alarma->value("CON. CONTROL 1") == 1){
-            actualizar_en_lista("CON. CONTROL 1", 0);
+        if(buscar_en_lista("C. CTRL 1") && diccionario_alarma->value("C. CTRL 1") == 1){
+            actualizar_en_lista("C. CTRL 1", 0);
             qDebug() << "___Elimina error en comunicación de la tarjeta de control, no ve a la de sensores";
-            if(estadoAlarmaComunicacion && ! buscar_en_lista("CON. CONTROL 1")){
+            if(estadoAlarmaComunicacion && ! buscar_en_lista("C. CTRL 1")){
                 estadoAlarmaComunicacion = false;
                 alarmaControl->detenAlarma(alarmaControl->COMUNICACION);
             }
@@ -2879,9 +2879,9 @@ void Monitor::desactivarAlarmaComunicacionControl1(){
 
 void Monitor::activarAlarmaComunicacionControl2(){
     try {
-        if(!buscar_en_lista("CON. CONTROL 2")){
-            agregar_en_lista("CON. CONTROL 2", 1);
-            consul->agregar_evento("COMUNICACION", obtener_modo(), "CON. CONTROL 2");
+        if(!buscar_en_lista("C. CTRL 2")){
+            agregar_en_lista("C. CTRL 2", 1);
+            consul->agregar_evento("COMUNICACION", obtener_modo(), "C. CTRL 2");
             qDebug() << "___Agrega error en comunicación de la tarjeta de control, no ve a RPI";
             if(! estadoAlarmaComunicacion){
                 estadoAlarmaComunicacion = true;
@@ -2890,8 +2890,8 @@ void Monitor::activarAlarmaComunicacionControl2(){
         }
         else{
             //ya esta en la lista
-            actualizar_en_lista("CON. CONTROL 2", 1);
-            consul->agregar_evento("COMUNICACION", obtener_modo(), "CON. CONTROL 2");
+            actualizar_en_lista("C. CTRL 2", 1);
+            consul->agregar_evento("COMUNICACION", obtener_modo(), "C. CTRL 2");
             qDebug() << "___Agrega error en comunicación de la tarjeta de control, no ve a RPI";
             if(! estadoAlarmaComunicacion){
                 estadoAlarmaComunicacion = true;
@@ -2905,10 +2905,10 @@ void Monitor::activarAlarmaComunicacionControl2(){
 
 void Monitor::desactivarAlarmaComunicacionControl2(){
     try {
-        if(buscar_en_lista("CON. CONTROL 2") && diccionario_alarma->value("CON. CONTROL 2") == 1){
+        if(buscar_en_lista("C. CTRL 2") && diccionario_alarma->value("C. CTRL 2") == 1){
             actualizar_en_lista("CON. CONTROL 2", 0);
             qDebug() << "___Elimina error en comunicación de la tarjeta de control, no ve a RPI";
-            if(estadoAlarmaComunicacion && ! buscar_en_lista("CON. CONTROL 2")){
+            if(estadoAlarmaComunicacion && ! buscar_en_lista("C. CTRL 2")){
                 estadoAlarmaComunicacion = false;
                 alarmaControl->detenAlarma(alarmaControl->COMUNICACION);
             }
@@ -3986,9 +3986,9 @@ void Monitor::activarAlarmaComunicacionSensores(int tipo){
     try {
         if(tipo == 1){
             //activar sensores 1
-            if(!buscar_en_lista("CON. SENSORES 1")){
-                agregar_en_lista("CON. SENSORES 1", 1);
-                consul->agregar_evento("COMUNICACION", obtener_modo(), "CON. SENSORES 1");
+            if(!buscar_en_lista("C. SEN 1")){
+                agregar_en_lista("C. SEN 1", 1);
+                consul->agregar_evento("COMUNICACION", obtener_modo(), "C. SEN 1");
                 qDebug() << "___Agrega error en comunicación de la tarjeta de sensores, no ve a tarjeta control";
                 if(! estadoAlarmaComunicacion){
                     estadoAlarmaComunicacion = true;
@@ -3997,8 +3997,8 @@ void Monitor::activarAlarmaComunicacionSensores(int tipo){
             }
             else{
                 //ya esta en la lista
-                actualizar_en_lista("CON. SENSORES 1", 1);
-                consul->agregar_evento("COMUNICACION", obtener_modo(), "CON. SENSORES 1");
+                actualizar_en_lista("C. SEN 1", 1);
+                consul->agregar_evento("COMUNICACION", obtener_modo(), "C. SEN 1");
                 qDebug() << "___Agrega error en comunicación de la tarjeta de sensores, no ve a tarjeta control";
                 if(! estadoAlarmaComunicacion){
                     estadoAlarmaComunicacion = true;
@@ -4008,9 +4008,9 @@ void Monitor::activarAlarmaComunicacionSensores(int tipo){
         }
         else if(tipo == 2){
             //activar sensores 2
-            if(!buscar_en_lista("CON. SENSORES 2")){
-                agregar_en_lista("CON. SENSORES 2", 1);
-                consul->agregar_evento("COMUNICACION", obtener_modo(), "CON. SENSORES 2");
+            if(!buscar_en_lista("C. SEN 2")){
+                agregar_en_lista("C. SEN 2", 1);
+                consul->agregar_evento("COMUNICACION", obtener_modo(), "C. SEN 2");
                 qDebug() << "___Agrega error en comunicación de la tarjeta de sensores, no ve a RPI";
                 if(! estadoAlarmaComunicacion){
                     estadoAlarmaComunicacion = true;
@@ -4019,8 +4019,8 @@ void Monitor::activarAlarmaComunicacionSensores(int tipo){
             }
             else{
                 //ya esta en la lista
-                actualizar_en_lista("CON. SENSORES 2", 1);
-                consul->agregar_evento("COMUNICACION", obtener_modo(), "CON. SENSORES 2");
+                actualizar_en_lista("C. SEN 2", 1);
+                consul->agregar_evento("COMUNICACION", obtener_modo(), "C. SEN 2");
                 qDebug() << "___Agrega error en comunicación de la tarjeta de sensores, no ve a RPI";
                 if(! estadoAlarmaComunicacion){
                     estadoAlarmaComunicacion = true;
@@ -4037,20 +4037,20 @@ void Monitor::desactivarAlarmaComunicacionSensores(int tipo){
     try {
         if(tipo == 1){
             //
-            if(buscar_en_lista("CON. SENSORES 1") && diccionario_alarma->value("CON. SENSORES 1") == 1){
-                actualizar_en_lista("CON. SENSORES 1", 0);
+            if(buscar_en_lista("C. SEN 1") && diccionario_alarma->value("C. SEN 1") == 1){
+                actualizar_en_lista("C. SEN 1", 0);
                 qDebug() << "___Elimina error en comunicación de la tarjeta de sensores, no ve a tarjeta control";
-                if(estadoAlarmaComunicacion && ! buscar_en_lista("CON. SENSORES 1")){
+                if(estadoAlarmaComunicacion && ! buscar_en_lista("C. SEN 1")){
                     estadoAlarmaComunicacion = false;
                     alarmaControl->detenAlarma(alarmaControl->COMUNICACION);
                 }
             }
         }
         else if(tipo == 2){
-            if(buscar_en_lista("CON. SENSORES 2") && diccionario_alarma->value("CON. SENSORES 2") == 1){
-                actualizar_en_lista("CON. SENSORES 2", 0);
+            if(buscar_en_lista("C. SEN 2") && diccionario_alarma->value("C. SEN 2") == 1){
+                actualizar_en_lista("C. SEN 2", 0);
                 qDebug() << "___Elimina error en comunicación de la tarjeta de sensores, no ve a RPI";
-                if(estadoAlarmaComunicacion && ! buscar_en_lista("CON. SENSORES 1")){
+                if(estadoAlarmaComunicacion && ! buscar_en_lista("C. SEN 2")){
                     estadoAlarmaComunicacion = false;
                     alarmaControl->detenAlarma(alarmaControl->COMUNICACION);
                 }
@@ -4394,7 +4394,7 @@ void Monitor::recePresion(QString trama){
 //                            }
                         }
                         estadoAlarmasSensores = trama[2];
-                        qDebug() << "estadoAlarmasSensores: " + estadoAlarmasSensores;
+                        //qDebug() << "estadoAlarmasSensores: " + estadoAlarmasSensores;
                         if(primera_vez_comunicacion_sensores){
                             primera_vez_comunicacion_sensores = false;
                             if(estadoAlarmasSensores != "0"){
