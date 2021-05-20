@@ -36,17 +36,24 @@ public:
     QLineEdit * lEOffBat;
     QLabel * lblGBat;
     QLineEdit * lEGBat;
+    QLabel * lblValvula;
+    QLineEdit * lEValvula;
     QPushButton *btnAplicarCambios;
     QLabel *labelInfo;
     QTimer *timerCambiosAplicados;
 
+    QTimer *timerMuestraMensaje;
+    void muestraMensaje(QString trama);
+
     void retranslateUi();
     virtual void paintEvent(QPaintEvent *event);
     void cargarFactores();
+    QString darFormato3Bytes(QString numero);
 
 public slots:
     void aplicarCambios();
     void revisarCambios();
+    void limpiaMensaje();
 signals:
 
 };

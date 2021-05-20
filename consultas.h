@@ -47,10 +47,10 @@ public:
     bool cambiar_tipo_sensor(QString sentido);
     QString obtener_id_calibracion();
     QString leer_calibracion();
-    bool guarda_cali(QString b1, QString b2, QString b3, QString b4, QString b5, QString b6, QString b7);
+    bool guarda_cali(QString b1, QString b2, QString b3, QString b4, QString b5, QString b6, QString b7, QString b8);
     QString obtener_id_offsets();
     QString leer_offsets();
-    bool guarda_offsets(QString b1, QString b2, QString b3, QString b4, QString b5, QString b6, QString b7);
+    bool guarda_offsets(QString b1, QString b2, QString b3, QString b4, QString b5, QString b6, QString b7, QString b8);
     QString obtener_id_altura();
     QString leer_altura();
     bool guarda_altura(QString b1);

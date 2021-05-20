@@ -274,7 +274,7 @@ void UiCalSensores::aplicarCambios(){
                     trama += darFormato3Bytes(temp_list->at(j));
                 }
                 trama += "\n";
-                if(trama.size() == 25){
+                if(trama.size() == 26){
                     monitor->serPresion->escribir(trama);
                     labelInfo->setText("Configurando...");
                     timerCambiosAplicados->start(6000);

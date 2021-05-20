@@ -11,7 +11,7 @@ UiCalControl::UiCalControl(QWidget *parent, Monitor *monitor) : QWidget(parent)
         fuente->setBold(true);
         fuente->setWeight(75);
 
-        rangos_offsets = {{0,70},{0,70},{0,200},{0,200},{0,500},{0,999},{0,999}};
+        rangos_offsets = {{0,70},{0,70},{0,200},{0,200},{0,500},{0,999},{0,999},{0,254}};
 
         lblOffPeep = new QLabel(this);
         lblOffPeep->setGeometry(QRect(10, 20, 130, 30));
@@ -104,6 +104,19 @@ UiCalControl::UiCalControl(QWidget *parent, Monitor *monitor) : QWidget(parent)
         lEGBat->setAlignment(Qt::AlignCenter);
         lEGBat->setObjectName("lEGBat");
 
+        lblValvula = new QLabel(this);
+        lblValvula->setGeometry(QRect(340, 120, 130, 30));
+        lblValvula->setFont(*fuente);
+        lblValvula->setStyleSheet("color: white;");
+        lblValvula->setAlignment(Qt::AlignCenter);
+        lblValvula->setObjectName("lblValvula");
+
+        lEValvula = new QLineEdit(this);
+        lEValvula->setGeometry(QRect(450, 120, 100, 30));
+        lEValvula->setFont(*fuente);
+        lEValvula->setAlignment(Qt::AlignCenter);
+        lEValvula->setObjectName("lEValvula");
+
         btnAplicarCambios = new QPushButton(this);
         btnAplicarCambios->setGeometry(QRect(200, 300, 225, 50));
         btnAplicarCambios->setFont(*fuente);
@@ -122,6 +135,10 @@ UiCalControl::UiCalControl(QWidget *parent, Monitor *monitor) : QWidget(parent)
         timerCambiosAplicados->setSingleShot(true);
         connect(timerCambiosAplicados, SIGNAL(timeout()), this, SLOT(revisarCambios()));
 
+        timerMuestraMensaje = new QTimer;
+        timerMuestraMensaje->setSingleShot(true);
+        connect(timerMuestraMensaje, SIGNAL(timeout()), this, SLOT(limpiaMensaje()));
+
         retranslateUi();
 
     }  catch (std::exception &e) {
@@ -138,6 +155,7 @@ void UiCalControl::retranslateUi(){
         lblOffCPres->setText("OF_CPRE: ");
         lblOffBat->setText("OF_BAT: ");
         lblGBat->setText("G_BAT: ");
+        lblValvula->setText("Valvula: ");
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
 
@@ -163,7 +181,7 @@ void UiCalControl::revisarCambios(){
         if(monitor->cambiosOffsets){
             bool temp = monitor->consul->guarda_offsets(lEOffPeep->text(), lEOffPip->text(), lEOffCpeep->text(),
                                                       lEOffCpip->text(), lEOffCPres->text(), lEOffBat->text(),
-                                                      lEGBat->text());
+                                                      lEGBat->text(),lEValvula->text());
             if(temp){
                 labelInfo->setText("Los cambios offsets fueron aplicados");
             }
@@ -177,6 +195,43 @@ void UiCalControl::revisarCambios(){
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
 
+    }
+}
+
+QString UiCalControl::darFormato3Bytes(QString numero){
+    try {
+        QString res = "";
+        int temp_int = numero.toInt();
+        if(0 <= temp_int && temp_int < 10){
+            res = "00" + QString::number(temp_int);
+        }
+        else if(10 <= temp_int && temp_int < 100){
+            res = "0" + QString::number(temp_int);
+        }
+        else if(100 <= temp_int && temp_int < 1000){
+            res = QString::number(temp_int);
+        }
+        return res;
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        return "";
+    }
+}
+
+void UiCalControl::muestraMensaje(QString trama){
+    try {
+        labelInfo->setText(trama);
+        timerMuestraMensaje->start(3000);
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+    }
+}
+
+void UiCalControl::limpiaMensaje(){
+    try {
+        labelInfo->setText("");
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -198,6 +253,8 @@ void UiCalControl::aplicarCambios(){
         temp_list->append(of_bat);
         QString g_bat = lEGBat->text();
         temp_list->append(g_bat);
+        QString valvula = lEValvula->text();
+        temp_list->append(valvula);
 
         bool todos_numeros = true;
         for(int j=0; j < temp_list->size(); j++){
@@ -222,10 +279,10 @@ void UiCalControl::aplicarCambios(){
             if(dentro_rangos){
                 QString trama = "C";
                 for(int j=0; j < temp_list->size(); j++){
-                    trama += temp_list->at(j);
+                    trama += darFormato3Bytes(temp_list->at(j));
                 }
                 trama += "\n";
-                if(trama.size() == 23){
+                if(trama.size() == 26){
                     monitor->cambiosOffsets = false;
                     monitor->tramaOffsets = trama;
                     monitor->serVent->envia_trama_config(trama);
@@ -233,15 +290,15 @@ void UiCalControl::aplicarCambios(){
                     timerCambiosAplicados->start(6000);
                 }
                 else{
-                    labelInfo->setText("offsets formato 3 bytes incorrecto");
+                    muestraMensaje("offsets trama con tamaño incorrecto");
                 }
             }
             else{
-                labelInfo->setText("offsets fuera de rangos");
+                muestraMensaje("offsets fuera de rangos");
             }
         }
         else{
-            labelInfo->setText("Revisar valores offsets");
+            muestraMensaje("Revisar valores offsets");
         }
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
@@ -261,6 +318,7 @@ void UiCalControl::cargarFactores(){
         lEOffCPres->setText(parts.at(5));
         lEOffBat->setText(parts.at(6));
         lEGBat->setText(parts.at(7));
+        lEValvula->setText(parts.at(8));
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
 
