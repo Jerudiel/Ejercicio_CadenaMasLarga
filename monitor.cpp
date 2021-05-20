@@ -16,8 +16,8 @@
 Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s) : QWidget(parent)
 {
     try {
-        versionVentiladorEsperada = "3.7";
-        versionSenPresionEsperada = "3.1";
+        versionVentiladorEsperada = "3.8";
+        versionSenPresionEsperada = "3.2";
         versionTecladoEsperada = "1.0";
         versionPi = "3.72";
 
@@ -2831,13 +2831,14 @@ void Monitor::cargarTramaOffsets(){
         temp_list.append(parts.at(5));
         temp_list.append(parts.at(6));
         temp_list.append(parts.at(7));
+        temp_list.append(parts.at(8));
 
         tramaOffsets = "C";
         for(int j=0; j < temp_list.size(); j++){
             tramaOffsets = tramaOffsets + formato3bytes(temp_list.at(j));
         }
         tramaOffsets = tramaOffsets + "\n";
-        if( tramaOffsets.size() == 23){
+        if( tramaOffsets.size() == 26){
             qDebug() << "tramaOffsets cargada correctamente";
         }
         else{
@@ -3284,8 +3285,8 @@ void Monitor::receVent(QString trama){
                         qDebug() << "segundo intento comando M - llega desde S";
                     }
                 }
-                else if(trama[0] == "C" && trama.size() == 22){
-                    if(trama == tramaOffsets.mid(0,22)){
+                else if(trama[0] == "C" && trama.size() == 25){
+                    if(trama == tramaOffsets.mid(0,25)){
                         cambiosOffsets = true;
                         if(timerOffsetsVent->isActive()){
                             timerOffsetsVent->stop();
