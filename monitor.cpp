@@ -4282,7 +4282,8 @@ void Monitor::recePresion(QString trama){
                         QString b5 = trama.mid(16, 3);
                         QString b6 = trama.mid(19, 3);
                         QString b7 = trama.mid(22, 3);
-                        consul->guarda_cali(b1, b2, b3, b4, b5, b6, b7);
+                        QString b8 = trama.mid(25, 3);
+                        consul->guarda_cali(b1, b2, b3, b4, b5, b6, b7, b8);
                         if(trama.mid(1,3) != versionSenPresionEsperada){
                             if(vAviso == nullptr){
                                 muestraAviso("VERSION OBSOLETA \n ACTUALIZAR VERSION SENSORES");
@@ -6918,7 +6919,7 @@ void Monitor::revisar_entra_gases(){
                 if(diccionario_alarma->value("P. Aire ALTO") == 1){
                     actualizar_en_lista("P. Aire ALTO", 0);
                     consul->agregar_evento("ALARMA", obtener_modo(), "Presión alta aire DESACTIVADO");
-                    if(estadoAlarmaGases){
+                    if(estadoAlarmaGases && !(estadoAlarmaSonoraGases())){
                         estadoAlarmaGases = false;
                         alarmaControl->detenAlarma(alarmaControl->GASES);
                     }
@@ -6948,7 +6949,7 @@ void Monitor::revisar_entra_gases(){
                 if(diccionario_alarma->value("P. Aire BAJO") == 1){
                     actualizar_en_lista("P. Aire BAJO", 0);
                     consul->agregar_evento("ALARMA", obtener_modo(), "Presión baja aire DESACTIVADO");
-                    if(estadoAlarmaGases){
+                    if(estadoAlarmaGases && !(estadoAlarmaSonoraGases())){
                         estadoAlarmaGases = false;
                         alarmaControl->detenAlarma(alarmaControl->GASES);
                     }
@@ -7001,7 +7002,7 @@ void Monitor::revisar_entra_gases(){
                 if(diccionario_alarma->value("P. O2 ALTO") == 1){
                     actualizar_en_lista("P. O2 ALTO", 0);
                     consul->agregar_evento("ALARMA", obtener_modo(), "Presión alta oxigeno DESACTIVADO");
-                    if(estadoAlarmaGases){
+                    if(estadoAlarmaGases && !(estadoAlarmaSonoraGases())){
                         estadoAlarmaGases = false;
                         alarmaControl->detenAlarma(alarmaControl->GASES);
                     }
@@ -7031,7 +7032,7 @@ void Monitor::revisar_entra_gases(){
                 if(diccionario_alarma->value("P. O2 BAJO") == 1){
                     actualizar_en_lista("P. O2 BAJO", 0);
                     consul->agregar_evento("ALARMA", obtener_modo(), "Presión baja oxigeno DESACTIVADO");
-                    if(estadoAlarmaGases){
+                    if(estadoAlarmaGases && !(estadoAlarmaSonoraGases())){
                         estadoAlarmaGases = false;
                         alarmaControl->detenAlarma(alarmaControl->GASES);
                     }
@@ -7086,7 +7087,7 @@ void Monitor::revisar_entra_gases(){
                     if(diccionario_alarma->value("FIO2 ALTO") == 1){
                         actualizar_en_lista("FIO2 ALTO", 0);
                         consul->agregar_evento("ALARMA", obtener_modo(), "FIO2 ALTO DESACTIVADO");
-                        if(estadoAlarmaGases){
+                        if(estadoAlarmaGases && !(estadoAlarmaSonoraGases())){
                             estadoAlarmaGases = false;
                             alarmaControl->detenAlarma(alarmaControl->GASES);
                         }
@@ -7116,7 +7117,7 @@ void Monitor::revisar_entra_gases(){
                     if(diccionario_alarma->value("FIO2 BAJO") == 1){
                         actualizar_en_lista("FIO2 BAJO", 0);
                         consul->agregar_evento("ALARMA", obtener_modo(), "FIO2 BAJO DESACTIVADO");
-                        if(estadoAlarmaGases){
+                        if(estadoAlarmaGases && !(estadoAlarmaSonoraGases())){
                             estadoAlarmaGases = false;
                             alarmaControl->detenAlarma(alarmaControl->GASES);
                         }
