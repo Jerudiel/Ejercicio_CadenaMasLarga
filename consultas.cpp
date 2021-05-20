@@ -6,6 +6,14 @@ Consultas::Consultas()
         conn_string = "ventilador2.db";
         conn = QSqlDatabase::addDatabase("QSQLITE");
         conn.setDatabaseName(conn_string);
+
+        state = conn.open(); //conecta();
+        if(!state){
+            qDebug() << "[DB] Error al abrir" + conn_string.toLatin1();
+        }
+        else{
+            qDebug() << "[DB] Conexion  con: " + conn_string.toLatin1();
+        }
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
 
@@ -14,14 +22,15 @@ Consultas::Consultas()
 
 bool Consultas::conecta(){
     try {
-        if(!conn.open()){
-            qDebug() << "Error al abrir" + conn_string.toLatin1();
-            return false;
-        }
-        else{
-            //qDebug() << "Conexion  con: " + conn_string.toLatin1();
-            return true;
-        }
+        return state;
+//        if(!conn.open()){
+//            qDebug() << "[DB] Error al abrir" + conn_string.toLatin1();
+//            return false;
+//        }
+//        else{
+//            qDebug() << "[DB] Conexion  con: " + conn_string.toLatin1();
+//            return true;
+//        }
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
         return false;
@@ -30,7 +39,7 @@ bool Consultas::conecta(){
 
 void Consultas::cerrar(){
     try {
-        conn.close();
+        //conn.close();
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
@@ -46,7 +55,7 @@ void Consultas::cerrar(){
 
 QString Consultas::consulta(QString query){
     try {
-        if(conecta()){
+        if(state){
             QSqlDatabase::database().transaction();
             QSqlQuery consul;
             //qDebug() << "consulta query: " + query;

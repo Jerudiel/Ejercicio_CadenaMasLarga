@@ -15,6 +15,8 @@ public:
     QSqlDatabase conn;
     QSqlQuery consultas;
 
+    bool state;
+
     bool conecta();
     void cerrar();
     int consulta_count(QString);
