@@ -34,6 +34,7 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
 
         pruebasPresionTerminadas = false;
 
+
         offset_pip = 0;
         QString tt_offset = consul->leer_com_pip();
         QStringList tt_off_pip = tt_offset.split(",");
@@ -625,6 +626,10 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
         pruebas->move(0,0);
         pruebas->resize(mainwindow->width(), mainwindow->height());
         pruebas->hide();
+
+        timerMensajeVentanaPruebas = new QTimer;
+        connect(timerMensajeVentanaPruebas, SIGNAL(timeout()), this, SLOT(limpiarMensajeVentanaPruebas()));
+        timerMensajeVentanaPruebas->setSingleShot(true);
 
         //poner los instrucciones
         fugas = new VentanaInsFuga(this, 500, 450, "INSTRUCCIONES");
@@ -1855,6 +1860,23 @@ void Monitor::tecla_info(QString tecla){
     }
 }
 
+void Monitor::ponerMensajeVentanaPruebas(QString mensaje){
+    try {
+        pruebas->label_info->setText(mensaje);
+        timerMensajeVentanaPruebas->start(3000);
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+    }
+}
+
+void Monitor::limpiarMensajeVentanaPruebas(){
+    try {
+        pruebas->label_info->setText("");
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+    }
+}
+
 void Monitor::iniciar_pruebas(){
     try {
         if(! pruebas_iniciales){
@@ -1927,7 +1949,7 @@ void Monitor::siguiente_pruebas(){
                     pruebas->btn_siguiente->setText("Cerrar");
                 }
                 else{
-                    pruebas->label_info->setText("Saliendo modo prueba presión");
+                    ponerMensajeVentanaPruebas("Saliendo modo prueba presión");
                 }
             }
             else{
@@ -2011,7 +2033,7 @@ void Monitor::detener_pruebas_presion(){
         beep_pausa = 0.2;
         timerBeep->start(100);
         serVent->envia_trama_config("T00000000000000\n");
-        QString temp_tope = QString::number(dic_presion_tope->value(contador_pruebas_iniciales));
+        //QString temp_tope = QString::number(dic_presion_tope->value(contador_pruebas_iniciales));
         serPresion->escribir("G0\n");
         qDebug() << "[PRUEBAS] Deteniendo pruebas de presion";
         contador_valvulas = 0;

@@ -655,6 +655,9 @@ public:
 
     bool pruebasPresionTerminadas;
 
+    QTimer *timerMensajeVentanaPruebas;
+    void ponerMensajeVentanaPruebas(QString mensaje);
+
 public slots:
     void revisarErrorWDT();
 
@@ -726,6 +729,8 @@ public slots:
     void aplicarAltura();
 
     void limpiarInfoAltura();
+
+    void limpiarMensajeVentanaPruebas();
 signals:
     void calTeclado(QString trama);
     void get_mode_keyboard_frame(QString frame);
