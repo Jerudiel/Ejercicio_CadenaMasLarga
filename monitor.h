@@ -651,6 +651,10 @@ public:
     void activarAlarmaComunicacionSensores(int tipo);
     void desactivarAlarmaComunicacionSensores(int tipo);
 
+    bool estadoAlarmaSonoraGases();
+
+    bool pruebasPresionTerminadas;
+
 public slots:
     void revisarErrorWDT();
 
