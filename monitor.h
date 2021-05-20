@@ -443,10 +443,7 @@ public:
 
     void detener_pruebas_presion();
 
-
-
     void tecla_calibracion(QString tecla);
-
 
     void preguntarVersiones();
 
@@ -657,6 +654,8 @@ public:
 
     QTimer *timerMensajeVentanaPruebas;
     void ponerMensajeVentanaPruebas(QString mensaje);
+
+    bool cargaMonitorListo;
 
 public slots:
     void revisarErrorWDT();

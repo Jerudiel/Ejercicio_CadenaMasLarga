@@ -45,6 +45,9 @@ public:
     void msge(QString mensaje, std::exception error);
     //void asignaPadre(Monitor* mon);
 
+    bool ready;
+    void set_ready(bool state);
+
 signals:
     void enviaLinea(QString temp);
     void muestraAviso(QString mensaje);

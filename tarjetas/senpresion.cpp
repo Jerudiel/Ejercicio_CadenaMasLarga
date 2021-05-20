@@ -32,6 +32,7 @@ SenPresion::SenPresion(bool debug)
         //listaErrores = {"NoError","DeviceNotFoundError","PermissionError","OpenError","ParityError","FramingError","BreakConditionError","WriteError","ReadError","ResourceError","UnsupportedOperationError","UnknownError","TimeoutError","NotOpenError"};
         strDisp = "SenPresion - ";
         contador_errores = 0;
+        ready = false;
         if(debug){
             msg("puerto: " + puerto);
         }
@@ -49,6 +50,14 @@ SenPresion::SenPresion(bool debug)
 
     }
 }*/
+
+void SenPresion::set_ready(bool state){
+    try {
+        ready = state;
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+    }
+}
 
 bool SenPresion::estado(){
     try {
@@ -75,32 +84,34 @@ void SenPresion::escribir(QString datos){
 
 void SenPresion::leer(){
     try {
-        if(serPuerto->isOpen()){
-            while(serPuerto->canReadLine()){
-                try {
-                    QString trama = serPuerto->readLine().data();
-                    QStringList ll = trama.split("\n");
-                    int num = serPuerto->bytesAvailable();
-                    if(debug){
-                        msg("recibido: " + ll.at(0));
-                    }
-                    if(num > 1000){
-                        QString basura = serPuerto->readAll();
+        if(ready){
+            if(serPuerto->isOpen()){
+                while(serPuerto->canReadLine()){
+                    try {
+                        QString trama = serPuerto->readLine().data();
+                        QStringList ll = trama.split("\n");
+                        int num = serPuerto->bytesAvailable();
                         if(debug){
-                            msg("limpiar buffer de :" + QString::number(num));
+                            msg("recibido: " + ll.at(0));
                         }
+                        if(num > 1000){
+                            QString basura = serPuerto->readAll();
+                            if(debug){
+                                msg("limpiar buffer de :" + QString::number(num));
+                            }
+                        }
+                        //return ll.at(0);
+                        emit enviaLinea(ll.at(0));
+                    }  catch (std::exception &e) {
+                        msge("Error: ", e);
+                        emit enviaLinea("");
                     }
-                    //return ll.at(0);
-                    emit enviaLinea(ll.at(0));
-                }  catch (std::exception &e) {
-                    msge("Error: ", e);
-                    emit enviaLinea("");
                 }
+                emit enviaLinea("");
             }
-            emit enviaLinea("");
-        }
-        else{
-            emit enviaLinea("");
+            else{
+                emit enviaLinea("");
+            }
         }
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );

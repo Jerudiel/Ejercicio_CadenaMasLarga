@@ -27,6 +27,7 @@ Ventilador::Ventilador(bool debug) : QWidget() // parent //QWidget *parent, Moni
         //listaErrores = {"NoError","DeviceNotFoundError","PermissionError","OpenError","ParityError","FramingError","BreakConditionError","WriteError","ReadError","ResourceError","UnsupportedOperationError","UnknownError","TimeoutError","NotOpenError"};
         strDisp = "Ventilador - ";
         contador_errores = 0;
+        ready = false;
         if(debug){
             msg("puerto: " + puerto);
         }
@@ -44,6 +45,14 @@ Ventilador::Ventilador(bool debug) : QWidget() // parent //QWidget *parent, Moni
 
     }
 }*/
+
+void Ventilador::set_ready(bool state){
+    try {
+        ready = state;
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+    }
+}
 
 bool Ventilador::estaCorriendo(){
     try {
@@ -165,26 +174,28 @@ bool Ventilador::estado(){
 
 void Ventilador::leer(){
     try {
-        if(serPuerto->isOpen()){
-            while(serPuerto->canReadLine()){
-                try {
-                    QString trama = serPuerto->readLine().data();
-                    QStringList ll = trama.split("\n");
-                    if(debug){
-                        int espera = serPuerto->bytesAvailable();
-                        msg("recibido: " + ll.at(0) + ", datos: " + QString::number(espera));
+        if(ready){
+            if(serPuerto->isOpen()){
+                while(serPuerto->canReadLine()){
+                    try {
+                        QString trama = serPuerto->readLine().data();
+                        QStringList ll = trama.split("\n");
+                        if(debug){
+                            int espera = serPuerto->bytesAvailable();
+                            msg("recibido: " + ll.at(0) + ", datos: " + QString::number(espera));
+                        }
+                        //return ll.at(0);
+                        emit enviaLinea(ll.at(0));
+                    }  catch (std::exception &e) {
+                        msge("Error: ", e);
+                         emit enviaLinea("");
                     }
-                    //return ll.at(0);
-                    emit enviaLinea(ll.at(0));
-                }  catch (std::exception &e) {
-                    msge("Error: ", e);
-                     emit enviaLinea("");
                 }
+                emit enviaLinea("");
             }
-            emit enviaLinea("");
-        }
-        else{
-            emit enviaLinea("");
+            else{
+                emit enviaLinea("");
+            }
         }
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );

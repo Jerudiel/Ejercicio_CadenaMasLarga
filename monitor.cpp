@@ -16,10 +16,11 @@
 Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s) : QWidget(parent)
 {
     try {
+        cargaMonitorListo = false;
         versionVentiladorEsperada = "3.8";
         versionSenPresionEsperada = "3.2";
         versionTecladoEsperada = "1.0";
-        versionPi = "3.72";
+        versionPi = "3.73";
 
         mainwindow = parent;
         this->consul = consul;
@@ -896,8 +897,10 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
         timerOtroPWM->setSingleShot(true);
         connect(timerOtroPWM, SIGNAL(timeout()), this, SLOT(iniciar_pruebas_2()));
 
-
+        cargaMonitorListo = true;
         //qDebug() << "Termina de cargar todo monitor";
+        serVent->set_ready(true);
+        serPresion->set_ready(true);
 
     } catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
