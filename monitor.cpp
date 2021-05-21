@@ -17,10 +17,10 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
 {
     try {
         cargaMonitorListo = false;
-        versionVentiladorEsperada = "3.8";
-        versionSenPresionEsperada = "3.2";
+        versionVentiladorEsperada = "3.9.0";
+        versionSenPresionEsperada = "3.2.0";
         versionTecladoEsperada = "1.0";
-        versionPi = "3.73";
+        versionPi = "3.7.4";
 
         mainwindow = parent;
         this->consul = consul;
@@ -2954,6 +2954,48 @@ void Monitor::desactivarAlarmaComunicacionControl2(){
     }
 }
 
+bool Monitor::corroborarVersionControl(QString trama, QString esperada){
+    try {
+        QVector<int> ver_esperada = separarVersion(esperada);
+        QVector<int> ver_recibida = separarVersion(trama);
+        return ver_esperada.at(0) == ver_recibida.at(0) && ver_esperada.at(1) == ver_recibida.at(1);
+    }  catch (std::exception &e) {
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        return false;
+    }
+}
+
+QVector<int> Monitor::separarVersion(QString trama){
+    try {
+        //qDebug() << "separarVersion";
+        QVector<int> vect_temp; // = new QVector<int>;
+        //separar las 3 partes
+        QStringList tempList = trama.split('.');
+        if(tempList.size() == 3){
+            //convertir a enteros y agregarlos a un arrray
+            //qDebug() << "separarVersion son 3";
+            try{
+                for(int i=0; i < tempList.size(); i++){
+                    vect_temp.append(tempList.at(i).toInt());
+                    //qDebug() << "separarVersion, agregar: " + tempList.at(i);
+                }
+                //qDebug() << "separarVersion termina OK";
+                return vect_temp;
+            }
+            catch(std::exception &e){
+                return {0,0,0};
+            }
+        }
+        else{
+            //error, devolver ceros
+            return {0,0,0};
+        }
+    }  catch (std::exception &e) {
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        return {0,0,0};
+    }
+}
+
 void Monitor::receVent(QString trama){
     try {
         //QString trama = serVent->leer();
@@ -3575,10 +3617,11 @@ void Monitor::receVent(QString trama){
                 }
                 else if(trama[0] == "F"){
                     vrecibidaVentilador = true;
-                    qDebug() << "[VERSION] Version ventilador: "+ trama.mid(2,3);
-                    if(trama.mid(2,3) != versionVentiladorEsperada){
+                    qDebug() << "[VERSION] Version ventilador: "+ trama.mid(2);
+
+                    if(!corroborarVersionControl(trama.mid(2), versionVentiladorEsperada)){
                         if(vAvisoV == nullptr){
-                            muestraAvisoVentilador("VERSION OBSOLETA: " + trama.mid(2,3) + " \n ACTUALIZAR VERSION DE VENTILADOR A: " + versionVentiladorEsperada);
+                            muestraAvisoVentilador("VERSION OBSOLETA: " + trama.mid(2) + " \n ACTUALIZAR VERSION DE VENTILADOR A: " + versionVentiladorEsperada);
                             timerConfigVent->stop();
                             consul->agregar_evento("INICIO", obtener_modo(), "INCORRECTO CONTROL");
                         }
@@ -4278,27 +4321,44 @@ void Monitor::recePresion(QString trama){
                         vrecibidaSenpresion = true;
                         versionSenPresion = trama.mid(1,3);
                         qDebug() << "[VERSION] Version senpresion: " + versionSenPresion;
+                        //obtener las dos partes: version y calibracion
+                        QStringList temp_parts = trama.split(',');
+                        if(temp_parts.size() == 2){
+                            //separar partes para la calibracion
+                            if(temp_parts.at(1).size() == 24){
+                                QString b1 = temp_parts.at(1).mid(0, 3);
+                                QString b2 = temp_parts.at(1).mid(3, 3);
+                                QString b3 = temp_parts.at(1).mid(6, 3);
+                                QString b4 = temp_parts.at(1).mid(9, 3);
+                                QString b5 = temp_parts.at(1).mid(12, 3);
+                                QString b6 = temp_parts.at(1).mid(15, 3);
+                                QString b7 = temp_parts.at(1).mid(18, 3);
+                                QString b8 = temp_parts.at(1).mid(21, 3);
+                                consul->guarda_cali(b1, b2, b3, b4, b5, b6, b7, b8);
+                            }
+                            else{
+                                qDebug() << "[CONFIGURACION] Error al recibir datos calibracion sensores ";
+                            }
 
-                        QString b1 = trama.mid(4, 3);
-                        QString b2 = trama.mid(7, 3);
-                        QString b3 = trama.mid(10, 3);
-                        QString b4 = trama.mid(13, 3);
-                        QString b5 = trama.mid(16, 3);
-                        QString b6 = trama.mid(19, 3);
-                        QString b7 = trama.mid(22, 3);
-                        QString b8 = trama.mid(25, 3);
-                        consul->guarda_cali(b1, b2, b3, b4, b5, b6, b7, b8);
-                        if(trama.mid(1,3) != versionSenPresionEsperada){
-                            if(vAviso == nullptr){
-                                muestraAviso("VERSION OBSOLETA:" + trama.mid(1,3) + " \n ACTUALIZAR VERSION SENSORES A: " + versionSenPresionEsperada);
-                                consul->agregar_evento("INICIO", obtener_modo(),"INCORRECTO SENSORES");
+                            if(!corroborarVersionControl(temp_parts.at(0).mid(1), versionSenPresionEsperada)){
+                                if(vAviso == nullptr){
+                                    muestraAviso("VERSION OBSOLETA:" + temp_parts.at(0).mid(1) + " \n ACTUALIZAR VERSION SENSORES A: " + versionSenPresionEsperada);
+                                    consul->agregar_evento("INICIO", obtener_modo(),"INCORRECTO SENSORES");
+                                }
+                            }
+                            else{
+                                versionSenPresion = trama.mid(1,3);
+                                senPresionListo = true;
+                                consul->agregar_evento("INICIO", obtener_modo(),"CORRECTO SENSORES");
                             }
                         }
                         else{
-                            versionSenPresion = trama.mid(1,3);
-                            senPresionListo = true;
-                            consul->agregar_evento("INICIO", obtener_modo(),"CORRECTO SENSORES");
+                            if(vAviso == nullptr){
+                                muestraAviso("ERROR TRAMA VERSION");
+                                consul->agregar_evento("INICIO", obtener_modo(),"ERROR TRAMA VERSION SENSORES");
+                            }
                         }
+
                     }
                 }
                 else if(trama[0] == "E"){

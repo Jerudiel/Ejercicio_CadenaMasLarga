@@ -16,6 +16,7 @@
 #include <QMap>
 #include <QGridLayout>
 #include <QtGui/QGuiApplication>
+#include <QVector>
 
 #include "signos/widgetsigno3.h"
 #include "utilidades/widgetsignobar.h"
@@ -656,6 +657,9 @@ public:
     void ponerMensajeVentanaPruebas(QString mensaje);
 
     bool cargaMonitorListo;
+
+    bool corroborarVersionControl(QString trama, QString esperada);
+    QVector<int> separarVersion(QString trama);
 
 public slots:
     void revisarErrorWDT();

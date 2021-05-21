@@ -28,7 +28,7 @@ bool Consultas::conecta(){
             return false;
         }
         else{
-            qDebug() << "[DB] Conexion  con: " + conn_string.toLatin1();
+            //qDebug() << "[DB] Conexion  con: " + conn_string.toLatin1();
             return true;
         }
     }  catch (std::exception &e) {

@@ -62,7 +62,7 @@ VentanaMenu::VentanaMenu(QWidget *parent, int width, int height, QString titulo,
         label_version->setObjectName("label_version");
         label_version->setStyleSheet("background-color: #D5D8DC; color: black;");
         label_version->setText("V"+version);
-        label_version->setGeometry(QRect(offset_x + 350, offset_y + 180, 50, 50));
+        label_version->setGeometry(QRect(offset_x + 350, offset_y + 180, 100, 50));
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
