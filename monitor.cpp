@@ -37,9 +37,9 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
 
 
         offset_pip = 0;
-        QString tt_offset = consul->leer_com_pip();
+        /*QString tt_offset = consul->leer_com_pip();
         QStringList tt_off_pip = tt_offset.split(",");
-        offset_pip = tt_off_pip.at(1).toFloat();
+        offset_pip = tt_off_pip.at(1).toFloat();*/
 
         vida_o2_21 = 0;
         vida_o2_100 = 0;
@@ -740,7 +740,12 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
         //cargar valores fio2
         QString ff = consul->leer_fio2();
         QStringList lf = ff.split(",");
-        tramas->actualizar_formulas(lf[1], lf[2], lf[3], lf[4], lf[5]);
+        if(lf.size() >= 6){
+            tramas->actualizar_formulas(lf[1], lf[2], lf[3], lf[4], lf[5]);
+        }
+        else{
+            qDebug() << "[CARGA] Error al cargar actualizar_formulas";
+        }
 
         borrar_eventos();
 
@@ -929,7 +934,12 @@ void Monitor::check_mode_keyboard(QString trama){
 
             //obtener el valor
             QStringList ttt = trama.split(":");
-            valueModeKeyboard = ttt.at(1).toInt();
+            if(ttt.size() >= 2){
+                valueModeKeyboard = ttt.at(1).toInt();
+            }
+            else{
+                qDebug() << "[ERROR] valueModeKeyboard";
+            }
 
             isReadyModeKeyboard = true;
 
@@ -987,10 +997,28 @@ void Monitor::check_umbral_key(QString trama){
             //obtener el valor
             QStringList ttt = trama.split(":");
             QStringList tt = ttt.at(0).split("'");
-            nameConfigKey = tt.at(1);
-            QStringList t = ttt.at(1).split(",");
-            valuePressKey = t.at(0).toInt();
-            valueReleaseKey = t.at(1).toInt();
+            if(tt.size() >= 2){
+                nameConfigKey = tt.at(1);
+                if(ttt.size() >= 2){
+                    QStringList t = ttt.at(1).split(",");
+                    if(t.size() >= 2){
+                        valuePressKey = t.at(0).toInt();
+                        valueReleaseKey = t.at(1).toInt();
+                    }
+                    else{
+                        qDebug() << "[ERROR] check_umbral_key 3";
+                    }
+
+                }
+                else{
+                    qDebug() << "[ERROR] check_umbral_key 2";
+                }
+
+            }
+            else{
+                qDebug() << "[ERROR] check_umbral_key 1";
+            }
+
 
             isReadyConfigKey = true;
 
@@ -1088,9 +1116,20 @@ void Monitor::check_umbral_keyboard(QString trama){
 
             //obtener el valor
             QStringList ttt = trama.split(":");
-            QStringList t = ttt.at(1).split(",");
-            valuePressKeyboard = t.at(0).toInt();
-            valueReleaseKeyboard = t.at(1).toInt();
+            if(ttt.size() <= 2){
+                QStringList t = ttt.at(1).split(",");
+                if(t.size() >= 2){
+                    valuePressKeyboard = t.at(0).toInt();
+                    valueReleaseKeyboard = t.at(1).toInt();
+                }
+                else{
+                    qDebug() << "[ERROR] check_umbral_keyboard 2";
+                }
+
+            }
+            else{
+                qDebug() << "[ERROR] check_umbral_keyboard 1";
+            }
 
             isReadyConfigKeyboard = true;
 
@@ -1155,8 +1194,13 @@ void Monitor::cargarAltura(){
     try {
         QString temp = consul->leer_altura();
         QStringList parts = temp.split(",");
-        configPI->label_info->setText("");
-        configPI->le_altura->setText(parts.at(1));
+        if(parts.size() >= 2){
+            configPI->label_info->setText("");
+            configPI->le_altura->setText(parts.at(1));
+        }
+        else{
+            qDebug() << "[ERROR] cargarAltura";
+        }
     }  catch (std::exception &e) {
         qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
 
@@ -1224,7 +1268,12 @@ void Monitor::actualizar_off_pip(){
     try {
         QString ff = consul->leer_com_pip();
         QStringList lf = ff.split(",");
-        offset_pip = lf.at(1).toFloat();
+        if(lf.size() >= 2){
+            offset_pip = lf.at(1).toFloat();
+        }
+        else{
+            qDebug() << "[ERROR] actualizar_off_pip";
+        }
     }  catch (std::exception &e) {
         qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
@@ -1235,7 +1284,12 @@ void Monitor::actualizar_fio2(){
         //cargar valores fio2
         QString ff = consul->leer_fio2();
         QStringList lf = ff.split(",");
-        tramas->actualizar_formulas(lf[1], lf[2], lf[3], lf[4], lf[5]);
+        if(lf.size() >= 6){
+            tramas->actualizar_formulas(lf[1], lf[2], lf[3], lf[4], lf[5]);
+        }
+        else{
+            qDebug() << "[ERROR] actualizar_fio2";
+        }
         //mandar a cargar de nuevo las tramas
         actualizarParametros();
     }  catch (std::exception &e) {
@@ -1323,12 +1377,22 @@ void Monitor::revisar_cal_teclado(QString trama){
     try {
         //QString trama = "Umbral:" + presionar + "," + soltar + "\n";
         QStringList parts = trama.split(":");
-        QStringList partes = parts.at(1).split(",");
-        if(partes.at(0).toInt() == calTecladoPres && partes.at(1).toInt() == calTecladoSolt){
-            cambiosCalTeclado = true;
+        if(parts.size() >= 2){
+            QStringList partes = parts.at(1).split(",");
+            if(partes.size() >= 2){
+                if(partes.at(0).toInt() == calTecladoPres && partes.at(1).toInt() == calTecladoSolt){
+                    cambiosCalTeclado = true;
+                }
+                else{
+                    qDebug() << "[CALIBRACION] cal-teclado, mal: " + trama;
+                }
+            }
+            else{
+                qDebug() << "[ERROR] revisar_cal_teclado 2";
+            }
         }
         else{
-            qDebug() << "[CALIBRACION] cal-teclado, mal: " + trama;
+            qDebug() << "[ERROR] revisar_cal_teclado 1";
         }
     }  catch (std::exception &e) {
         qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
@@ -2303,13 +2367,18 @@ void Monitor::actualizarParametros(){
         }
         QString temp = consul->leer_altura();
         QStringList tt = temp.split(",");
-        altura_prog = tt[1].toInt();
-        QString tip = consul->leer_tipo_sensor();
-        if(tip[2] == "1"){
-            tipo_sensor_presion = true;
+        if(tt.size() >= 2){
+            altura_prog = tt[1].toInt();
+            QString tip = consul->leer_tipo_sensor();
+            if(tip[2] == "1"){
+                tipo_sensor_presion = true;
+            }
+            else{
+                tipo_sensor_presion = false;
+            }
         }
         else{
-            tipo_sensor_presion = false;
+            qDebug() << "[ERROR] actualizarParametros";
         }
     }  catch (std::exception &e) {
         qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
@@ -2826,27 +2895,33 @@ void Monitor::cargarTramaOffsets(){
         QString con = consul->leer_offsets();
         //qDebug() << "cargarTramaOffsets: " + con;
         QStringList parts = con.split(",");
-        QStringList temp_list;
-        temp_list.append(parts.at(1));
-        temp_list.append(parts.at(2));
-        temp_list.append(parts.at(3));
-        temp_list.append(parts.at(4));
-        temp_list.append(parts.at(5));
-        temp_list.append(parts.at(6));
-        temp_list.append(parts.at(7));
-        temp_list.append(parts.at(8));
+        if(parts.size() >= 9){
+            QStringList temp_list;
+            temp_list.append(parts.at(1));
+            temp_list.append(parts.at(2));
+            temp_list.append(parts.at(3));
+            temp_list.append(parts.at(4));
+            temp_list.append(parts.at(5));
+            temp_list.append(parts.at(6));
+            temp_list.append(parts.at(7));
+            temp_list.append(parts.at(8));
 
-        tramaOffsets = "C";
-        for(int j=0; j < temp_list.size(); j++){
-            tramaOffsets = tramaOffsets + formato3bytes(temp_list.at(j));
-        }
-        tramaOffsets = tramaOffsets + "\n";
-        if( tramaOffsets.size() == 26){
-            qDebug() << "[TRAMAS] tramaOffsets cargada correctamente";
+            tramaOffsets = "C";
+            for(int j=0; j < temp_list.size(); j++){
+                tramaOffsets = tramaOffsets + formato3bytes(temp_list.at(j));
+            }
+            tramaOffsets = tramaOffsets + "\n";
+            if( tramaOffsets.size() == 26){
+                qDebug() << "[TRAMAS] tramaOffsets cargada correctamente";
+            }
+            else{
+                qDebug() << "[TRAMAS] tramaOffsets error al cargar";
+            }
         }
         else{
-            qDebug() << "[TRAMAS] tramaOffsets error al cargar";
+            qDebug() << "[ERROR] cargarTramaOffsets";
         }
+
     }  catch (std::exception &e) {
         qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
@@ -6918,13 +6993,25 @@ void Monitor::borrar_eventos(){
         for(int i=0; i < eventos.size(); i++){
             //separar id y fecha de cada evento (elemento de la lista eventos
             QStringList partes = eventos.at(i).split(",");
-            //dar formato a la fecha del evento
-            QStringList datos_fecha = partes.at(1).split("-");
-            QDate fecha_date(datos_fecha.at(0).toInt(),datos_fecha.at(1).toInt(),datos_fecha.at(2).toInt());
-            if(fecha_date.daysTo(ahora) > 7){
-                //qDebug() << "Borrar evento, id: " + partes.at(0);
-                consul->borrar_evento(partes.at(0));
+            if(partes.size() >= 1){
+                //dar formato a la fecha del evento
+                QStringList datos_fecha = partes.at(1).split("-");
+                if(datos_fecha.size() >= 4){
+                    QDate fecha_date(datos_fecha.at(0).toInt(),datos_fecha.at(1).toInt(),datos_fecha.at(2).toInt());
+                    if(fecha_date.daysTo(ahora) > 7){
+                        //qDebug() << "Borrar evento, id: " + partes.at(0);
+                        consul->borrar_evento(partes.at(0));
+                    }
+                }
+                else{
+                    qDebug() << "[ERROR] borrar_eventos 2";
+                }
+
             }
+            else{
+                qDebug() << "[ERROR] borrar_eventos 1";
+            }
+
         }
     }  catch (std::exception &e) {
         qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
