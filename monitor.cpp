@@ -903,7 +903,7 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
         serPresion->set_ready(true);
 
     } catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
     catch(...){
         qWarning("ERROR AL CREAR CLASE MONITOR");
@@ -917,7 +917,7 @@ void Monitor::get_mode_keyboard(){
         //emit get_mode_keyboard_frame(tt);
         emit send_frame(tt);
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -935,11 +935,11 @@ void Monitor::check_mode_keyboard(QString trama){
 
         }
         else{
-            qDebug() << "No se esperaba un cambio de modo en el teclado";
+            qDebug() << "[CALIBRACION] No se esperaba un cambio de modo en el teclado";
         }
 
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -956,7 +956,7 @@ void Monitor::change_mode(int mode){
         //emit get_mode_keyboard_frame(tt);
         emit send_frame(tt);
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -974,7 +974,7 @@ void Monitor::get_config_key(int key){
         //emit get_umbral_key(tt_trama);
         emit send_frame(tt_trama);
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -996,11 +996,11 @@ void Monitor::check_umbral_key(QString trama){
 
         }
         else{
-            qDebug() << "No se esperaba un cambio de umbral de tecla";
+            qDebug() << "[CALIBRACION] No se esperaba un cambio de umbral de tecla";
         }
 
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -1012,10 +1012,10 @@ void Monitor::set_config_key(int key, QString press, QString release){
             emit send_frame(ttFrame);
         }
         else{
-            qDebug() << "Error al crear trama config teclado global";
+            qDebug() << "[Error] al crear trama config teclado global";
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -1027,10 +1027,10 @@ void Monitor::set_config_keyboard(QString press, QString release){
             emit send_frame(ttFrame);
         }
         else{
-            qDebug() << "Error al crear trama config teclado individual";
+            qDebug() << "[Error] al crear trama config teclado individual";
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -1065,7 +1065,7 @@ QString Monitor::set_format_frame(int value, int size){
             return "";
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -1076,7 +1076,7 @@ void Monitor::get_config_keyboard(){
         //emit get_umbral_keyboard(tt);
         emit send_frame(tt);
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -1096,11 +1096,11 @@ void Monitor::check_umbral_keyboard(QString trama){
 
         }
         else{
-            qDebug() << "No se esperaba un cambio de umbral global";
+            qDebug() << "[Error] No se esperaba un cambio de umbral global";
         }
 
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -1109,7 +1109,7 @@ void Monitor::watchDataKeyboard(QString trama){
         isReadyKeyFromKeyboard = true;
         valueFromKeyboard = trama;
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -1117,7 +1117,7 @@ void Monitor::limpiarInfoAltura(){
     try {
         configPI->label_info->setText("");
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -1146,7 +1146,7 @@ void Monitor::cambiarAltura(QString tecla){
             configPI->label_info->setText("Perilla: " + QString::number(altura_perilla));
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
 
     }
 }
@@ -1158,7 +1158,7 @@ void Monitor::cargarAltura(){
         configPI->label_info->setText("");
         configPI->le_altura->setText(parts.at(1));
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
 
     }
 }
@@ -1207,7 +1207,7 @@ void Monitor::aplicarCambiosAltura(){
 
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
 
     }
 }
@@ -1216,7 +1216,7 @@ void Monitor::aplicarAltura(){
     try {
         configPI->hide();
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -1226,7 +1226,7 @@ void Monitor::actualizar_off_pip(){
         QStringList lf = ff.split(",");
         offset_pip = lf.at(1).toFloat();
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -1239,7 +1239,7 @@ void Monitor::actualizar_fio2(){
         //mandar a cargar de nuevo las tramas
         actualizarParametros();
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -1247,7 +1247,7 @@ void Monitor::iniciar_pruebas_2(){
     try {
         iniciar_pruebas();
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -1268,7 +1268,7 @@ void Monitor::cerrarFugas(){
             }
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -1281,7 +1281,7 @@ void Monitor::cerrarOxis(){
             pruebas->label_info->setText("Pruebas oxígeno, retire pulmón.");
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -1312,10 +1312,10 @@ void Monitor::envia_trama_teclado(QString presionar, QString soltar){
         }
 
         QString trama = "set" + temp_presionar + temp_soltar + "\n";
-        qDebug() << "le mando al teclado: " + trama;
+        qDebug() << "[TRAMA] le mando al teclado: " + trama;
         emit calTeclado(trama);
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -1328,10 +1328,10 @@ void Monitor::revisar_cal_teclado(QString trama){
             cambiosCalTeclado = true;
         }
         else{
-            qDebug() << "cal-teclado, mal: " + trama;
+            qDebug() << "[CALIBRACION] cal-teclado, mal: " + trama;
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -1346,11 +1346,11 @@ void Monitor::revisarErroresWDT(){
         if(lista_wdt->size() > 3){
             int minutos = QDateTime::fromString(lista_wdt->at(0), "hh:mm:ss").secsTo(QDateTime::fromString(lista_wdt->at(lista_wdt->size()-1), "hh:mm:ss"))/60;
             if(minutos < 60){
-                qDebug() << "Agregar alarma inoperante por fallo constante en sensores WDT";
+                qDebug() << "[ALARMA] Agregar alarma inoperante por fallo constante en sensores WDT";
                 ino_wdt_alarm = true;
                 if(! buscar_en_lista("SENSORES")){
                     agregar_en_lista("SENSORES", 1);
-                    qDebug() << "SENSORES";
+                    qDebug() << "[ALARMA] SENSORES";
                     if(! estadoAlarmaSensores){
                         estadoAlarmaSensores = true;
                         alarmaControl->iniciaAlarma(alarmaControl->INOPERANTE);
@@ -1360,7 +1360,7 @@ void Monitor::revisarErroresWDT(){
                 }
                 else {
                     if(diccionario_alarma->value("SENSORES") == 0){
-                        qDebug() << "SENSORES -  reactivar";
+                        qDebug() << "[ALARMA] SENSORES -  reactivar";
                         actualizar_en_lista("SENSORES", 1);
                         if(! estadoAlarmaSensores){
                             estadoAlarmaSensores = true;
@@ -1383,7 +1383,7 @@ void Monitor::revisarErroresWDT(){
             lista_wdt->append(respaldo->at(s));
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -1392,7 +1392,7 @@ void Monitor::revisarErrorWDT(){
         if(contador_wdt < 3){
             contador_wdt ++;
             serPresion->escribir("P");
-            qDebug() << "revisarErrorWDT - aumenta contador";
+            qDebug() << "[ERROR] revisarErrorWDT - aumenta contador";
         }
         else{
             label_debug->setText("Error WDT");
@@ -1400,7 +1400,7 @@ void Monitor::revisarErrorWDT(){
             if(modoSel == 0 || modoSel == 2 || modoSel == 4){
                 if(! buscar_en_lista("SENSORES")){
                     agregar_en_lista("SENSORES", 1);
-                    qDebug() << "SENSORES";
+                    qDebug() << "[ALARMA] SENSORES";
                     if(! estadoAlarmaSensores){
                         estadoAlarmaSensores = true;
                         alarmaControl->iniciaAlarma(alarmaControl->INOPERANTE);
@@ -1410,7 +1410,7 @@ void Monitor::revisarErrorWDT(){
             else{
                 if(! buscar_en_lista("SENSORES")){
                     agregar_en_lista("SENSORES", 1);
-                    qDebug() << "SENSORES";
+                    qDebug() << "[ALARMA] SENSORES";
                     if(! estadoAlarmaSensores){
                         estadoAlarmaSensores = true;
                         alarmaControl->iniciaAlarma(alarmaControl->INOPERANTE);
@@ -1433,7 +1433,7 @@ void Monitor::revisarErrorWDT(){
             }
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -1442,7 +1442,7 @@ void Monitor::revisarListoApagar(){
         if(listoApagarContador < 5){
             listoApagarContador++;
             if(listoApagarControl && listoApagarSensores){
-                qDebug() << "Apagar sistema!!!";
+                qDebug() << "[SISTEMA] Apagar sistema!!!";
                 QProcess::execute("sudo shutdown now");
             }
             else{
@@ -1472,7 +1472,7 @@ void Monitor::revisarListoApagar(){
             }
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -1489,7 +1489,7 @@ void Monitor::ventilador_detenido(){
             qDebug() << "entra a ventilador_detenido, valor a0: " + QString::number(recibe_a0) + " estadoVentilador: " + QString::number(estadoVentilador);
         }*/
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -1497,7 +1497,7 @@ void Monitor::activar_fio2(){
     try {
         listo_medir_fio2 = true;
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -1513,13 +1513,13 @@ void Monitor::mostrar_confirmacion(QString texto){
         ventana_confirmacion->btn_no->setStyleSheet(ventana_confirmacion->btnSeleccionado);
         boton_seleccionado_confirmacion = 1;
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
 void Monitor::espera_si_confirmacion(){
     try {
-        qDebug() << "espera_si_confirmacion";
+        qDebug() << "[VENTANA] espera_si_confirmacion";
         if(timerConfirmacion->isActive()){
             timerConVentilador->stop();
         }
@@ -1563,13 +1563,13 @@ void Monitor::espera_si_confirmacion(){
             timerListoApagar->start();
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
 void Monitor::espera_no_confirmacion(){
     try {
-        qDebug() << "espera_no_confirmacion";
+        qDebug() << "[VENTANA] espera_no_confirmacion";
         if(espera_parar){
             espera_parar = false;
         }
@@ -1588,7 +1588,7 @@ void Monitor::espera_no_confirmacion(){
         ventana_confirmacion->hide();
         ventanaAbierta = false;
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -1610,7 +1610,7 @@ void Monitor::timer_esperando_confirmacion(){
             ventanaAbierta = false;
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -1637,7 +1637,7 @@ void Monitor::tecla_confirmacion(QString tecla){
             }
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -1693,7 +1693,7 @@ void Monitor::cambiagraficas(){
             submenugrafica->btntipografica->setText("LAZOS");
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -1706,7 +1706,7 @@ void Monitor::limpiar_graficas(){
 
         }
         else{
-            qDebug() << "Aqui debería borrar lazos";
+            //qDebug() << "Aqui debería borrar lazos";
             //graficaPV->grafica->graph(0)->data().data()->clear();
             graficaPV->limpiar();
             graficaPV->grafica->replot();
@@ -1715,7 +1715,7 @@ void Monitor::limpiar_graficas(){
             graficaVF->grafica->replot();
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -1728,7 +1728,7 @@ void Monitor::abrir_menu_graficas(){
             submenugrafica->hide();
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -1737,7 +1737,7 @@ void Monitor::abrir_menu(){
         menu->show();
         ventanaAbierta = true;
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -1764,7 +1764,7 @@ void Monitor::tecla_menu(QString tecla){
             }
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -1794,7 +1794,7 @@ void Monitor::abrir_pruebas(){
             pruebas->label_info->setText("Error en los sensores");
         }*/
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -1844,7 +1844,7 @@ void Monitor::tecla_pruebas(QString tecla){
             cambiarAltura(tecla);
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -1859,7 +1859,7 @@ void Monitor::tecla_info(QString tecla){
             }
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -1868,7 +1868,7 @@ void Monitor::ponerMensajeVentanaPruebas(QString mensaje){
         pruebas->label_info->setText(mensaje);
         timerMensajeVentanaPruebas->start(3000);
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -1876,7 +1876,7 @@ void Monitor::limpiarMensajeVentanaPruebas(){
     try {
         pruebas->label_info->setText("");
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -1931,7 +1931,7 @@ void Monitor::iniciar_pruebas(){
             }
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -1956,7 +1956,7 @@ void Monitor::siguiente_pruebas(){
                 }
             }
             else{
-                qDebug() << "Pruebas no terminadas";
+                qDebug() << "[PRUEBAS] Pruebas no terminadas";
                 pruebas->btn_siguiente->setText("Siguiente");
                 pruebas->close();
                 ventanaAbierta = false;
@@ -1972,11 +1972,11 @@ void Monitor::siguiente_pruebas(){
 void Monitor::prueba_presion(){
     try {
         pruebas->label_info->setText("No se llegó a la presión deseada");
-        qDebug() << "presion maxima en aumento de presion: " + QString::number(presion_pruebas);
+        qDebug() << "[PRUEBAS] presion maxima en aumento de presion: " + QString::number(presion_pruebas);
         detener_pruebas_presion();
         //aqui se pregunta por la bandera para ver si se vuelve a intentar
         if(intentar_otro_pwm){
-            qDebug() << "*************Intentar otro PWM!!!";
+            qDebug() << "[PRUEBAS] Intentar otro PWM!!!";
             intentar_otro_pwm = false;
             pwm_100 = "0210";
             dic_trama_valvulas->clear();
@@ -1989,7 +1989,7 @@ void Monitor::prueba_presion(){
             pruebas->label_info->setText("Esp ctrl");
         }
         else{
-            qDebug() << "*************Ya no intentar otro PWM!!!";
+            qDebug() << "[PRUEBAS] Ya no intentar otro PWM!!!";
             pwm_100 = "0170";
             dic_trama_valvulas->clear();
             dic_trama_valvulas->insert(0, "T"+pwm_100+pwm_0+pwm_100+exa_1+estado_trama_valvulas + "\n");
@@ -2004,7 +2004,7 @@ void Monitor::prueba_presion(){
         }
 
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -2013,7 +2013,7 @@ void Monitor::prueba_presion_final(){
         serVent->envia_trama_config("Q\n");
         revisar_presion_tope = true;
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -2022,7 +2022,7 @@ void Monitor::prueba_presion_salida(){
         serVent->envia_trama_config("Q\n");
         revisar_liberacion_presion = true;
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -2042,14 +2042,14 @@ void Monitor::detener_pruebas_presion(){
         contador_valvulas = 0;
         contador_timerOxigeno = 0;
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
 void Monitor::revisar_fin_prueba_presion(){
     try {
         if(fin_prueba_presion_serpresion && fin_prueba_presion_serventilador){
-            qDebug() << "Terminan las pruebas correctamente";
+            qDebug() << "[PRUEBAS] Terminan las pruebas correctamente";
         }
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
@@ -2072,7 +2072,7 @@ void Monitor::respuesta_oxigeno(){
         }
 
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -2082,7 +2082,7 @@ void Monitor::abrir_calibracion(){
         ventanaAbierta = false;
         consul->agregar_evento("INICIO", obtener_modo(),"ENTRA A VENTILACION SIN PRUEBAS INICIALES");
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -2092,7 +2092,7 @@ void Monitor::tecla_calibracion(QString tecla){
             cerrar_calibracion();
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -2101,13 +2101,13 @@ void Monitor::cerrar_calibracion(){
         calibrar->close();
         ventanaAbierta = false;
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
 void Monitor::actuaTest(){
     try {
-        qDebug() << "Actualiza mensaje de pantalla de estado";
+        //qDebug() << "Actualiza mensaje de pantalla de estado";
         widgetAlarms->bateria(55, 1);
         widgetAlarms->trigger(1);
     }  catch (std::exception &e) {
@@ -2122,13 +2122,13 @@ void Monitor::retranslate_ui(){
         btn_grafica->setText("GRAFICA");
         btn_test->setText("PRUEBA");
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
 void Monitor::preguntarVersiones(){
     try {
-        qDebug() << "Solicitud de versiones a las tarjetas";
+        qDebug() << "[VERSION] Solicitud de versiones a las tarjetas";
         serVent->envia_trama_config("F\n");
         serPresion->escribir("F");
     }  catch (std::exception &e) {
@@ -2158,24 +2158,24 @@ void Monitor::revisarTerminaConfigurar(){
             }
         }
         else{
-            qDebug() << "Termina tiempo de espera, no se pudo terminar la configuracion";
+            qDebug() << "[INICIALIZACION] Termina tiempo de espera, no se pudo terminar la configuracion";
             if(tecladoListo){
-                qDebug() << "Teclado listo" ;
+                qDebug() << "[INICIALIZACION] Teclado listo" ;
             }
             else{
-                qDebug() << "Teclado NO listo" ;
+                qDebug() << "[INICIALIZACION] Teclado NO listo" ;
             }
             if(ventiladorListo){
-                qDebug() << "Ventilador listo" ;
+                qDebug() << "[INICIALIZACION] Ventilador listo" ;
             }
             else{
-                qDebug() << "Ventilador NO listo" ;
+                qDebug() << "[INICIALIZACION] Ventilador NO listo" ;
             }
             if(senPresionListo){
-                qDebug() << "Senpresion listo" ;
+                qDebug() << "[INICIALIZACION] Senpresion listo" ;
             }
             else{
-                qDebug() << "Senpresion NO listo" ;
+                qDebug() << "[INICIALIZACION] Senpresion NO listo" ;
             }
 
             QStringList *tt = new QStringList{"Configuracion", "", "", "", "ERROR"};
@@ -2184,7 +2184,7 @@ void Monitor::revisarTerminaConfigurar(){
             label_debug->setText("Error config");
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -2206,7 +2206,7 @@ void Monitor::configurar_grafica_lazo(QString nombre, QString tituloy, QString t
 
 void Monitor::limpiarBuffer(){
     try {
-        qDebug() << "Limpiar Buffer!!!!";
+        qDebug() << "[SERIAL] Limpiar Buffer sensores";
         QString  basura = serPresion->serPuerto->readAll();
         serPresion->serPuerto->clear(QSerialPort::Input);
     }  catch (std::exception &e) {
@@ -2221,13 +2221,13 @@ void Monitor::revisarEstadoSenPresion(){
                 contadorTimerEstadoSenPresion++;
             }
             else{
-                qDebug() << "Esta detenido senpresion";
+                qDebug() << "[ESTADO] Esta detenido senpresion";
                 timerEstadoSenPresion->stop();
             }
         }
         else{
             timerEstadoSenPresion->stop();
-            qDebug() << "Esta activo senpresion";
+            qDebug() << "[ESTADO] Esta activo senpresion";
             senPresionListo = true;
             estadoVentilador = true;
             serPresion->corriendo = true;
@@ -2237,21 +2237,21 @@ void Monitor::revisarEstadoSenPresion(){
             tpresionModo = 1;
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
 void Monitor::iniciaMonSensores(){
     try {
         if(serPresion->estado()){
-            qDebug() << "Iniciand monitor de tarjeta de sensores";
+            qDebug() << "[COMANDOS] Iniciar monitor de tarjeta de sensores";
             serPresion->escribir("P");
             timerTPresion5S->start(5000);
             timerActivo5S = true;
             tpresionModo = 0;
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -2261,7 +2261,7 @@ void Monitor::contornoColor(WidgetSigno3 *widget){
         QString nombre = widget->objectName();
         widget->setStyleSheet("QWidget#"+nombre+" {border: 3Px solid "+color+"; border-radius: 3Px;}");
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -2270,7 +2270,7 @@ void Monitor::contornoColorAlarma(WidgetSigno3 *widget, QString color){
         QString nombre = widget->objectName();
         widget->setStyleSheet("QWidget#"+nombre+" {border: 3Px solid "+color+"; border-radius: 3Px;}");
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -2288,7 +2288,7 @@ void Monitor::actualizarParametros(){
         obtener_trama_c_senpresion();
         obtener_trama_alarmas_senpresion();
 
-        qDebug() << "tram trama: " + tramaVentilador;
+        qDebug() << "[TRAMA] tram trama: " + tramaVentilador;
         QString  fr = tramaVentilador.mid(14,3);
         int fr_int = fr.toInt();
         tiempo_respuesta_ventilador = static_cast<int>((120/fr_int)*1000);
@@ -2312,14 +2312,14 @@ void Monitor::actualizarParametros(){
             tipo_sensor_presion = false;
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
 void Monitor::obtener_trama_alarmas_senpresion(){
     try {
         trama_w_serpresion = tramas->obtener_trama_alarmas();
-        qDebug() << "TRAMA W!!: " + trama_w_serpresion;
+        qDebug() << "[TRAMAS] Trama sen W: " + trama_w_serpresion;
         trama_w = trama_w_serpresion;
         if(primera_vez_modo_sen_presion_w){
             primera_vez_modo_sen_presion_w = false;
@@ -2339,7 +2339,7 @@ void Monitor::obtener_trama_alarmas_senpresion(){
             }
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -2347,7 +2347,7 @@ void Monitor::obtener_configuracion_PCMV(){
     try {
         tramas->obtener_trama_serpresion_config(0);
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -2355,7 +2355,7 @@ void Monitor::obtener_configuracion_VCMV(){
     try {
         tramas->obtener_trama_serpresion_config(1);
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -2363,7 +2363,7 @@ void Monitor::obtener_configuracion_PSIMV(){
     try {
         tramas->obtener_trama_serpresion_config(2);
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -2371,7 +2371,7 @@ void Monitor::obtener_configuracion_VSIMV(){
     try {
         tramas->obtener_trama_serpresion_config(3);
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -2379,7 +2379,7 @@ void Monitor::obtener_configuracion_PCPAP(){
     try {
         tramas->obtener_trama_serpresion_config(4);
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -2387,7 +2387,7 @@ void Monitor::obtener_configuracion_VCPAP(){
     try {
         tramas->obtener_trama_serpresion_config(5);
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -2416,7 +2416,7 @@ void Monitor::llenarConfiguracionPCMV(){
             widgetVoli->setValorProg(alarma_vol_min, "-", alarma_vol_max);
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -2444,7 +2444,7 @@ void Monitor::llenarConfiguracionVCMV(){
             signoPIP->setValorProg("", "-", alarma_pres_max);
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -2473,7 +2473,7 @@ void Monitor::llenarConfiguracionPSIMV(){
             widgetVoli->setValorProg(alarma_vol_min, "-", alarma_vol_max);
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -2501,7 +2501,7 @@ void Monitor::llenarConfiguracionVSIMV(){
             signoPIP->setValorProg("", "-", alarma_pres_max);
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -2531,7 +2531,7 @@ void Monitor::llenarConfiguracionPCPAP(){
             signoTiempoI->setValorProg("", QString::number(parts_default.at(10).toFloat(),'f',1), "");
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -2559,7 +2559,7 @@ void Monitor::llenarConfiguracionVCPAP(){
             signoPIP->setValorProg("", parts_default.at(2), alarma_pres_max);
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -2581,7 +2581,7 @@ void Monitor::actualizarAlarmas(){
             }
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -2667,7 +2667,7 @@ void Monitor::obtener_trama_config(){
         obtener_configuracion_PCPAP();
         obtener_configuracion_VCPAP();
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -2692,7 +2692,7 @@ void Monitor::obtenerTramaPCMV(){
             }
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -2717,7 +2717,7 @@ void Monitor::obtenerTramaVCMV(){
             }
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -2742,7 +2742,7 @@ void Monitor::obtenerTramaPSIMV(){
             }
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -2767,7 +2767,7 @@ void Monitor::obtenerTramaVSIMV(){
             }
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -2792,7 +2792,7 @@ void Monitor::obtenerTramaPCPAP(){
             }
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -2817,7 +2817,7 @@ void Monitor::obtenerTramaVCPAP(){
             }
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -2842,13 +2842,13 @@ void Monitor::cargarTramaOffsets(){
         }
         tramaOffsets = tramaOffsets + "\n";
         if( tramaOffsets.size() == 26){
-            qDebug() << "tramaOffsets cargada correctamente";
+            qDebug() << "[TRAMAS] tramaOffsets cargada correctamente";
         }
         else{
-            qDebug() << "tramaOffsets error al cargar";
+            qDebug() << "[TRAMAS] tramaOffsets error al cargar";
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -2867,7 +2867,7 @@ QString Monitor::formato3bytes(QString val){
         }
         return final;
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
         return "";
     }
 }
@@ -2877,7 +2877,7 @@ void Monitor::activarAlarmaComunicacionControl1(){
         if(!buscar_en_lista("C. CTRL 1")){
             agregar_en_lista("C. CTRL 1", 1);
             consul->agregar_evento("COMUNICACION", obtener_modo(), "C. CTRL 1");
-            qDebug() << "___Agrega error en comunicación de la tarjeta de control, no ve a la de sensores";
+            qDebug() << "[ALARMAS] Agrega error en comunicación de la tarjeta de control, no ve a la de sensores";
             if(! estadoAlarmaComunicacion){
                 estadoAlarmaComunicacion = true;
                 alarmaControl->iniciaAlarma(alarmaControl->COMUNICACION);
@@ -2887,14 +2887,14 @@ void Monitor::activarAlarmaComunicacionControl1(){
             //ya esta en la lista
             actualizar_en_lista("C. CTRL 1", 1);
             consul->agregar_evento("COMUNICACION", obtener_modo(), "C. CTRL 1");
-            qDebug() << "___Agrega error en comunicación de la tarjeta de control, no ve a la de sensores";
+            qDebug() << "[ALARMAS] Agrega error en comunicación de la tarjeta de control, no ve a la de sensores";
             if(! estadoAlarmaComunicacion){
                 estadoAlarmaComunicacion = true;
                 alarmaControl->iniciaAlarma(alarmaControl->COMUNICACION);
             }
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -2902,14 +2902,14 @@ void Monitor::desactivarAlarmaComunicacionControl1(){
     try {
         if(buscar_en_lista("C. CTRL 1") && diccionario_alarma->value("C. CTRL 1") == 1){
             actualizar_en_lista("C. CTRL 1", 0);
-            qDebug() << "___Elimina error en comunicación de la tarjeta de control, no ve a la de sensores";
+            qDebug() << "[ALARMAS] Elimina error en comunicación de la tarjeta de control, no ve a la de sensores";
             if(estadoAlarmaComunicacion && ! buscar_en_lista("C. CTRL 1")){
                 estadoAlarmaComunicacion = false;
                 alarmaControl->detenAlarma(alarmaControl->COMUNICACION);
             }
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -2918,7 +2918,7 @@ void Monitor::activarAlarmaComunicacionControl2(){
         if(!buscar_en_lista("C. CTRL 2")){
             agregar_en_lista("C. CTRL 2", 1);
             consul->agregar_evento("COMUNICACION", obtener_modo(), "C. CTRL 2");
-            qDebug() << "___Agrega error en comunicación de la tarjeta de control, no ve a RPI";
+            qDebug() << "[ALARMAS] Agrega error en comunicación de la tarjeta de control, no ve a RPI";
             if(! estadoAlarmaComunicacion){
                 estadoAlarmaComunicacion = true;
                 alarmaControl->iniciaAlarma(alarmaControl->COMUNICACION);
@@ -2928,14 +2928,14 @@ void Monitor::activarAlarmaComunicacionControl2(){
             //ya esta en la lista
             actualizar_en_lista("C. CTRL 2", 1);
             consul->agregar_evento("COMUNICACION", obtener_modo(), "C. CTRL 2");
-            qDebug() << "___Agrega error en comunicación de la tarjeta de control, no ve a RPI";
+            qDebug() << "[ALARMAS] Agrega error en comunicación de la tarjeta de control, no ve a RPI";
             if(! estadoAlarmaComunicacion){
                 estadoAlarmaComunicacion = true;
                 alarmaControl->iniciaAlarma(alarmaControl->COMUNICACION);
             }
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -2943,14 +2943,14 @@ void Monitor::desactivarAlarmaComunicacionControl2(){
     try {
         if(buscar_en_lista("C. CTRL 2") && diccionario_alarma->value("C. CTRL 2") == 1){
             actualizar_en_lista("CON. CONTROL 2", 0);
-            qDebug() << "___Elimina error en comunicación de la tarjeta de control, no ve a RPI";
+            qDebug() << "[ALARMAS] Elimina error en comunicación de la tarjeta de control, no ve a RPI";
             if(estadoAlarmaComunicacion && ! buscar_en_lista("C. CTRL 2")){
                 estadoAlarmaComunicacion = false;
                 alarmaControl->detenAlarma(alarmaControl->COMUNICACION);
             }
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -3043,7 +3043,7 @@ void Monitor::receVent(QString trama){
                                 if(!buscar_en_lista("Modo bat.")){
                                     agregar_en_lista("Modo bat.", 1);
                                     consul->agregar_evento("ALIMENTACION", obtener_modo(), "MODO BATERIA");
-                                    qDebug() << "___Agrega Modo bat.";
+                                    qDebug() << "[ALARMAS] Agrega Modo bat.";
                                     if(! estadoAlarmaAlimentacion){
                                         estadoAlarmaAlimentacion = true;
                                         alarmaControl->iniciaAlarma(alarmaControl->ALIMENTACION);
@@ -3053,7 +3053,7 @@ void Monitor::receVent(QString trama){
                                     //ya esta en la lista
                                     actualizar_en_lista("Modo bat.", 1);
                                     consul->agregar_evento("ALIMENTACION", obtener_modo(), "MODO BATERIA");
-                                    qDebug() << "___Activa Modo bat.";
+                                    qDebug() << "[ALARMAS] Activa Modo bat.";
                                     if(! estadoAlarmaAlimentacion){
                                         estadoAlarmaAlimentacion = true;
                                         alarmaControl->iniciaAlarma(alarmaControl->ALIMENTACION);
@@ -3072,7 +3072,7 @@ void Monitor::receVent(QString trama){
                                     if(! buscar_en_lista("Bat. baja")){
                                         agregar_en_lista("Bat. baja", 1);
                                         consul->agregar_evento("ALARMA", obtener_modo(), "BATERIA BAJA");
-                                        qDebug() << "___Agrega Bat. baja";
+                                        qDebug() << "[ALARMAS] Agrega Bat. baja";
                                         if(! estadoAlarmaBateria){
                                             estadoAlarmaBateria = true;
                                             alarmaControl->iniciaAlarma(alarmaControl->BATERIA);
@@ -3081,7 +3081,7 @@ void Monitor::receVent(QString trama){
                                     else{
                                         actualizar_en_lista("Bat. baja", 1);
                                         consul->agregar_evento("ALARMA", obtener_modo(), "BATERIA BAJA");
-                                        qDebug() << "___Activa Bat. baja";
+                                        qDebug() << "[ALARMAS] Activa Bat. baja";
                                         if(! estadoAlarmaBateria){
                                             estadoAlarmaBateria = true;
                                             alarmaControl->iniciaAlarma(alarmaControl->BATERIA);
@@ -3092,7 +3092,7 @@ void Monitor::receVent(QString trama){
                                     if(! buscar_en_lista("Bat. media")){
                                         agregar_en_lista("Bat. media", 1);
                                         consul->agregar_evento("ALARMA", obtener_modo(), "BATERIA MEDIA");
-                                        qDebug() << "___Agrega Bat. media";
+                                        qDebug() << "[ALARMAS] Agrega Bat. media";
                                         if(! estadoAlarmaBateria){
                                             estadoAlarmaBateria = true;
                                             alarmaControl->iniciaAlarma(alarmaControl->BATERIA);
@@ -3101,7 +3101,7 @@ void Monitor::receVent(QString trama){
                                     else{
                                         actualizar_en_lista("Bat. media", 1);
                                         consul->agregar_evento("ALARMA", obtener_modo(), "BATERIA MEDIA");
-                                        qDebug() << "___Activa Bat. media";
+                                        qDebug() << "[ALARMAS] Activa Bat. media";
                                         if(! estadoAlarmaBateria){
                                             estadoAlarmaBateria = true;
                                             alarmaControl->iniciaAlarma(alarmaControl->BATERIA);
@@ -3118,7 +3118,7 @@ void Monitor::receVent(QString trama){
                                 timerBeep->start(100);
                                 if(buscar_en_lista("Modo bat.")){
                                    actualizar_en_lista("Modo bat.", 0);
-                                   qDebug() << "___Elimina Modo bat.";
+                                   qDebug() << "[ALARMAS] Elimina Modo bat.";
                                    if(estadoAlarmaAlimentacion){
                                        estadoAlarmaAlimentacion = false;
                                        //alarmaControl->iniciaAlarma(alarmaControl->ALIMENTACION);
@@ -3142,7 +3142,7 @@ void Monitor::receVent(QString trama){
                                     if(! buscar_en_lista("Bat. baja")){
                                         agregar_en_lista("Bat. baja", 1);
                                         consul->agregar_evento("ALARMA", obtener_modo(), "BATERIA BAJA");
-                                        qDebug() << "___Agrega Bat. baja";
+                                        qDebug() << "[ALARMAS] Agrega Bat. baja";
                                         if(! estadoAlarmaBateria){
                                             estadoAlarmaBateria = true;
                                             alarmaControl->iniciaAlarma(alarmaControl->BATERIA);
@@ -3151,7 +3151,7 @@ void Monitor::receVent(QString trama){
                                     else{
                                         actualizar_en_lista("Bat. baja", 1);
                                         consul->agregar_evento("ALARMA", obtener_modo(), "BATERIA BAJA");
-                                        qDebug() << "___Activa Bat. baja";
+                                        qDebug() << "[ALARMAS] Activa Bat. baja";
                                         if(! estadoAlarmaBateria){
                                             estadoAlarmaBateria = true;
                                             alarmaControl->iniciaAlarma(alarmaControl->BATERIA);
@@ -3162,7 +3162,7 @@ void Monitor::receVent(QString trama){
                                     if(! buscar_en_lista("Bat. media")){
                                         agregar_en_lista("Bat. media", 1);
                                         consul->agregar_evento("ALARMA", obtener_modo(), "BATERIA MEDIA");
-                                        qDebug() << "___Agrega Bat. media";
+                                        qDebug() << "[ALARMAS] Agrega Bat. media";
                                         if(! estadoAlarmaBateria){
                                             estadoAlarmaBateria = true;
                                             alarmaControl->iniciaAlarma(alarmaControl->BATERIA);
@@ -3171,7 +3171,7 @@ void Monitor::receVent(QString trama){
                                     else{
                                         actualizar_en_lista("Bat. media", 1);
                                         consul->agregar_evento("ALARMA", obtener_modo(), "BATERIA MEDIA");
-                                        qDebug() << "___Activa Bat. media";
+                                        qDebug() << "[ALARMAS] Activa Bat. media";
                                         if(! estadoAlarmaBateria){
                                             estadoAlarmaBateria = true;
                                             alarmaControl->iniciaAlarma(alarmaControl->BATERIA);
@@ -3199,7 +3199,7 @@ void Monitor::receVent(QString trama){
                                 if(temp_nivel > 20){
                                     if(buscar_en_lista("Bat. baja") && diccionario_alarma->value("Bat. baja") == 1){
                                         actualizar_en_lista("Bat. baja", 0);
-                                        qDebug() << "___Elimina Bat. baja";
+                                        qDebug() << "[ALARMAS] Elimina Bat. baja";
                                         if(estadoAlarmaBateria && ! buscar_en_lista("Bat. media")){
                                             estadoAlarmaBateria = false;
                                             alarmaControl->detenAlarma(alarmaControl->BATERIA);
@@ -3209,7 +3209,7 @@ void Monitor::receVent(QString trama){
                                 if(temp_nivel > 40){
                                     if(buscar_en_lista("Bat. media") && diccionario_alarma->value("Bat. media") == 1){
                                         actualizar_en_lista("Bat. media", 0);
-                                        qDebug() << "___Elimina Bat. media";
+                                        qDebug() << "[ALARMAS] Elimina Bat. media";
                                         if(estadoAlarmaBateria){
                                             estadoAlarmaBateria = false;
                                             alarmaControl->detenAlarma(alarmaControl->BATERIA);
@@ -3223,7 +3223,7 @@ void Monitor::receVent(QString trama){
                                     if(! buscar_en_lista("Bat. baja")){
                                         agregar_en_lista("Bat. baja", 1);
                                         consul->agregar_evento("ALARMA", obtener_modo(), "BATERIA BAJA");
-                                        qDebug() << "___Agrega Bat. baja";
+                                        qDebug() << "[ALARMAS] Agrega Bat. baja";
                                         if(! estadoAlarmaBateria){
                                             estadoAlarmaBateria = true;
                                             alarmaControl->iniciaAlarma(alarmaControl->BATERIA);
@@ -3232,7 +3232,7 @@ void Monitor::receVent(QString trama){
                                     else if (diccionario_alarma->value("Bat. baja") == 0){
                                         actualizar_en_lista("Bat. baja", 1);
                                         consul->agregar_evento("ALARMA", obtener_modo(), "BATERIA BAJA");
-                                        qDebug() << "___Activa Bat. baja";
+                                        qDebug() << "[ALARMAS] Activa Bat. baja";
                                         if(! estadoAlarmaBateria){
                                             estadoAlarmaBateria = true;
                                             alarmaControl->iniciaAlarma(alarmaControl->BATERIA);
@@ -3243,7 +3243,7 @@ void Monitor::receVent(QString trama){
                                     if(! buscar_en_lista("Bat. media")){
                                         agregar_en_lista("Bat. media", 1);
                                         consul->agregar_evento("ALARMA", obtener_modo(), "BATERIA MEDIA");
-                                        qDebug() << "___Agrega Bat. media";
+                                        qDebug() << "[ALARMAS] Agrega Bat. media";
                                         if(! estadoAlarmaBateria){
                                             estadoAlarmaBateria = true;
                                             alarmaControl->iniciaAlarma(alarmaControl->BATERIA);
@@ -3252,7 +3252,7 @@ void Monitor::receVent(QString trama){
                                     else if (diccionario_alarma->value("Bat. media") == 0){
                                         actualizar_en_lista("Bat. media", 1);
                                         consul->agregar_evento("ALARMA", obtener_modo(), "BATERIA MEDIA");
-                                        qDebug() << "___Activa Bat. media";
+                                        qDebug() << "[ALARMAS] Activa Bat. media";
                                         if(! estadoAlarmaBateria){
                                             estadoAlarmaBateria = true;
                                             alarmaControl->iniciaAlarma(alarmaControl->BATERIA);
@@ -3285,7 +3285,7 @@ void Monitor::receVent(QString trama){
                         else{
                             temp_timer_det->start(800);
                         }
-                        qDebug() << "segundo intento comando M - llega desde S";
+                        qDebug() << "[TRAMAS] segundo intento comando M - llega desde S";
                     }
                 }
                 else if(trama[0] == "C" && trama.size() == 25){
@@ -3373,7 +3373,7 @@ void Monitor::receVent(QString trama){
                                 pruebas->label_oxigeno_estado->setText("OK");
                                 pruebas->label_oxigeno_estado->setStyleSheet("color: green; background-color: #D5D8DC;");
                                 pruebas->label_info->setText("Prueba 100% Oxígeno superada");
-                                qDebug() << "Terminan todas las pruebas";
+                                qDebug() << "[PRUEBAS] Terminan todas las pruebas";
                                 pruebas_terminadas = true;
                                 consul->agregar_evento("PRUEBAS",obtener_modo(), "OXIGENO SENSOR OK");
                                 consul->agregar_evento("PRUEBAS",obtener_modo(), "OXIGENO TERMINA OK");
@@ -3397,7 +3397,7 @@ void Monitor::receVent(QString trama){
                 else if(trama == tramaVentilador.mid(0,45)){
                     if(numeroBanderaVentilador == 3 || numeroBanderaVentilador == 0){
                         timerVentilador->stop();
-                        qDebug() << "Llego la trama de configuracion principal ventilador";
+                        qDebug() << "[TRAMAS] Llego la trama de configuracion principal ventilador";
                         configurandoVentilador = false;
                         volverIntetarComandoM = false;
                         volverIntentarModo = false;
@@ -3433,7 +3433,7 @@ void Monitor::receVent(QString trama){
                                 serPresion->iniciar_sensor_presion();
                                 if(banderaTimerEstadoSenPresion){
                                     label_debug->setText("Vent ON");
-                                    qDebug() << "---ini senpres";
+                                    qDebug() << "[ESTADO] inicia la ventilación";
                                     consul->agregar_evento("VENTILADOR", obtener_modo(), "INICIA LA VENTILACION");
                                 }
                                 banderaModoSenPresion = 2;
@@ -3466,17 +3466,17 @@ void Monitor::receVent(QString trama){
                 }
                 else if(trama[0] == "E" && trama.size() == 2){
                     if(trama[1] == "R"){
-                        qDebug() << "Error en rango";
+                        qDebug() << "[ERROR] Error en rango trama control";
                         label_debug->setText("Error rangos");
                         consul->agregar_evento("COMUNICACION", obtener_modo(), "ERROR RANGOS DE CONFIGURACION");
                     }
                     else if(trama[1] == "T"){
-                        qDebug() << "Error en trama";
+                        qDebug() << "[ERROR] Error en trama";
                         label_debug->setText("Error trama");
                         consul->agregar_evento("COMUNICACION", obtener_modo(), "ERROR TRAMA");
                     }
                     else if(trama[1] == "A"){
-                        qDebug() << "Error en caracter";
+                        qDebug() << "[ERROR] Error en caracter";
                         label_debug->setText("Error ascii");
                         consul->agregar_evento("COMUNICACION", obtener_modo(), "ERROR ASCII");
                         if(volverIntetarComandoM){
@@ -3487,7 +3487,7 @@ void Monitor::receVent(QString trama){
                             else{
                                 temp_timer_det->start(800);
                             }
-                            qDebug() << "segundo intento comando M";
+                            qDebug() << "[TRAMA] segundo intento comando M";
                         }
                         else if(reenviar_paro){
                             if(contador_reenvio == 0){
@@ -3504,10 +3504,10 @@ void Monitor::receVent(QString trama){
                 }
                 else if(trama[0] == "Q"){
                     int presion = trama.mid(1,3).toInt();
-                    qDebug() << "PRESION Q: " + QString::number(presion);
+                    qDebug() << "[PRUEBAS] PRESION Q: " + QString::number(presion);
                     QString estado_sensor = trama.mid(4,1);
                     if(estado_sensor == "1"){
-                        qDebug() << "Error en el sensor de presion - Control";
+                        qDebug() << "[ERROR] Error en el sensor de presion - Control";
                     }
 
                     if(buscar_q_tope){
@@ -3517,11 +3517,11 @@ void Monitor::receVent(QString trama){
                             }
                             esperando_presion_tope = false;
                             presion_inicial_pruebas = presion;
-                            qDebug() << "***** Llegó a la presión tope Q";
+                            qDebug() << "[PRUEBAS] Llegó a la presión tope Q";
                             timerPresionFinal->start(1000);
                         }
                         else{
-                           qDebug() << "U sin bandera";
+                           qDebug() << "[PRUEBAS] U sin bandera";
                         }
                         buscar_q_tope = false;
                     }
@@ -3554,7 +3554,7 @@ void Monitor::receVent(QString trama){
                 else if(trama[0] == "U"){
                     QThread::msleep(50);
                     int presion = trama.mid(1,3).toInt();
-                    qDebug() << "PRESION U: " + QString::number(presion);
+                    qDebug() << "[PRUEBAS] PRESION U: " + QString::number(presion);
                     QString estado_sensor = trama.mid(4,1);
                     serVent->envia_trama_config("U\n");
                     //checar si la presión es mayor a 35, mandar a detener y mostrar error
@@ -3575,10 +3575,10 @@ void Monitor::receVent(QString trama){
                 }
                 else if(trama[0] == "F"){
                     vrecibidaVentilador = true;
-                    qDebug() << "Version ventilador: "+ trama.mid(2,3);
+                    qDebug() << "[VERSION] Version ventilador: "+ trama.mid(2,3);
                     if(trama.mid(2,3) != versionVentiladorEsperada){
                         if(vAvisoV == nullptr){
-                            muestraAvisoVentilador("VERSION OBSOLETA\n ACTUALIZAR VERSION DE VENTILADOR");
+                            muestraAvisoVentilador("VERSION OBSOLETA: " + trama.mid(2,3) + " \n ACTUALIZAR VERSION DE VENTILADOR A: " + versionVentiladorEsperada);
                             timerConfigVent->stop();
                             consul->agregar_evento("INICIO", obtener_modo(), "INCORRECTO CONTROL");
                         }
@@ -3588,7 +3588,7 @@ void Monitor::receVent(QString trama){
                         if(trama[1] == "0"){
                             estadoVentilador = false;
                             numeroBanderaVentilador = 0;
-                            qDebug() << "Origen";
+                            //qDebug() << "Origen";
                             origenListo = true;
                             serVent->envia_trama_config(tramaOffsets);
                             //timerOffsetsVent->start();
@@ -3635,7 +3635,7 @@ void Monitor::receVent(QString trama){
                             pruebas->label_presion_estado->setStyleSheet("color: red; background-color: #D5D8DC;");
                         }
                         else{
-                            qDebug() << "Fin de pruebas de presion serventilador";
+                            qDebug() << "[PRUEBAS] Fin de pruebas de presion serventilador";
                             fin_prueba_presion_serventilador = true;
                         }
                         pruebasPresionTerminadas = false;
@@ -3647,7 +3647,7 @@ void Monitor::receVent(QString trama){
             }
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -3659,13 +3659,13 @@ void Monitor::libera(){
             pruebas->label_presion_estado->setText(QString::number(contador_valvulas*25)+" %");
         }
         else{
-            qDebug() << "monitor::libera-else!!!";
+            qDebug() << "[PRUEBAS] libera presión, termina prueba presión";
             pruebas->label_valvulas_estado->setText("OK");
             pruebas->label_valvulas_estado->setStyleSheet("color: green; background-color: #D5D8DC;");
             pruebas->label_presion_estado->setText("OK");
             pruebas->label_presion_estado->setStyleSheet("color: green; background-color: #D5D8DC;");
             //numero_prueba ++;
-            pruebas->label_info->setText("Presione INICIAR\npara iniciar prueba de sensor de oxígeno.");
+            pruebas->label_info->setText("Presione INICIAR \n para iniciar prueba de sensor de oxígeno.");
             consul->agregar_evento("PRUEBAS", obtener_modo(), "FIN PRESION CORRECTA");
             timerFinPruebaPresion->start(5000);
             detener_pruebas_presion();
@@ -3673,7 +3673,7 @@ void Monitor::libera(){
             infoAbierta = true;
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -3687,7 +3687,7 @@ void Monitor::no_libera(){
         pruebas->label_presion_estado->setText("Error");
         pruebas->label_presion_estado->setStyleSheet("color: red; background-color: #D5D8DC;");
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -3695,10 +3695,10 @@ void Monitor::no_fuga(){
     try {
         contador_valvulas++;
         QString trama = dic_trama_valvulas->value(contador_valvulas);
-        qDebug() << "***** Liberar presion";
+        qDebug() << "[PRUEBAS] Libera presion, no fuga";
         serVent->envia_trama_config(trama);
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -3712,7 +3712,7 @@ void Monitor::fuga(){
         pruebas->label_presion_estado->setText("Error");
         pruebas->label_presion_estado->setStyleSheet("color: red; background-color: #D5D8DC;");
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -3720,10 +3720,10 @@ void Monitor::revisar_alarmas_ventilador(){
     try {
         QString alarma = estadoAlarmasVentiladorControl;
         if(alarma != "0"){
-            qDebug() << "Alarma ventilador: " + alarma;
+            qDebug() << "[ALARMA] Alarma ventilador: " + alarma;
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -3735,7 +3735,7 @@ void Monitor::muestraAvisoApagar(QString mensajes){
         vAvisoC->resize(mainwindow->width(), mainwindow->height());
         vAvisoC->show();
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -3747,7 +3747,7 @@ void Monitor::muestraAvisoConfig(QString mensajes){
         vAvisoC->resize(mainwindow->width(), mainwindow->height());
         vAvisoC->show();
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -3762,7 +3762,7 @@ void Monitor::muestraAviso(QString mensajes){
         vAviso->show();
         alarmaControl->iniciaAlarma(alarmaControl->INOPERANTE);
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -3779,7 +3779,7 @@ void Monitor::muestraAvisoPresion(QString mensajes){
             alarmaControl->iniciaAlarma(alarmaControl->INOPERANTE);
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -3806,7 +3806,7 @@ void Monitor::cierraAvisoVentilador(){
            vAvisoV->close();
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -3816,7 +3816,7 @@ void Monitor::cierraAvisoPresion(){
            vAviso->close();
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -3830,23 +3830,23 @@ void Monitor::muestraAvisoTest(QString mensajes){
         vAvisoT->show();
         vTestActiva = true;
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
 void Monitor::validaUnSeg(){
     try {
         if(banderaModoSenPresion == 0){
-            qDebug() << "No llegó trama respuesta de configuracion";
+            qDebug() << "[TRAMAS] No llegó trama respuesta de configuracion";
             if(contador_respuesta_config_senrpesion < 3){
                 contador_respuesta_config_senrpesion ++;
                 serPresion->serPuerto->clear(QSerialPort::Input);
                 QThread::msleep(250);
                 serPresion->escribir(trama_c_senpresion);
-                qDebug() << "Detiene sepresion y envia trama c, de nuevo";
+                qDebug() << "[TRAMAS] Detiene sepresion y envia trama c, de nuevo";
             }
             else{
-                qDebug() << "Falla actualización!!!!!";
+                qDebug() << "[CONFIGURACION] Falla actualización, trama C, tarjeta sensores";
                 falla_actualizacion = true;
                 configurandoVentilador = false;
                 contador_respuesta_config_senrpesion = 0;
@@ -3859,11 +3859,11 @@ void Monitor::validaUnSeg(){
             }
         }
         else if(banderaModoSenPresion == 1){
-            qDebug() << "No llego trama respuesta de detener sensor";
+            qDebug() << "[TRAMAS] No llego trama respuesta de detener sensor";
             if(recibe_a0){
                 timerTPresion1S->stop();
                 contador_paro_tarjeta_sensores = 0;
-                qDebug() << " recibe a0 --timer";
+                qDebug() << "[TRAMAS] recibe a0 --timer";
             }
             else{
                 if(contador_paro_tarjeta_sensores <= 4){
@@ -3881,10 +3881,10 @@ void Monitor::validaUnSeg(){
         }
         else if(banderaModoSenPresion == 2){
             if(banderaTimerEstadoSenPresion){
-                qDebug() << "--El sensor está enviando datos";
+                qDebug() << "[ESTADO] El sensor está enviando datos";
                 timerTPresion1S->stop();
                 label_debug->setText("Vent ON");
-                qDebug() << "---ini senpres";
+                qDebug() << "[ESTADO] Tarjeta sensores activada";
                 //limpiar promediadores
                 graficaPresion->limpiar_promediador();
                 graficaVolumen->limpiar_promediador();
@@ -3896,16 +3896,16 @@ void Monitor::validaUnSeg(){
             }
         }
         else if(banderaModoSenPresion == 3){
-            qDebug() << "No llegó trama respuesta de configuracion W";
+            qDebug() << "[TRAMAS] No llegó trama respuesta de configuracion W";
             if(contador_respuesta_config_senrpesion < 3){
                 contador_respuesta_config_senrpesion++;
                 serPresion->serPuerto->clear(QSerialPort::Input);
                 QThread::msleep(250);
                 serPresion->escribir(trama_w_serpresion);
-                qDebug() <<"Detiene sepresion y envia trama w, de nuevo";
+                qDebug() <<"[TRAMAS] Detiene sepresion y envia trama w, de nuevo";
             }
             else{
-                qDebug() << "Falla actualización!!!!!";
+                qDebug() << "[CONFIGURACION] Falla actualización, trama W";
                 falla_actualizacion = true;
                 configurandoVentilador = false;
                 contador_respuesta_config_senrpesion = 0;
@@ -3919,16 +3919,16 @@ void Monitor::validaUnSeg(){
         }
         else if(banderaModoSenPresion == 4){
             //no se recibe A3 - dejar de enviar datos
-            qDebug() << "No llegó trama respuesta A3 dejar de enviar datos";
+            qDebug() << "[TRAMAS] No llegó trama respuesta A3 dejar de enviar datos";
             if(contador_respuesta_config_senrpesion < 3){
                 contador_respuesta_config_senrpesion++;
                 serPresion->serPuerto->clear(QSerialPort::Input);
                 QThread::msleep(250);
                 serPresion->escribir("A3\n");
-                qDebug() <<"Vulve a intentar comando A3";
+                qDebug() <<"[TRAMAS] Vulve a intentar comando A3";
             }
             else{
-                qDebug() << "Falla comando A3";
+                qDebug() << "[TRAMAS] Falla comando A3";
                 configurandoVentilador = false;
                 contador_respuesta_config_senrpesion = 0;
                 //label_debug->setText("Pulse Actualizar");
@@ -3943,16 +3943,16 @@ void Monitor::validaUnSeg(){
         }
         else if(banderaModoSenPresion == 5){
             //no se recibe A4 - iniciar sin cambios
-            qDebug() << "No llegó trama respuesta A4 inciar sin cambios";
+            qDebug() << "[TRAMAS] No llegó trama respuesta A4 inciar sin cambios";
             if(contador_respuesta_config_senrpesion < 5){
                 contador_respuesta_config_senrpesion++;
                 serPresion->serPuerto->clear(QSerialPort::Input);
                 QThread::msleep(250);
                 serPresion->escribir("A4\n");
-                qDebug() <<"Vulve a intentar comando A4";
+                qDebug() <<"[TRAMAS] Vulve a intentar comando A4";
             }
             else{
-                qDebug() << "Falla comando A4";
+                qDebug() << "[TRAMAS] Falla comando A4";
                 configurandoVentilador = false;
                 contador_respuesta_config_senrpesion = 0;
                 timerTPresion1S->stop();
@@ -3966,7 +3966,7 @@ void Monitor::validaUnSeg(){
             timerTPresion1S->stop();
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -3980,7 +3980,7 @@ void Monitor::validaCincoSeg(){
                     if(vAviso == nullptr){
                         muestraAviso("NO RESPONDE A LA SOLICITUD DE DATOS");
                         consul->agregar_evento("COMUNICACION",obtener_modo(), "ERROR NO RESPONDE SENSORES");
-                        qDebug() << "solicitud de datos -- muestra aviso valida5s";
+                        qDebug() << "[PING] solicitud de datos -- muestra aviso valida5s";
                     }
                 }
                 else{
@@ -4010,7 +4010,7 @@ void Monitor::validaCincoSeg(){
             banderaConexionSenPresion = false;
         }
         else{
-            qDebug() << "Esta configurando sen presion timer";
+            qDebug() << "[PING] Esta configurando sen presion timer";
         }
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
@@ -4024,7 +4024,7 @@ void Monitor::activarAlarmaComunicacionSensores(int tipo){
             if(!buscar_en_lista("C. SEN 1")){
                 agregar_en_lista("C. SEN 1", 1);
                 consul->agregar_evento("COMUNICACION", obtener_modo(), "C. SEN 1");
-                qDebug() << "___Agrega error en comunicación de la tarjeta de sensores, no ve a tarjeta control";
+                qDebug() << "[ALARMA] Agrega error en comunicación de la tarjeta de sensores, no ve a tarjeta control";
                 if(! estadoAlarmaComunicacion){
                     estadoAlarmaComunicacion = true;
                     alarmaControl->iniciaAlarma(alarmaControl->COMUNICACION);
@@ -4034,7 +4034,7 @@ void Monitor::activarAlarmaComunicacionSensores(int tipo){
                 //ya esta en la lista
                 actualizar_en_lista("C. SEN 1", 1);
                 consul->agregar_evento("COMUNICACION", obtener_modo(), "C. SEN 1");
-                qDebug() << "___Agrega error en comunicación de la tarjeta de sensores, no ve a tarjeta control";
+                qDebug() << "[ALARMA] Agrega error en comunicación de la tarjeta de sensores, no ve a tarjeta control";
                 if(! estadoAlarmaComunicacion){
                     estadoAlarmaComunicacion = true;
                     alarmaControl->iniciaAlarma(alarmaControl->COMUNICACION);
@@ -4046,7 +4046,7 @@ void Monitor::activarAlarmaComunicacionSensores(int tipo){
             if(!buscar_en_lista("C. SEN 2")){
                 agregar_en_lista("C. SEN 2", 1);
                 consul->agregar_evento("COMUNICACION", obtener_modo(), "C. SEN 2");
-                qDebug() << "___Agrega error en comunicación de la tarjeta de sensores, no ve a RPI";
+                qDebug() << "[ALARMA] Agrega error en comunicación de la tarjeta de sensores, no ve a RPI";
                 if(! estadoAlarmaComunicacion){
                     estadoAlarmaComunicacion = true;
                     alarmaControl->iniciaAlarma(alarmaControl->COMUNICACION);
@@ -4056,7 +4056,7 @@ void Monitor::activarAlarmaComunicacionSensores(int tipo){
                 //ya esta en la lista
                 actualizar_en_lista("C. SEN 2", 1);
                 consul->agregar_evento("COMUNICACION", obtener_modo(), "C. SEN 2");
-                qDebug() << "___Agrega error en comunicación de la tarjeta de sensores, no ve a RPI";
+                qDebug() << "[ALARMA] Agrega error en comunicación de la tarjeta de sensores, no ve a RPI";
                 if(! estadoAlarmaComunicacion){
                     estadoAlarmaComunicacion = true;
                     alarmaControl->iniciaAlarma(alarmaControl->COMUNICACION);
@@ -4064,7 +4064,7 @@ void Monitor::activarAlarmaComunicacionSensores(int tipo){
             }
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -4074,7 +4074,7 @@ void Monitor::desactivarAlarmaComunicacionSensores(int tipo){
             //
             if(buscar_en_lista("C. SEN 1") && diccionario_alarma->value("C. SEN 1") == 1){
                 actualizar_en_lista("C. SEN 1", 0);
-                qDebug() << "___Elimina error en comunicación de la tarjeta de sensores, no ve a tarjeta control";
+                qDebug() << "[ALARMA] Elimina error en comunicación de la tarjeta de sensores, no ve a tarjeta control";
                 if(estadoAlarmaComunicacion && ! buscar_en_lista("C. SEN 1")){
                     estadoAlarmaComunicacion = false;
                     alarmaControl->detenAlarma(alarmaControl->COMUNICACION);
@@ -4084,7 +4084,7 @@ void Monitor::desactivarAlarmaComunicacionSensores(int tipo){
         else if(tipo == 2){
             if(buscar_en_lista("C. SEN 2") && diccionario_alarma->value("C. SEN 2") == 1){
                 actualizar_en_lista("C. SEN 2", 0);
-                qDebug() << "___Elimina error en comunicación de la tarjeta de sensores, no ve a RPI";
+                qDebug() << "[ALARMA] Elimina error en comunicación de la tarjeta de sensores, no ve a RPI";
                 if(estadoAlarmaComunicacion && ! buscar_en_lista("C. SEN 2")){
                     estadoAlarmaComunicacion = false;
                     alarmaControl->detenAlarma(alarmaControl->COMUNICACION);
@@ -4092,7 +4092,7 @@ void Monitor::desactivarAlarmaComunicacionSensores(int tipo){
             }
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -4103,7 +4103,7 @@ void Monitor::recePresion(QString trama){
             if(trama.size() > 0){
                 if(trama[0] == "C"){
                     if(trama == "C1"){
-                        qDebug() << "---configuracion C lista";
+                        qDebug() << "[CONFIGURACION] configuracion C lista";
                         if(timerTPresion1S->isActive()){
                             timerTPresion1S->stop();
                         }
@@ -4122,7 +4122,7 @@ void Monitor::recePresion(QString trama){
                         //preguntar si es por wdt
                         if(actualiza_por_wdt){
                             actualiza_por_wdt = false;
-                            qDebug() << "---configuracion W por wdt";
+                            qDebug() << "[ALARMA] configuracion W por wdt";
                             if(timerTPresion1S->isActive()){
                                 timerTPresion1S->stop();
                             }
@@ -4140,7 +4140,7 @@ void Monitor::recePresion(QString trama){
                             configurandoSenPresion = false;
                         }
                         else{
-                            qDebug() << "---configuracion W lista";
+                            qDebug() << "[ALARMA] configuracion W lista";
                             contador_respuesta_config_senrpesion = 0;
                             banderConfigCLista = true;
                             if(timerTPresion1S->isActive()){
@@ -4234,13 +4234,13 @@ void Monitor::recePresion(QString trama){
                 }
                 else if(trama[0] == "T"){
                     presion_pruebas = trama.mid(1).toInt();
-                    qDebug() << "Valor presion prueba: " + QString::number(presion_pruebas);
+                    qDebug() << "[PRUEBAS] Valor presion prueba: " + QString::number(presion_pruebas);
                     if(presion_pruebas >= presion_tope && esperando_presion_tope){
                         if(timerPresion->isActive()){
                             timerPresion->stop();
                             esperando_presion_tope = false;
                             presion_inicial_pruebas = presion_pruebas;
-                            qDebug() << "***** Llegó a la presión tope";
+                            qDebug() << "[PRUEBAS] Llegó a la presión tope";
                             timerPresionFinal->start(2000);
                         }
                     }
@@ -4251,13 +4251,13 @@ void Monitor::recePresion(QString trama){
                 }
                 else if(trama[0] == "G"){
                     if(trama[1] == "1"){
-                        qDebug() << "Recibe de senpresion G1, esta en modo pruebas";
+                        qDebug() << "[PRUEBAS] Recibe de senpresion G1, esta en modo pruebas";
                         /*QString trama = dic_trama_valvulas->value(contador_valvulas);
                         qDebug() << "*****trama valvulas: " + trama;
                         serVent->envia_trama_config(trama);*/
                     }
                     else if(trama[1] == "0"){
-                        qDebug() << "Recibe de senpresion G0, termina modo pruebas";
+                        qDebug() << "[PRUEBAS] Recibe de senpresion G0, termina modo pruebas";
                         /*if(pruebas_iniciales){
                             qDebug() << "Error al configurar presion tope";
                             detener_pruebas_presion();
@@ -4277,7 +4277,7 @@ void Monitor::recePresion(QString trama){
                     if(! vrecibidaSenpresion){
                         vrecibidaSenpresion = true;
                         versionSenPresion = trama.mid(1,3);
-                        qDebug() << "Version senpresion: " + versionSenPresion;
+                        qDebug() << "[VERSION] Version senpresion: " + versionSenPresion;
 
                         QString b1 = trama.mid(4, 3);
                         QString b2 = trama.mid(7, 3);
@@ -4290,7 +4290,7 @@ void Monitor::recePresion(QString trama){
                         consul->guarda_cali(b1, b2, b3, b4, b5, b6, b7, b8);
                         if(trama.mid(1,3) != versionSenPresionEsperada){
                             if(vAviso == nullptr){
-                                muestraAviso("VERSION OBSOLETA \n ACTUALIZAR VERSION SENSORES");
+                                muestraAviso("VERSION OBSOLETA:" + trama.mid(1,3) + " \n ACTUALIZAR VERSION SENSORES A: " + versionSenPresionEsperada);
                                 consul->agregar_evento("INICIO", obtener_modo(),"INCORRECTO SENSORES");
                             }
                         }
@@ -4305,15 +4305,15 @@ void Monitor::recePresion(QString trama){
                     if(trama.size() == 2){
                         if(trama[1] == "1"){
                             error_sensores_sensor_presion = true;
-                            qDebug() << "Error-SV sensor de presion";
+                            qDebug() << "[ERROR] Error-SV sensor de presion";
                         }
                         else if(trama[1] == "2"){
                             error_sensores_sensor_inhalacion = true;
-                            qDebug() << "Error-SV sensor de inhalación";
+                            qDebug() << "[ERROR] Error-SV sensor de inhalación";
                         }
                         else if(trama[1] == "3"){
                             error_sensores_sensor_exhalacion = true;
-                            qDebug() << "Error-SV sensor de exhalación";
+                            qDebug() << "[ERROR] Error-SV sensor de exhalación";
                         }
                     }
                     else{
@@ -4333,21 +4333,21 @@ void Monitor::recePresion(QString trama){
                             timerCont5S = 0;
                             if(trama[1] == "1"){
                                 if(vAviso == nullptr){
-                                    qDebug() << "recePresion - error en el sensor de presion";
+                                    qDebug() << "[ERROR] recePresion - error en el sensor de presion";
                                     //muestraAviso("EN EL SENSOR DE PRESION");
                                     consul->agregar_evento("SENSORES", obtener_modo(), "ERROR SENSOR PRESION");
                                 }
                             }
                             else if(trama[1] == "2"){
                                 if(vAviso == nullptr){
-                                    qDebug() << "recePresion - error en el sensor de flujo inhalación";
+                                    qDebug() << "[ERROR] recePresion - error en el sensor de flujo inhalación";
                                     //muestraAviso("EN EL SENSOR DE FLUJO");
                                     consul->agregar_evento("SENSORES", obtener_modo(), "ERROR SENSOR FLUJO INHALACION");
                                 }
                             }
                             else if(trama[1] == "3"){
                                 if(vAviso == nullptr){
-                                    qDebug() << "recePresion - error en el sensor de flujo exhalación";
+                                    qDebug() << "[ERROR] recePresion - error en el sensor de flujo exhalación";
                                     //muestraAviso("EN AMBOS SENSORES");
                                     consul->agregar_evento("SENSORES", obtener_modo(), "ERROR SENSOR FLUJO EXHALACION");
                                 }
@@ -4367,7 +4367,7 @@ void Monitor::recePresion(QString trama){
                                         alarmaControl->detenAlarma(alarmaControl->INOPERANTE);
                                     }
 
-                                    qDebug() << "Inicia actualizar ventilador por Error WDT";
+                                    qDebug() << "[ESTADO] Inicia actualizar ventilador por Error WDT";
                                     consul->agregar_evento("VENTILADOR", obtener_modo(), "act. vent. E WDT");
                                     huboCambioTrama = true;
                                     actualiza_por_wdt = true;
@@ -4488,12 +4488,12 @@ void Monitor::recePresion(QString trama){
                     configurandoSenPresion = false;
                     fue_h = true;
                     if(! timerTPresion5S->isActive()){
-                        qDebug() << "*****Activa timer";
+                        qDebug() << "[PING] Activa timer tarjeta sensores";
                         configurandoSenPresion = false;
                         timerTPresion5S->start(5000);
                     }
                     if(trama.size() == 3){
-                        qDebug() << "Trama H: " + trama;
+                        qDebug() << "[ALARMAS] Trama H: " + trama;
                         QString tipo_alarma = trama.mid(1,1);
                         int estado_alarma = trama.mid(2,1).toInt();
                         RAS_tipo = tipo_alarma;
@@ -4519,12 +4519,12 @@ void Monitor::recePresion(QString trama){
                         }
                         timerTPresion1S->start(2500);
                         banderaModoSenPresion = 0;
-                        qDebug() << "Regresa dejar de mandar datos";
+                        //qDebug() << "Regresa dejar de mandar datos";
                         serPresion->escribir(trama_c_senpresion);
-                        qDebug() << "Detiene sepresion y envia trama c";
+                        qDebug() << "[TRAMAS] Detiene sepresion y envia trama c";
                     }
                     else if(trama == "A4"){
-                        qDebug() << "Iniciar sin cambios";
+                        qDebug() << "[TRAMAS] Iniciar sin cambios";
                         if(timerTPresion1S->isActive()){
                             timerTPresion1S->stop();
                         }
@@ -4565,7 +4565,7 @@ void Monitor::recePresion(QString trama){
             }
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -4573,22 +4573,22 @@ void Monitor::revisar_alarmas_senpresion(){
     try {
         QString tipo = RAS_tipo;
         int estado = RAS_estado;
-        qDebug() << "----Entra H: "+ tipo + " estado: " + QString::number(estado);
+        //qDebug() << "----Entra H: "+ tipo + " estado: " + QString::number(estado);
         if(tipo == "1"){
-            qDebug() << "No hay comunicación con control";
+            qDebug() << "[ALARMAS] No hay comunicación con control";
         }
         else if(tipo == "2"){
-            qDebug() << "No hay comunicacin con CPU";
+            qDebug() << "[ALARMAS] No hay comunicacin con CPU";
         }
         else if(tipo == "3"){
-            qDebug() << "No hay comunicación con nadie";
+            qDebug() << "[ALARMAS] No hay comunicación con nadie";
         }
         else if(tipo == "4"){
             if(estado == 1){
-                qDebug() << "Alarma volumen minuto alto ACTIVADO";
+                qDebug() << "[ALARMAS] Alarma volumen minuto alto ACTIVADO";
                 if(! buscar_en_lista("Vol min MAX")){
                     agregar_en_lista("Vol min MAX", 1);
-                    qDebug() << "___Agrega Vol min MAX";
+                    qDebug() << "[ALARMAS] Agrega Vol min MAX";
                     signoVm->bar->setPalette(*paleAlta);
                     signoVm->label_title->setStyleSheet("color: red;");
                     consul->agregar_evento("ALARMA", obtener_modo(), "VOLUMEN MIN ALTO ACTIVADO - 4");
@@ -4600,7 +4600,7 @@ void Monitor::revisar_alarmas_senpresion(){
                 else{
                     if(diccionario_alarma->value("Vol min MAX") == 0){
                         actualizar_en_lista("Vol min MAX", 1);
-                        qDebug() << "___Agrega Vol min MAX";
+                        qDebug() << "[ALARMAS] Agrega Vol min MAX";
                         signoVm->bar->setPalette(*paleAlta);
                         signoVm->label_title->setStyleSheet("color: red;");
                         consul->agregar_evento("ALARMA", obtener_modo(), "VOLUMEN MIN ALTO ACTIVADO - 4");
@@ -4612,7 +4612,7 @@ void Monitor::revisar_alarmas_senpresion(){
                 }
             }
             else{
-                qDebug() << "Alarma volumen minuto alto DESACTIVADO";
+                qDebug() << "[ALARMAS] Alarma volumen minuto alto DESACTIVADO";
                 if(buscar_en_lista("Vol min MAX")){
                     actualizar_en_lista("Vol min MAX", 0);
                     consul->agregar_evento("ALARMA", obtener_modo(), "VOLUMEN MIN ALTO DESACTIVADO - 4");
@@ -4629,10 +4629,10 @@ void Monitor::revisar_alarmas_senpresion(){
         }
         else if(tipo == "5"){
             if(estado == 1){
-                qDebug() << "Alarma presion alta ACTIVADO";
+                qDebug() << "[ALARMAS] Alarma presion alta ACTIVADO";
                 if(! buscar_en_lista("Presion MAX")){
                     agregar_en_lista("Presion MAX", 1);
-                    qDebug() << "___Agrega Presion MAX";
+                    qDebug() << "[ALARMAS] Agrega Presion MAX";
                     signoPIP->bar->setPalette(*palemedia_baja);
                     signoPIP->label_title->setStyleSheet("color: yellow;");
                     consul->agregar_evento("ALARMA", obtener_modo(), "PRESION ALTA ACTIVADA - 5");
@@ -4644,7 +4644,7 @@ void Monitor::revisar_alarmas_senpresion(){
                 else{
                     if(diccionario_alarma->value("Presion MAX") == 0){
                         actualizar_en_lista("Presion MAX", 1);
-                        qDebug() << "___Agrega Presion MAX";
+                        qDebug() << "[ALARMAS] Agrega Presion MAX";
                         signoPIP->bar->setPalette(*palemedia_baja);
                         signoPIP->label_title->setStyleSheet("color: yellow;");
                         consul->agregar_evento("ALARMA", obtener_modo(), "PRESION ALTA ACTIVADA - 5");
@@ -4656,7 +4656,7 @@ void Monitor::revisar_alarmas_senpresion(){
                 }
             }
             else{
-                qDebug() << "Alarma presion alta DESACTIVADO";
+                qDebug() << "[ALARMAS] Alarma presion alta DESACTIVADO";
                 if(buscar_en_lista("Presion MAX")){
                     actualizar_en_lista("Presion MAX", 0);
                     consul->agregar_evento("ALARMA", obtener_modo(), "PRESION ALTA DESACTIVADA - 5");
@@ -4673,10 +4673,10 @@ void Monitor::revisar_alarmas_senpresion(){
         }
         else if(tipo == "6"){
             if(estado == 1){
-                qDebug() << "Alarma apnea";
+                qDebug() << "[ALARMAS] Alarma apnea";
                 if(! buscar_en_lista("APNEA")){
                     agregar_en_lista("APNEA", 1);
-                    qDebug() << "___Agrega APNEA";
+                    qDebug() << "[ALARMAS] Agrega APNEA";
                     consul->agregar_evento("ALARMA", obtener_modo(), "APNEA R ACTIVADA - 6");
                     if(! estadoAlarmaApnea){
                         estadoAlarmaApnea = true;
@@ -4686,7 +4686,7 @@ void Monitor::revisar_alarmas_senpresion(){
                 else{
                     if(diccionario_alarma->value("APNEA") == 0){
                         actualizar_en_lista("APNEA", 1);
-                        qDebug() << "___Agrega APNEA";
+                        qDebug() << "[ALARMAS] Agrega APNEA";
                         consul->agregar_evento("ALARMA", obtener_modo(), "APNEA R ACTIVADA - 6");
                         if(! estadoAlarmaApnea){
                             estadoAlarmaApnea = true;
@@ -4698,7 +4698,7 @@ void Monitor::revisar_alarmas_senpresion(){
             else if(estado == 2){
                 if(! buscar_en_lista("Apnea")){
                     agregar_en_lista("Apnea", 2);
-                    qDebug() << "___Agrega  Apnea A";
+                    qDebug() << "[ALARMAS] Agrega  Apnea A";
                     consul->agregar_evento("ALARMA", obtener_modo(), "APNEA R ACTIVADA - 6");
                     if(buscar_en_lista("APNEA")){
                         borrar_en_lista("APNEA");
@@ -4732,10 +4732,10 @@ void Monitor::revisar_alarmas_senpresion(){
         }
         else if(tipo == "7"){
             if(estado == 1){
-                qDebug() << "Alarma volumen tidal max ACTIVADO";
+                qDebug() << "[ALARMAS] Alarma volumen tidal max ACTIVADO";
                 if(! buscar_en_lista("Vol tidal MAX")){
                     agregar_en_lista("Vol tidal MAX", 1);
-                    qDebug() << "___Agrega Vol tidal MAX";
+                    qDebug() << "[ALARMAS] Agrega Vol tidal MAX";
                     widgetVoli->label_uni->setStyleSheet("color: yellow;");
                     widgetVoli->label_valor->setStyleSheet("color: yellow;");
                     widgetVoli->label_nombre->setStyleSheet("background-color: yellow;\n"
@@ -4754,7 +4754,7 @@ void Monitor::revisar_alarmas_senpresion(){
                 else{
                     if(diccionario_alarma->value("Vol tidal MAX") == 0){
                         actualizar_en_lista("Vol tidal MAX", 1);
-                        qDebug() << "___Agrega Vol tidal MAX";
+                        qDebug() << "[ALARMAS] Agrega Vol tidal MAX";
                         widgetVoli->label_uni->setStyleSheet("color: yellow;");
                         widgetVoli->label_valor->setStyleSheet("color: yellow;");
                         widgetVoli->label_nombre->setStyleSheet("background-color: yellow;\n"
@@ -4773,7 +4773,7 @@ void Monitor::revisar_alarmas_senpresion(){
                 }
             }
             else{
-                qDebug() << "Alarma volumen tidal max DESACTIVADO";
+                qDebug() << "[ALARMAS] Alarma volumen tidal max DESACTIVADO";
                 if(buscar_en_lista("Vol tidal MAX")){
                     actualizar_en_lista("Vol tidal MAX", 0);
                     consul->agregar_evento("ALARMA", obtener_modo(), "VOLUMEN TIDAL ALTO DESACTIVADO - 7");
@@ -4797,10 +4797,10 @@ void Monitor::revisar_alarmas_senpresion(){
         }
         else if(tipo == "8"){
             if(estado == 1){
-                qDebug() << "Alarma frecuencia alta ACTIVADO";
+                qDebug() << "[ALARMAS] Alarma frecuencia alta ACTIVADO";
                 if(! buscar_en_lista("Frec. MAX")){
                     agregar_en_lista("Frec. MAX", 1);
-                    qDebug() << "___Agrega Frec. MAX";
+                    qDebug() << "[ALARMAS] Agrega Frec. MAX";
                     widgetFR->label_uni->setStyleSheet("color: yellow;");
                     widgetFR->label_valor->setStyleSheet("color: yellow;");
                     widgetFR->label_nombre->setStyleSheet("background-color: yellow;\n"
@@ -4819,7 +4819,7 @@ void Monitor::revisar_alarmas_senpresion(){
                 else{
                     if(diccionario_alarma->value("Frec. MAX") == 0){
                         actualizar_en_lista("Frec. MAX", 1);
-                        qDebug() << "___Agrega Frec. MAX";
+                        qDebug() << "[ALARMAS] Agrega Frec. MAX";
                         widgetFR->label_uni->setStyleSheet("color: yellow;");
                         widgetFR->label_valor->setStyleSheet("color: yellow;");
                         widgetFR->label_nombre->setStyleSheet("background-color: yellow;\n"
@@ -4838,7 +4838,7 @@ void Monitor::revisar_alarmas_senpresion(){
                 }
             }
             else{
-                qDebug() << "Alarma frecuencia alta DESACTIVADO";
+                qDebug() << "[ALARMAS] Alarma frecuencia alta DESACTIVADO";
                 if(buscar_en_lista("Frec. MAX")){
                     actualizar_en_lista("Frec. MAX", 0);
                     consul->agregar_evento("ALARMA", obtener_modo(), "FRECUENCIA ALTA DESACTIVADA - 8");
@@ -4862,10 +4862,10 @@ void Monitor::revisar_alarmas_senpresion(){
         }
         else if(tipo == "9"){
             if(estado == 1){
-                qDebug() << "Alarma frecuencia baja ACTIVADO";
+                qDebug() << "[ALARMAS] Alarma frecuencia baja ACTIVADO";
                 if(! buscar_en_lista("Frec. MIN")){
                     agregar_en_lista("Frec. MIN", 1);
-                    qDebug() << "___Agrega Frec. MIN";
+                    qDebug() << "[ALARMAS] Agrega Frec. MIN";
                     widgetFR->label_uni->setStyleSheet("color: yellow;");
                     widgetFR->label_valor->setStyleSheet("color: yellow;");
                     widgetFR->label_nombre->setStyleSheet("background-color: yellow;\n"
@@ -4884,7 +4884,7 @@ void Monitor::revisar_alarmas_senpresion(){
                 else{
                     if(diccionario_alarma->value("Frec. MIN") == 0){
                         actualizar_en_lista("Frec. MIN", 1);
-                        qDebug() << "___Agrega Frec. MIN";
+                        qDebug() << "[ALARMAS] Agrega Frec. MIN";
                         widgetFR->label_uni->setStyleSheet("color: yellow;");
                         widgetFR->label_valor->setStyleSheet("color: yellow;");
                         widgetFR->label_nombre->setStyleSheet("background-color: yellow;\n"
@@ -4903,7 +4903,7 @@ void Monitor::revisar_alarmas_senpresion(){
                 }
             }
             else{
-                qDebug() << "Alarma frecuencia baja DESACTIVADO";
+                qDebug() << "[ALARMAS] Alarma frecuencia baja DESACTIVADO";
                 if(buscar_en_lista("Frec. MIN")){
                     actualizar_en_lista("Frec. MIN", 0);
                     consul->agregar_evento("ALARMA", obtener_modo(),  "FRECUENCIA BAJA DESACTIVADA - 9");
@@ -4927,10 +4927,10 @@ void Monitor::revisar_alarmas_senpresion(){
         }
         else if(tipo == "A"){
             if(estado == 1){
-                qDebug() << "Alarma volumen minuto bajo ACTIVADO";
+                qDebug() << "[ALARMAS] Alarma volumen minuto bajo ACTIVADO";
                 if(! buscar_en_lista("Vol min MIN")){
                     agregar_en_lista("Vol min MIN", 1);
-                    qDebug() << "___Agrega Vol min MIN";
+                    qDebug() << "[ALARMAS] Agrega Vol min MIN";
                     signoVm->bar->setPalette(*paleAlta);
                     signoVm->label_title->setStyleSheet("color: red;");
                     consul->agregar_evento("ALARMA", obtener_modo(), "VOLUMEN MIN BAJO ACTIVADO - A");
@@ -4954,7 +4954,7 @@ void Monitor::revisar_alarmas_senpresion(){
                 }
             }
             else{
-                qDebug() << "Alarma volumen minuto bajo DESACTIVADO";
+                qDebug() << "[ALARMAS] Alarma volumen minuto bajo DESACTIVADO";
                 if(buscar_en_lista("Vol min MIN")){
                     actualizar_en_lista("Vol min MIN", 0);
                     consul->agregar_evento("ALARMA", obtener_modo(), "VOLUMEN MIN BAJO DESACTIVADO - A");
@@ -4971,10 +4971,10 @@ void Monitor::revisar_alarmas_senpresion(){
         }
         else if(tipo == "B"){
             if(estado == 1){
-                qDebug() << "Alarma volumen tidal bajo ACTIVADO";
+                qDebug() << "[ALARMAS] Alarma volumen tidal bajo ACTIVADO";
                 if(! buscar_en_lista("Vol tidal MIN")){
                     agregar_en_lista("Vol tidal MIN", 1);
-                    qDebug() << "___Agrega Vol tidal MIN";
+                    qDebug() << "[ALARMAS] Agrega Vol tidal MIN";
                     widgetVoli->label_uni->setStyleSheet("color: yellow;");
                     widgetVoli->label_valor->setStyleSheet("color: yellow;");
                     widgetVoli->label_nombre->setStyleSheet("background-color: yellow;\n"
@@ -4993,7 +4993,7 @@ void Monitor::revisar_alarmas_senpresion(){
                 else{
                     if(diccionario_alarma->value("Vol tidal MIN") == 0){
                         actualizar_en_lista("Vol tidal MIN", 1);
-                        qDebug() << "___Agrega Vol tidal MIN";
+                        qDebug() << "[ALARMAS] Agrega Vol tidal MIN";
                         widgetVoli->label_uni->setStyleSheet("color: yellow;");
                         widgetVoli->label_valor->setStyleSheet("color: yellow;");
                         widgetVoli->label_nombre->setStyleSheet("background-color: yellow;\n"
@@ -5012,7 +5012,7 @@ void Monitor::revisar_alarmas_senpresion(){
                 }
             }
             else{
-                qDebug() << "Alarma volumen tidal bajo DESACTIVADO";
+                qDebug() << "[ALARMAS] Alarma volumen tidal bajo DESACTIVADO";
                 if(buscar_en_lista("Vol tidal MIN")){
                     actualizar_en_lista("Vol tidal MIN", 0);
                     consul->agregar_evento("ALARMA", obtener_modo(), "VOLUMEN TIDAL BAJO DESACTIVADO - B");
@@ -5036,10 +5036,10 @@ void Monitor::revisar_alarmas_senpresion(){
         }
         else if(tipo == "C"){
             if(estado == 1){
-                qDebug() << "Alarma presion baja ACTIVADO";
+                qDebug() << "[ALARMAS] Alarma presion baja ACTIVADO";
                 if(! buscar_en_lista("Presion MIN")){
                     agregar_en_lista("Presion MIN", 1);
-                    qDebug() << "___Agrega Presion MIN";
+                    qDebug() << "[ALARMAS] Agrega Presion MIN";
                     signoPEEP->bar->setPalette(*palemedia_baja);
                     signoPEEP->label_title->setStyleSheet("color: yellow;");
                     consul->agregar_evento("ALARMA", obtener_modo(), "PRESION BAJA ACTIVADA - C");
@@ -5051,7 +5051,7 @@ void Monitor::revisar_alarmas_senpresion(){
                 else{
                     if(diccionario_alarma->value("Presion MIN") == 0){
                         actualizar_en_lista("Presion MIN", 1);
-                        qDebug() << "___Agrega Presion MIN";
+                        qDebug() << "[ALARMAS] Agrega Presion MIN";
                         signoPEEP->bar->setPalette(*palemedia_baja);
                         signoPEEP->label_title->setStyleSheet("color: yellow;");
                         consul->agregar_evento("ALARMA", obtener_modo(), "PRESION BAJA ACTIVADA - C");
@@ -5063,7 +5063,7 @@ void Monitor::revisar_alarmas_senpresion(){
                 }
             }
             else{
-                qDebug() << "Alarma presion baja DESACTIVADO";
+                qDebug() << "[ALARMAS] Alarma presion baja DESACTIVADO";
                 if(buscar_en_lista("Presion MIN")){
                     actualizar_en_lista("Presion MIN", 0);
                     consul->agregar_evento("ALARMA", obtener_modo(), "PRESION BAJA DESACTIVADA - C");
@@ -5080,11 +5080,11 @@ void Monitor::revisar_alarmas_senpresion(){
         }
         else if(tipo == "D"){
             if(estado == 1){
-                qDebug() << "Alarma presion baja config ACTIVADO";
+                qDebug() << "[ALARMAS] Alarma presion baja config ACTIVADO";
                 if(! buscar_en_lista("Presion baja")){
                     agregar_en_lista("Presion baja", 1);
                     consul->agregar_evento("ALARMA", obtener_modo(), "PRESION BAJA CONFIG ACTIVADA - D");
-                    qDebug() << "___Agrega Presion baja";
+                    qDebug() << "[ALARMAS] Agrega Presion baja";
                     if(! estadoAlarmaPresion){
                         estadoAlarmaPresion = true;
                         alarmaControl->iniciaAlarma(alarmaControl->PRESION);
@@ -5094,7 +5094,7 @@ void Monitor::revisar_alarmas_senpresion(){
                     if(diccionario_alarma->value("Presion baja") == 0){
                         actualizar_en_lista("Presion baja", 1);
                         consul->agregar_evento("ALARMA", obtener_modo(), "PRESION BAJA CONFIG ACTIVADA - D");
-                        qDebug() << "___Agrega Presion baja";
+                        qDebug() << "[ALARMAS] Agrega Presion baja";
                         if(! estadoAlarmaPresion){
                             estadoAlarmaPresion = true;
                             alarmaControl->iniciaAlarma(alarmaControl->PRESION);
@@ -5103,7 +5103,7 @@ void Monitor::revisar_alarmas_senpresion(){
                 }
             }
             else{
-                qDebug() << "Alarma presion baja config DESACTIVADO";
+                qDebug() << "[ALARMAS] Alarma presion baja config DESACTIVADO";
                 if(buscar_en_lista("Presion baja")){
                     actualizar_en_lista("Presion baja", 0);
                     consul->agregar_evento("ALARMA", obtener_modo(), "PRESION BAJA CONFIG DESACTIVADA - D");
@@ -5119,11 +5119,11 @@ void Monitor::revisar_alarmas_senpresion(){
         }
         else if(tipo == "E"){
             if(estado == 1){
-                qDebug() << "Alarma desconexion paciente ACTIVADO";
+                qDebug() << "[ALARMAS] Alarma desconexion paciente ACTIVADO";
                 if(! buscar_en_lista("Desc. Paciente")){
                     agregar_en_lista("Desc. Paciente", 1);
                     consul->agregar_evento("ALARMA", obtener_modo(), "Desconexion del paciente ACTIVADA - E");
-                    qDebug() << "___Agrega Desc. Paciente";
+                    qDebug() << "[ALARMAS] Agrega Desc. Paciente";
                     if(! estadoAlarmaDesconexion){
                         estadoAlarmaDesconexion = true;
                         alarmaControl->iniciaAlarma(alarmaControl->DESCONEXION);
@@ -5133,7 +5133,7 @@ void Monitor::revisar_alarmas_senpresion(){
                     if(diccionario_alarma->value("Desc. Paciente") == 0){
                         actualizar_en_lista("Desc. Paciente", 1);
                         consul->agregar_evento("ALARMA", obtener_modo(), "Desconexion del paciente ACTIVADA - E");
-                        qDebug() << "___Agrega Desc. Paciente";
+                        qDebug() << "[ALARMAS] Agrega Desc. Paciente";
                         if(! estadoAlarmaDesconexion){
                             estadoAlarmaDesconexion = true;
                             alarmaControl->iniciaAlarma(alarmaControl->DESCONEXION);
@@ -5142,7 +5142,7 @@ void Monitor::revisar_alarmas_senpresion(){
                 }
             }
             else{
-                qDebug() << "Alarma desconexion paciente DESACTIVADO";
+                qDebug() << "[ALARMAS] Alarma desconexion paciente DESACTIVADO";
                 if(buscar_en_lista("Desc. Paciente")){
                     actualizar_en_lista("Desc. Paciente", 0);
                     consul->agregar_evento("ALARMA", obtener_modo(), "Desconexion del paciente DESACTIVADA - E");
@@ -5156,7 +5156,7 @@ void Monitor::revisar_alarmas_senpresion(){
             }
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -5252,27 +5252,27 @@ void Monitor::poner_datos(){
             graficaVF->grafica->replot();
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
 void Monitor::revisarBanderasVentilador(){
     try {
-        qDebug() << "Se activa timerVentilador!";
+        qDebug() << "[TRAMAS] Se activa timerVentilador!";
         if(numeroBanderaVentilador == 0){
-            qDebug() << "-No se recibio respuesta a P";
+            qDebug() << "[TRAMAS] No se recibio respuesta a P";
             configurandoVentilador = false;
         }
         else if(numeroBanderaVentilador == 1){
-            qDebug() << "-NO se recibio respuesta a C offset";
+            qDebug() << "[TRAMAS] NO se recibio respuesta a C offset";
             configurandoVentilador = false;
         }
         else if(numeroBanderaVentilador == 2){
-            qDebug() << "-No se recibio respuesta a  V modo";
+            qDebug() << "[TRAMAS] No se recibio respuesta a  V modo";
             configurandoVentilador = false;
         }
         else if(numeroBanderaVentilador == 3){
-            qDebug() << "-No se recibio respuesta a  comando principal";
+            qDebug() << "[TRAMAS] No se recibio respuesta a  comando principal";
             if(reenviar_paro){
                 serVent->detener_ventilador(tramaVentilador);
             }
@@ -5281,7 +5281,7 @@ void Monitor::revisarBanderasVentilador(){
                 if(timerVentiladorDetenido->isActive()){
                     timerVentiladorDetenido->stop();
                 }
-                qDebug() << "Vent ON - 2";
+                qDebug() << "[TRAMAS] Vent ON - 2 Falla al parar ventilador";
             }
 
             /*if(es_actualizacion){
@@ -5306,18 +5306,18 @@ void Monitor::revisarBanderasVentilador(){
                 else{
                     temp_timer_det->start(800);
                 }
-                qDebug() << "segundo intento comando M - llega desde bandera 3 ventilador";
+                qDebug() << "[TRAMAS] segundo intento comando M - llega desde bandera 3 ventilador";
             }
 
         }
         else if(numeroBanderaVentilador == 4){
-            qDebug() << "-No se recibio respuesta a origen";
+            qDebug() << "[TRAMAS] No se recibio respuesta a origen";
             configurandoVentilador = false;
         }
         label_debug->setText("CE:" + QString::number(numeroBanderaVentilador));
         consul->agregar_evento("Trama control", obtener_modo(),"CE: " + QString::number(numeroBanderaVentilador));
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -5333,7 +5333,7 @@ void Monitor::revisarConfigVentilador(){
                 }
                 else{
                     if(vAvisoV == nullptr){
-                        qDebug() << "origenListo Error";
+                        qDebug() << "[CONFIGURACION] origenListo Error";
                         muestraAvisoVentilador("ERROR VENTILADOR");
                         timerConfigVent->stop();
                         consul->agregar_evento("COMUNICACION", obtener_modo(), "ERROR NO RESPONDE CONTROL I");
@@ -5348,7 +5348,7 @@ void Monitor::revisarConfigVentilador(){
             }
             else{
                 if(vAvisoV == nullptr){
-                    qDebug() << "vrecibidaVentilador Error";
+                    qDebug() << "[CONFIGURACION] vrecibidaVentilador Error";
                     muestraAvisoVentilador("NO HAY CONEXION CON EL VENTILADOR");
                     consul->agregar_evento("COMUNICACION", obtener_modo(), "ERROR NO RESPONDE CONTROL II");
                     timerConfigVent->stop();
@@ -5356,7 +5356,7 @@ void Monitor::revisarConfigVentilador(){
             }
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -5375,7 +5375,7 @@ void Monitor::revisarOffsetVentilador(){
             }
             else{
                 if(vAvisoV == nullptr){
-                    qDebug() << "OffsetsVentilador Error";
+                    qDebug() << "[TRAMAS] OffsetsVentilador Error";
                     muestraAvisoVentilador("NO HAY CONEXION CON EL VENTILADOR - Offsets");
                     consul->agregar_evento("COMUNICACION", obtener_modo(), "ERROR NO RESPONDE CONTROL III");
                     timerOffsetsVent->stop();
@@ -5383,7 +5383,7 @@ void Monitor::revisarOffsetVentilador(){
             }
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -5402,7 +5402,7 @@ void Monitor::revisarMIniVentilador(){
             }
             else{
                 if(vAvisoV == nullptr){
-                    qDebug() << "MIniVentilador Error";
+                    qDebug() << "[TRAMAS] MIniVentilador Error";
                     muestraAvisoVentilador("NO HAY CONEXION CON EL VENTILADOR - MIni");
                     consul->agregar_evento("COMUNICACION", obtener_modo(), "ERROR NO RESPONDE CONTROL IV");
                     timerMIniVent->stop();
@@ -5410,7 +5410,7 @@ void Monitor::revisarMIniVentilador(){
             }
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -5436,18 +5436,18 @@ void Monitor::revisarConexionVentilador(){
         }
         timerConVentilador->start(7000);
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
 void Monitor::actualizarDatosVentilador(){
     try {
-        qDebug() << "Entra a actualizarDatosVentilador";
+        qDebug() << "[CONTROL] Entra a actualizarDatosVentilador";
         if(! configurandoVentilador){
             if(estadoVentilador){
                 if(huboCambioTrama || huboCambioTramaSenPresion || huboCambioTramaSenPresionW){
                     es_actualizacion = true;
-                    qDebug() << "Cambio trama principal";
+                    qDebug() << "[TRAMAS] Cambio trama principal";
                     huboCambioTrama = false;
                     huboCambioTramaSenPresion = false;
                     huboCambioTramaSenPresionW = false;
@@ -5468,13 +5468,13 @@ void Monitor::actualizarDatosVentilador(){
                     timerTPresion1S->start(2500);
                     banderaModoSenPresion = 0;
                     serPresion->escribir(trama_c_senpresion);
-                    qDebug() << "Envia trama c -";
+                    qDebug() << "[TRAMAS] Envia trama c -";
                 }
                 else{
                     if(falla_actualizacion){
                         falla_actualizacion = false;
                         es_actualizacion = true;
-                        qDebug() << "Reintento trama principal";
+                        qDebug() << "[TRAMAS] Reintento trama principal";
                         label_debug->setText("Actualizando...");
                         configurandoSenPresion = true;
                         if(timerTPresion5S->isActive()){
@@ -5490,20 +5490,20 @@ void Monitor::actualizarDatosVentilador(){
                         timerTPresion1S->start(2500);
                         banderaModoSenPresion = 0;
                         serPresion->escribir(trama_c_senpresion);
-                        qDebug() << "Envia trama c -";
+                        qDebug() << "[TRAMAS] Envia trama c -";
                     }
                 }
             }
             else{
-                qDebug() << "Actualizar datos - no esta activo el ventilador";
+                qDebug() << "[CONTROL] Actualizar datos - no esta activo el ventilador";
                 //controlVentilador();
             }
         }
         else{
-            qDebug() << "Actualizar datos - esta configurando";
+            qDebug() << "[CONTROL] Actualizar datos - esta configurando";
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -5511,7 +5511,7 @@ void Monitor::controlVentilador(){
     try {
         if(! configurandoVentilador){
             if(estadoVentilador){
-                qDebug() << "Detener ventilador";
+                qDebug() << "[CONTROL] Detener ventilador";
                 label_debug->setText("Deteniendo.");
                 if(timerTPresion5S->isActive()){
                     timerTPresion5S->stop();
@@ -5532,7 +5532,7 @@ void Monitor::controlVentilador(){
             }
             else{
                 lista_alarmas->clear();
-                qDebug() << "Configurando";
+                qDebug() << "[CONTROL] Configurando";
                 label_debug->setText("Configurando...");
                 configurandoSenPresion = true;
                 if(timerTPresion5S->isActive()){
@@ -5546,10 +5546,10 @@ void Monitor::controlVentilador(){
             }
         }
         else{
-            qDebug() << "Ya se esta configurando, espere";
+            qDebug() << "[CONTROL] Ya se esta configurando, espere";
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -5576,7 +5576,7 @@ void Monitor::obtener_trama_c_senpresion(){
         else if(modo_vent_int == 5){
             trama_c_senpresion = tramas->obtener_trama_serpresion_config(5);
         }
-        qDebug() << "trama C!!!: " + trama_c_senpresion;
+        qDebug() << "[TRAMAS] trama C tarjeta sensores: " + trama_c_senpresion;
         tramaSenPresion = trama_c_senpresion;
         if(primera_vez_modo_sen_presion){
             primera_vez_modo_sen_presion = false;
@@ -5596,7 +5596,7 @@ void Monitor::obtener_trama_c_senpresion(){
             }
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -5623,14 +5623,14 @@ QString Monitor::obtener_modo_vent(){
         }
         return modo;
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
         return "";
     }
 }
 
 void Monitor::iniciar_ventilador(){
     try {
-        qDebug() << "Envia trama principal ventilador";
+        qDebug() << "[CONTROL] Envia trama principal ventilador";
         desactivar_s = true;
         if(! banderaConexionVentilador){
             while(! banderaConexionVentilador && contadorBanderaConxVent < 25){
@@ -5645,11 +5645,11 @@ void Monitor::iniciar_ventilador(){
         QThread::msleep(1000);
         numeroBanderaVentilador = 3;
         timerVentilador->start(tiempo_respuesta_ventilador);
-        qDebug() << "Inicia timer de espera: " + QString::number(tiempo_respuesta_ventilador);
+        //qDebug() << "Inicia timer de espera: " + QString::number(tiempo_respuesta_ventilador);
         QString tram = tramaVentilador.mid(0,44);
         tram = tram + "1\n";
         tramaVentilador = tram;
-        qDebug() << "trama a ventilador encender: " + tramaVentilador;
+        qDebug() << "[CONTROL] trama a ventilador encender: " + tramaVentilador;
         serVent->iniciar_ventilador(tramaVentilador);
         desactivar_s = false;
     }  catch (std::exception &e) {
@@ -5659,7 +5659,7 @@ void Monitor::iniciar_ventilador(){
 
 void Monitor::detener_ventilador(){
     try {
-        qDebug() << "Envia trama principal ventilador detener";
+        qDebug() << "[CONTROL] Envia trama principal ventilador detener";
         QString tram = tramaVentilador.mid(0,44);
         tram = tram + "0\n";
         tramaVentilador = tram;
@@ -5685,7 +5685,7 @@ void Monitor::detener_ventilador(){
         timerRA->start(500);
         desactivar_s = false;
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -5744,7 +5744,7 @@ void Monitor::reiniciar_alarmas(){
             borrar_alarmas();
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -5758,7 +5758,7 @@ void Monitor::teclado(QString tecla){
             teclaOk();
         }
         else if(tecla == "est"){
-            qDebug() << "Desactivar audio";
+            qDebug() << "[ALARMAS] Desactivar audio";
             if(alarmaControl->pausaAlarma()){
                 consul->agregar_evento("ALARMA", obtener_modo(), "SILENCIAR AUDIO");
             }
@@ -5807,7 +5807,7 @@ void Monitor::teclado(QString tecla){
             contador_apagar = 0;
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -5823,7 +5823,7 @@ void Monitor::teclaOk(){
             elementoSeleccionado();
         }
         else if(elementSel == 2){
-            qDebug() << "test";
+            qDebug() << "[PRUEBAS] abrir test";
             numero_prueba = 0;
             pruebas_iniciales = false;
             presion_tope = 25;
@@ -5849,7 +5849,7 @@ void Monitor::teclaOk(){
             cambiagraficas();
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -5946,7 +5946,7 @@ void Monitor::seleccionar_grafica(){
             }
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -6097,7 +6097,7 @@ void Monitor::obtener_nuevo_rango_grafica(QString modo){
             }
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -6161,7 +6161,7 @@ void Monitor::zoom_grafica(QString tecla){
             }
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -6271,7 +6271,7 @@ void Monitor::obtener_nuevo_espacio_grafica(QString modo){
             }
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -6335,7 +6335,7 @@ void Monitor::desplazar_grafica(QString tecla){
             }
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -6350,7 +6350,7 @@ void Monitor::controlGrafica(){
             btn_grafica->setText("PAUSAR\nGRAFICA");
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -6563,7 +6563,7 @@ void Monitor::mover(QString tecla){
         }
         elementoSeleccionado();
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -6634,7 +6634,7 @@ void Monitor::elementoSeleccionado(){
             }
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -6682,7 +6682,7 @@ void Monitor::muestraAlarmas(){
             label_info_alarma->setText("");
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -6708,13 +6708,13 @@ void Monitor::eliminar_alarma_de_lista(QString alarma){
                 cont++;
             }
             if(borrar){
-                qDebug() << "elemento borrado" +  lista_alarmas->at(indice_borrar);
+                //qDebug() << "elemento borrado" +  lista_alarmas->at(indice_borrar);
                 lista_alarmas->removeAt(indice_borrar);
             }
         }
         //
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -6726,7 +6726,7 @@ void Monitor::beep(){
             QThread::msleep(beep_pausa*1000);
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -6736,7 +6736,7 @@ QString Monitor::obtener_fecha(){
         QString dateTimeString = dateTime.toString("\n hh:mm:ss");
         return dateTimeString;
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
         return "";
     }
 }
@@ -6752,7 +6752,7 @@ bool Monitor::buscar_en_lista(QString alarma){
         }
         return encontrado;
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
         return false;
     }
 }
@@ -6766,7 +6766,7 @@ void Monitor::agregar_en_lista(QString alarma,int estado){
             contadorMuestraAlarmas = lista_alarmas->indexOf(temp);
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -6793,10 +6793,10 @@ void Monitor::actualizar_en_lista(QString alarma,int estado){
             lista_alarmas->replace(indice,temp);
         }
         else{
-            qDebug() << "Actualizar en ilsta, no encontrado: " + alarma + "al estado: " + QString::number(estado);
+            qDebug() << "[ALARMAS] Actualizar en lista, no encontrado: " + alarma + "al estado: " + QString::number(estado);
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -6824,7 +6824,7 @@ void Monitor::borrar_en_lista(QString alarma){
             diccionario_alarma->remove(alarma);
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -6845,7 +6845,7 @@ void Monitor::borrar_alarmas(){
             borrar_en_lista(temp.at(j));
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -6867,7 +6867,7 @@ void Monitor::borrar_eventos(){
             }
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -6877,7 +6877,7 @@ bool Monitor::estadoAlarmaSonoraGases(){
                 || diccionario_alarma->value("P. O2 BAJO") == 1 || diccionario_alarma->value("P. O2 ALTO") == 1
                 || diccionario_alarma->value("FIO2 ALTO") == 1 || diccionario_alarma->value("FIO2 BAJO") == 1;
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
         return true;
     }
 }
@@ -7152,7 +7152,7 @@ void Monitor::revisar_entra_gases(){
             }
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -7180,7 +7180,7 @@ QString Monitor::obtener_modo(){
             return "";
         }
     }  catch (std::exception &e) {
-        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
         return "";
     }
 }
