@@ -20,7 +20,7 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
         versionVentiladorEsperada = "3.9.0";
         versionSenPresionEsperada = "3.2.0";
         versionTecladoEsperada = "1.0";
-        versionPi = "3.7.4";
+        versionPi = "3.7.4E";
 
         mainwindow = parent;
         this->consul = consul;
@@ -3702,7 +3702,7 @@ void Monitor::receVent(QString trama){
                         }
                     }
                     else{
-                        versionVentilador = trama.mid(2,3);
+                        versionVentilador = trama.mid(2);
                         if(trama[1] == "0"){
                             estadoVentilador = false;
                             numeroBanderaVentilador = 0;
@@ -6986,33 +6986,12 @@ void Monitor::borrar_alarmas(){
 
 void Monitor::borrar_eventos(){
     try {
-        //qDebug() << " borrar eventos " ;
-        QStringList eventos = consul->obtener_eventos_para_borrar();
-        //qDebug() << " borrar eventos, numero: " + QString::number(eventos.size());
-        QDate ahora = QDate::currentDate();
-        for(int i=0; i < eventos.size(); i++){
-            //separar id y fecha de cada evento (elemento de la lista eventos
-            QStringList partes = eventos.at(i).split(",");
-            if(partes.size() >= 1){
-                //dar formato a la fecha del evento
-                QStringList datos_fecha = partes.at(1).split("-");
-                if(datos_fecha.size() >= 4){
-                    QDate fecha_date(datos_fecha.at(0).toInt(),datos_fecha.at(1).toInt(),datos_fecha.at(2).toInt());
-                    if(fecha_date.daysTo(ahora) > 7){
-                        //qDebug() << "Borrar evento, id: " + partes.at(0);
-                        consul->borrar_evento(partes.at(0));
-                    }
-                }
-                else{
-                    qDebug() << "[ERROR] borrar_eventos 2";
-                }
+        //prueba borrar eventos
+        qDebug() << "[EVENTOS] BORRAR EVENTOS";
+        QStringList events_to_delete = consul->borrar_eventos();
+        qDebug() << "[EVENTOS] TERMINA DE BORRAR EVENTOS";
+        //qDebug() << "[EVENTOS] Tamaño a borrar: " + QString::number(events_to_delete.size());
 
-            }
-            else{
-                qDebug() << "[ERROR] borrar_eventos 1";
-            }
-
-        }
     }  catch (std::exception &e) {
         qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }

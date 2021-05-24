@@ -6,6 +6,7 @@ Consultas::Consultas()
         conn_string = "ventilador2.db";
         conn = QSqlDatabase::addDatabase("QSQLITE");
         conn.setDatabaseName(conn_string);
+        state = false;
 
         /*state = conn.open(); //conecta();
         if(!state){
@@ -23,12 +24,16 @@ Consultas::Consultas()
 bool Consultas::conecta(){
     try {
         //return state;
+        while(state){
+            QThread::msleep(40);
+        }
         if(!conn.open()){
             qDebug() << "[DB] Error al abrir" + conn_string.toLatin1();
             return false;
         }
         else{
             //qDebug() << "[DB] Conexion  con: " + conn_string.toLatin1();
+            state = true;
             return true;
         }
     }  catch (std::exception &e) {
@@ -40,6 +45,7 @@ bool Consultas::conecta(){
 void Consultas::cerrar(){
     try {
         conn.close();
+        state = false;
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
@@ -916,6 +922,50 @@ QStringList Consultas::obtener_eventos_para_borrar(){
     try {
         if(conecta()){
             QString quer = "SELECT id, fecha FROM eventos";
+            QSqlDatabase::database().transaction();
+            QSqlQuery consul;
+            consul.prepare(quer);
+            consul.exec();
+            QSqlDatabase::database().commit();
+            //
+            QString salida = "result?";
+            QStringList *lista_filas = new QStringList;
+            //if(consul.boundValues().count()){
+                while(consul.next()){
+                    //aqui estoy recorriendo filas
+                    //convertir los valores de resultado en una QStringList
+                    QSqlRecord record = consul.record();
+                    QStringList tmp;
+                    //qDebug() << "obtener_eventos_para_borrar, record.count: " + QString::number(record.count());
+                    for(int i=0; i < record.count(); i++)
+                    {
+                        tmp.append(record.value(i).toString());
+                    }
+                    //convertir la QStringLsit en un QString
+                    QString fila = tmp.join(",");
+                    //Agregar  el QString a la QStringList lista_filas
+                    lista_filas->append(fila);
+                }
+            //}
+            cerrar();
+            return *lista_filas;
+
+        }
+        else{
+            QStringList *lista_filas = new QStringList;
+            return *lista_filas;
+        }
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        QStringList *lista_filas = new QStringList;
+        return *lista_filas;
+    }
+}
+
+QStringList Consultas::borrar_eventos(){
+    try {
+        if(conecta()){
+            QString quer = "DELETE FROM eventos WHERE fecha <= date('now', '-7 day')";
             QSqlDatabase::database().transaction();
             QSqlQuery consul;
             consul.prepare(quer);

@@ -60,6 +60,7 @@ public:
     bool guarda_cali_presion(QString presion);
     QStringList obtener_eventos();
     QStringList obtener_eventos_para_borrar();
+    QStringList borrar_eventos();
     bool borrar_evento(QString id);
     bool agregar_evento(QString tipo, QString modo, QString descripcion);
     QString numero_serie();
