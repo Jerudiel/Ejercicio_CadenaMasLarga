@@ -2292,7 +2292,7 @@ void Monitor::revisarEstadoSenPresion(){
         else{
             timerEstadoSenPresion->stop();
             qDebug() << "[ESTADO] Esta activo senpresion";
-            senPresionListo = true;
+            //senPresionListo = true;
             estadoVentilador = true;
             serPresion->corriendo = true;
             serVent->corriendo = true;
@@ -4112,7 +4112,7 @@ void Monitor::validaCincoSeg(){
                 }
             }
             else if(tpresionModo == 1){
-                int temp_f = static_cast<int>(temp_peep.toFloat()*10);
+                /*int temp_f = static_cast<int>(temp_peep.toFloat()*10);
                 QString temp_s = QString::number(temp_f);
                 if(0 <= temp_f && temp_f < 10){
                     temp_s = "00" + temp_s;
@@ -4123,7 +4123,13 @@ void Monitor::validaCincoSeg(){
                 else{
                     temp_s = "000";
                 }
-                serPresion->escribir("P"+temp_s);
+                serPresion->escribir("P"+temp_s);*/
+                if(vrecibidaSenpresion){
+                    serPresion->escribir("P");
+                }
+                else{
+                    serPresion->escribir("F");
+                }
             }
             banderaConexionSenPresion = false;
         }
@@ -4394,10 +4400,13 @@ void Monitor::recePresion(QString trama){
                 else if(trama[0] == "F"){
                     if(! vrecibidaSenpresion){
                         vrecibidaSenpresion = true;
-                        versionSenPresion = trama.mid(1,3);
-                        qDebug() << "[VERSION] Version senpresion: " + versionSenPresion;
+
+
                         //obtener las dos partes: version y calibracion
                         QStringList temp_parts = trama.split(',');
+                        versionSenPresion = temp_parts.at(0).mid(1);
+                        qDebug() << "[VERSION] Version senpresion: " + versionSenPresion;
+
                         if(temp_parts.size() == 2){
                             //separar partes para la calibracion
                             if(temp_parts.at(1).size() == 24){
@@ -4422,7 +4431,7 @@ void Monitor::recePresion(QString trama){
                                 }
                             }
                             else{
-                                versionSenPresion = trama.mid(1,3);
+                                versionSenPresion = temp_parts.at(0).mid(1);
                                 senPresionListo = true;
                                 consul->agregar_evento("INICIO", obtener_modo(),"CORRECTO SENSORES");
                             }
