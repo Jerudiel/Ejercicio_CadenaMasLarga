@@ -5,6 +5,8 @@
 #include "consultas.h"
 
 #include <QStackedWidget>
+#include <QDateTime>
+#include <QProcess>
 #include "monitor.h"
 #include "pantallas/uiconfiguracion.h"
 #include "pantallas/uialarmas.h"
@@ -66,5 +68,8 @@ public slots:
     //void get_umbral_key_command(QString trama);
     //void get_umbral_keyboard_command(QString trama);
     void send_frame_keyboard(QString trama);
+    void set_watch(QString date);
+    void get_last_event();
+
 };
 #endif // MAINWINDOW_H

@@ -661,6 +661,8 @@ public:
     bool corroborarVersionControl(QString trama, QString esperada);
     QVector<int> separarVersion(QString trama);
 
+    void get_last_event();
+
 public slots:
     void revisarErrorWDT();
 
@@ -740,6 +742,7 @@ signals:
     void get_umbral_key(QString frame);
     void get_umbral_keyboard(QString frame);
     void send_frame(QString frame);
+    void set_watch(QString date);
 };
 
 #endif // MONITOR_H

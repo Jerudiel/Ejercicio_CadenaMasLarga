@@ -907,6 +907,8 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
         serVent->set_ready(true);
         serPresion->set_ready(true);
 
+
+
     } catch (std::exception &e) {
         qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
@@ -2200,6 +2202,18 @@ void Monitor::preguntarVersiones(){
     }
 }
 
+void Monitor::get_last_event(){
+    try {
+        //pruebas
+        QStringList last_event = consul->obtener_ultimo_evento();
+        if(last_event.size() >= 1){
+            emit set_watch(last_event.at(0));
+        }
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+    }
+}
+
 void Monitor::revisarTerminaConfigurar(){
     try {
         if(contadorTerminaConfigurar < 20){
@@ -2217,6 +2231,12 @@ void Monitor::revisarTerminaConfigurar(){
                         else{
                             label_debug->setText("Vent ON");
                         }
+                        //
+                        //pruebas
+                        /*QStringList last_event = consul->obtener_ultimo_evento();
+                        if(last_event.size() >= 1){
+                            emit set_watch(last_event.at(0));
+                        }*/
                     }
                 }
             }
@@ -3532,7 +3552,7 @@ void Monitor::receVent(QString trama){
                                 reenviar_paro = false;
                                 if(! configurandoSenPresion){
                                     estadoVentilador = false;
-                                    label_debug->setText("Standby...");
+                                    label_debug->setText("Standby");
                                     consul->agregar_evento("VENTILADOR", obtener_modo(), "DETIENE LA VENTILACION F");
                                     tpresionModo = 0;
                                 }

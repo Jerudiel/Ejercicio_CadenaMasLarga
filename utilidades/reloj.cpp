@@ -12,6 +12,7 @@ Reloj::Reloj(): QWidget()
         timer_hora->setInterval(1000);
         connect(timer_hora, SIGNAL(timeout()), this, SLOT(update()));
         timer_hora->start();
+        this->color = "white";
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
@@ -21,6 +22,16 @@ Reloj::Reloj(): QWidget()
 void Reloj::asignaLabel(QLabel *label_fechahora){
     try {
         this->label_fechahora = label_fechahora;
+        this->label_fechahora->setStyleSheet("color: " + color + ";");
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+    }
+}
+
+void Reloj::set_color_label(QString color){
+    try {
+        this->color = color;
+        this->label_fechahora->setStyleSheet("color: " + color + ";");
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }

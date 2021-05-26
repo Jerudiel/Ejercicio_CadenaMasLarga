@@ -33,10 +33,14 @@ public:
     Reloj();
     QLabel * label_fechahora;
     QTimer * timer_hora;
+    QString color;
     void asignaLabel(QLabel *label_fechahora);
     void start();
+    void set_date();
+    void set_color_label(QString color);
 public slots:
     void update();
+
 };
 
 #endif // RELOJ_H

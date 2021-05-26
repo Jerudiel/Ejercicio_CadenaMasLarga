@@ -73,6 +73,7 @@ public:
     QString obtener_id_com_pip();
     QString leer_com_pip();
     bool guarda_com_pip(QString b1);
+    QStringList obtener_ultimo_evento();
 
 
 

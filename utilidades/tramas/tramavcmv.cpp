@@ -59,7 +59,7 @@ QString TramaVCMV::obtener_trama_serpresion_config(){
             return trama;
         }
         else{
-            //qDebug() << "trama- error tamaño : " + trama + "size: " + QString::number(trama.size());
+            //qDebug() << "[TRAMAS] trama- error tamaño : " + trama + "size: " + QString::number(trama.size());
             return "";
         }
     }  catch (std::exception &e) {

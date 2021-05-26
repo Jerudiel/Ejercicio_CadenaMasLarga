@@ -1223,3 +1223,46 @@ bool Consultas::guarda_com_pip(QString b1){
         return false;
     }
 }
+
+QStringList Consultas::obtener_ultimo_evento(){
+    try {
+        if(conecta()){
+            QString quer = "SELECT fecha,hora FROM eventos ORDER BY id DESC LIMIT 1";
+            QSqlDatabase::database().transaction();
+            QSqlQuery consul;
+            consul.prepare(quer);
+            consul.exec();
+            QSqlDatabase::database().commit();
+            //
+            QString salida = "result?";
+            QStringList *lista_filas = new QStringList;
+            //if(consul.boundValues().count()){
+                while(consul.next()){
+                    //aqui estoy recorriendo filas
+                    //convertir los valores de resultado en una QStringList
+                    QSqlRecord record = consul.record();
+                    QStringList tmp;
+                    for(int i=0; i < record.count(); i++)
+                    {
+                        tmp.append(record.value(i).toString());
+                    }
+                    //convertir la QStringLsit en un QString
+                    QString fila = tmp.join(",");
+                    //Agregar  el QString a la QStringList lista_filas
+                    lista_filas->append(fila);
+                }
+            //}
+            cerrar();
+            return *lista_filas;
+        }
+        else{
+            QStringList *lista_filas = new QStringList;
+            return *lista_filas;
+        }
+
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        QStringList *lista_filas = new QStringList;
+        return *lista_filas;
+    }
+}

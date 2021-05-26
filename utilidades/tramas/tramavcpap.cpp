@@ -54,13 +54,23 @@ QString TramaVCPAP::obtener_trama_serpresion_config(){
         QString t_vt = obtener_vt();
         QString t_flujo = obtener_flujo();
         //unir
+        /*qDebug() << "modo: " + modo;
+        qDebug() << "t_cpap: " + t_cpap;
+        qDebug() << "t_ps: " + t_ps;
+        qDebug() << "t_fio2: " + t_fio2;
+        qDebug() << "t_mod_trigger: " + t_mod_trigger;
+        qDebug() << "t_sensibilidad: " + t_sensibilidad;
+        qDebug() << "t_apnea: " + t_apnea;
+        qDebug() << "t_frecuencia: " + t_frecuencia;
+        qDebug() << "t_vt: " + t_vt;
+        qDebug() << "t_flujo: " + t_flujo;*/
         QString trama = "C" + modo + t_cpap + t_ps + t_fio2 + t_mod_trigger + t_sensibilidad + t_apnea + t_frecuencia + t_vt + t_flujo + "\n";
         if(trama.size() == 24){
             //qDebug() << "trama: " + trama + "size: " + QString::number(trama.size());
             return trama;
         }
         else{
-            //qDebug() << "trama- error tamaño : " + trama + "size: " + QString::number(trama.size());
+            qDebug() << "[TRAMAS] vcpap trama- error tamaño : " + trama + "size: " + QString::number(trama.size());
             return "";
         }
     }  catch (std::exception &e) {
@@ -188,10 +198,10 @@ QString TramaVCPAP::obtener_fr(){
         QString fr_s = "";
         int fr_int = frecuencia.toInt();
         if(fr_int >= 0 && fr_int < 10){
-            fr_s = "0" + apnea;
+            fr_s = "0" + frecuencia;
         }
         else if(fr_int >= 10 && fr_int < 100){
-            fr_s = apnea;
+            fr_s = frecuencia;
         }
         return fr_s;
 
