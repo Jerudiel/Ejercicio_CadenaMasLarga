@@ -547,6 +547,26 @@ void MainWindow::send_frame_keyboard(QString trama){
     }
 }
 
+void MainWindow::set_date(QString trama){
+    try {
+        //poner el comando date --set ...
+        QProcess process;
+        QString command = "date -s '" + trama + "'";
+        process.start(command);
+        process.waitForFinished(-1);
+        QString stdput_process = process.readAllStandardOutput();
+        QString stderror_process = process.readAllStandardError();
+        if(stderror_process.size() > 0){
+            qDebug() << "[RELOJ] Error al actualizar fecha y hora: " << stderror_process;
+        }
+        else{
+            qDebug() << "[RELOJ] Se actualiza la fecha y hora con éxito: " << stdput_process;
+        }
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+    }
+}
+
 void MainWindow::set_watch(QString trama){
     try {
         bool rtc_ok = false;
@@ -628,6 +648,7 @@ void MainWindow::set_watch(QString trama){
                         //el comando es: date --set="2 OCT 2006 18:00:00"
                         QString temp = dateRTC.toString("d MMM yyyy hh:mm:ss");
                         qDebug() << "[RELOJ] Hora 1-> " + temp;
+                        set_date(temp);
                     }
                     else{
                         qDebug() << "[RELOJ] Hora correcta";
@@ -640,6 +661,7 @@ void MainWindow::set_watch(QString trama){
                         //el RTC es probable que esté bien, entonces poner esa hora al sistema
                         QString temp = dateRTC.toString("d MMM yyyy hh:mm:ss");
                         qDebug() << "[RELOJ] Hora 2-> " + temp;
+                        set_date(temp);
                     }
                     else{
                         //tambien esta mal, corregir hora, activar amarillo

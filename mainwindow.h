@@ -56,6 +56,7 @@ public:
     void abrePantallaMonitor();
     void abrePantallaAlarmas();
     void abrePantallaConfiguracion();
+    void set_date(QString trama);
 
 public slots:
     void recteclado(QString trama);
