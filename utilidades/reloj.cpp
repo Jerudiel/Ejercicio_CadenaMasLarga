@@ -31,7 +31,9 @@ void Reloj::asignaLabel(QLabel *label_fechahora){
 void Reloj::set_color_label(QString color){
     try {
         this->color = color;
-        this->label_fechahora->setStyleSheet("color: " + color + ";");
+        if(label_fechahora != nullptr){
+            this->label_fechahora->setStyleSheet("color: " + color + ";");
+        }
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
