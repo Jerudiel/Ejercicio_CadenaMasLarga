@@ -27,6 +27,8 @@ MainWindow::MainWindow(ServerWS *server, QWidget *parent, bool debug_t, bool deb
         if(conectado){
             consul->cerrar();
 
+            reloj = new Reloj;
+
             get_last_event();
 
             //aquí agregar las pantallas
@@ -59,7 +61,7 @@ MainWindow::MainWindow(ServerWS *server, QWidget *parent, bool debug_t, bool deb
             ENVIAR_SIGNOS = 0;
             showFullScreen();
 
-            reloj = new Reloj;
+            //reloj = new Reloj;
             reloj->asignaLabel(monitor->label_fecha);
             //monitor->get_last_event();
             //reloj->start();
