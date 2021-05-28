@@ -47,9 +47,17 @@ void myMessageHandler(QtMsgType type, const QMessageLogContext &, const QString 
 
 }
 
+/*void signal_handler(int signum) {
+    signal(SIGSEGV, SIG_DFL);
+    signal(SIGFPE, SIG_DFL);
+    //aewm_obj.show_fault(signum);
+}*/
 
 int main(int argc, char *argv[])
 {
+    /*signal(SIGSEGV, signal_handler);
+    signal(SIGFPE, signal_handler);*/
+
     QApplication a(argc, argv);
 
     bool debug_s = false;
@@ -79,6 +87,8 @@ int main(int argc, char *argv[])
     }
 
     ServerWS *server = new ServerWS(9090, true);
+
+
 
     MainWindow w(server, nullptr, debug_t, debug_c, debug_s);
     w.show();

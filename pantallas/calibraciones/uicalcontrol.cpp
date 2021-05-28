@@ -11,7 +11,7 @@ UiCalControl::UiCalControl(QWidget *parent, Monitor *monitor) : QWidget(parent)
         fuente->setBold(true);
         fuente->setWeight(75);
 
-        rangos_offsets = {{0,70},{0,70},{0,200},{0,200},{0,500},{0,999},{0,999},{0,254}};
+        rangos_offsets = {{0,999},{0,999},{0,999},{0,999},{0,999},{0,999},{0,999},{0,999}};
 
         lblOffPeep = new QLabel(this);
         lblOffPeep->setGeometry(QRect(10, 20, 130, 30));
