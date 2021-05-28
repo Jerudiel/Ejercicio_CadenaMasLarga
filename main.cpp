@@ -5,6 +5,7 @@
 #include <QtDebug>
 #include <QFile>
 #include <QTextStream>
+#include <signal.h>
 
 
 #include <QDateTime>
@@ -47,16 +48,20 @@ void myMessageHandler(QtMsgType type, const QMessageLogContext &, const QString 
 
 }
 
-/*void signal_handler(int signum) {
+void signal_handler(int signum) {
     signal(SIGSEGV, SIG_DFL);
     signal(SIGFPE, SIG_DFL);
     //aewm_obj.show_fault(signum);
-}*/
+    qDebug() << "[SIGNAL] VIOLACION DE SEGMENTO" << QString::number(signum);
+    QCoreApplication::quit();
+}
 
 int main(int argc, char *argv[])
 {
-    /*signal(SIGSEGV, signal_handler);
-    signal(SIGFPE, signal_handler);*/
+    signal(SIGSEGV, signal_handler);
+    signal(SIGFPE, signal_handler);
+    signal(SIGINT, signal_handler);
+    signal(SIGTERM, signal_handler);
 
     QApplication a(argc, argv);
 
