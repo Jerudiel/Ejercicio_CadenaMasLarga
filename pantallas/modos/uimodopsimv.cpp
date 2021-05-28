@@ -99,7 +99,7 @@ UiModoPSIMV::UiModoPSIMV() : QWidget()
         labelInfo->setObjectName("labelInfo");
 
         elemento_seleccionado = 0;
-        max_peep_mas_pip = 180;
+        max_peep_mas_pip = 70; //180;
         min_te_min = 0.4;
         min_ti = 0.4;
 

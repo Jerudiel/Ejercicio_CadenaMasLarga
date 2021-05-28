@@ -4,6 +4,9 @@ MainWindow::MainWindow(ServerWS *server, QWidget *parent, bool debug_t, bool deb
     : QMainWindow(parent)
 {
     try {
+        QString ruta = QDir::currentPath();
+        qDebug() << "ruat path: " + ruta ;
+
         this->server = server;
         connect(server, SIGNAL(enviaComando(QString)), this, SLOT(tecladoVirtual(QString)));
         setGeometry(0,0,1024,650);
