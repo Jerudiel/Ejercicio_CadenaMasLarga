@@ -17,7 +17,7 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
 {
     try {
         cargaMonitorListo = false;
-        versionVentiladorEsperada = "3.9.0";
+        versionVentiladorEsperada = "4.0.0";
         versionSenPresionEsperada = "3.2.0";
         versionTecladoEsperada = "1.0";
         versionPi = "3.7.7E";
