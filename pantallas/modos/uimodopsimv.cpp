@@ -102,6 +102,7 @@ UiModoPSIMV::UiModoPSIMV() : QWidget()
         max_peep_mas_pip = 70; //180;
         min_te_min = 0.4;
         min_ti = 0.4;
+        perilla_global = 1;
 
         retranslateUi();
 
@@ -608,6 +609,7 @@ void UiModoPSIMV::cambiaPerilla(){
                 peri = trigger_p->cambiar_perilla();
             }
         }
+        perilla_global = peri;
         mostrar_mensaje("Perilla: " + QString::number(peri, 'f',1)); //falta mensaje como argumento
     } catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
@@ -661,7 +663,7 @@ QStringList UiModoPSIMV::obtener_valores(){
 
 bool UiModoPSIMV::obtener_max_peep_mas_pip(){
     try {
-        if(psimv_peep->get_valor() + psimv_pinsp->get_valor() + 1 <= max_peep_mas_pip){
+        if(psimv_peep->get_valor() + psimv_pinsp->get_valor() + perilla_global <= max_peep_mas_pip){
             return true;
         }
         else{

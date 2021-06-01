@@ -45,6 +45,7 @@ public:
     int max_peep_mas_pip;
     float min_te_min;
     float min_ti;
+    float perilla_global;
 
     QTimer *timerMensaje;
 
