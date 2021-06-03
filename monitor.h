@@ -668,6 +668,13 @@ public:
     int second_stable_presure;
     int final_presure;
 
+    int air_psi_final;
+    int o2_psi_final;
+    int fio2_final;
+
+    QString s_air_psi_final;
+    QString s_o2_psi_final;
+
 public slots:
     void revisarErrorWDT();
 

@@ -40,6 +40,10 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
         second_stable_presure = 0;
         final_presure = 0;
 
+        air_psi_final = 0;
+        o2_psi_final = 0;
+        fio2_final = 0;
+
         offset_pip = 0;
         /*QString tt_offset = consul->leer_com_pip();
         QStringList tt_off_pip = tt_offset.split(",");
@@ -3101,7 +3105,7 @@ void Monitor::receVent(QString trama){
         //qDebug() << "receVent: " + trama;
         if(trama != ""){
             if(trama.size() > 0){
-                if(trama[0] == "P" && trama.size() == 19){
+                if(trama[0] == "P" && trama.size() == 21){
                     if(! banderaConexionVentilador){
                         banderaConexionVentilador = true;
                     }
@@ -3409,6 +3413,10 @@ void Monitor::receVent(QString trama){
                     timerRAV->start(300);
                     //threading.Thread(target=self.revisar_entra_gases,args=(self.entrada_aire, self.entrada_oxigeno, self.nivel_oxigeno,)).start()
                     timerREG->start(400);
+                    /////estado de gases
+                    //Se necesita saber el valor de: air_psi_final, o2_psi_final,fio2_final
+                    s_air_psi_final = trama.mid(19,1);
+                    s_o2_psi_final = trama.mid(20,1);
                 }
                 else if(trama == "S"){
                     if(! desactivar_s){
@@ -3548,7 +3556,7 @@ void Monitor::receVent(QString trama){
                                 if(timerMIniVent->isActive()){
                                     timerMIniVent->stop();
                                 }
-                                serVent->envia_trama_config("P\n");
+                                serVent->envia_trama_config("P00\n"); //solo es la primera vez
                                 timerConVentilador->start(7000);
                                 ventiladorListo = true;
                             }
@@ -5605,7 +5613,23 @@ void Monitor::revisarConexionVentilador(){
             }
         }
         if(! configurandoVentilador){
-            serVent->envia_trama_config("P\n");
+            //preparar trama | air_psi_final, o2_psi_final,fio2_final
+            QString trama_temp = "P";
+            if(air_psi_final < 20 && !(o2_psi_final > 30 && fio2_final == 100)){
+                trama_temp += "1";
+            }
+            else{
+                trama_temp += "0";
+            }
+
+            if(o2_psi_final < 30 && !(fio2_final == 100)){
+                trama_temp += "1";
+            }
+            else{
+                trama_temp += "0";
+            }
+            trama_temp += "\n";
+            serVent->envia_trama_config(trama_temp);
         }
         timerConVentilador->start(7000);
     }  catch (std::exception &e) {
@@ -7064,6 +7088,11 @@ void Monitor::revisar_entra_gases(){
             aire_of = aire;
             oxigeno_of = oxigeno;
         }
+        //nuevas variables
+        air_psi_final = aire_of;
+        o2_psi_final = oxigeno_of;
+
+        //
         if(aire_of < min_entrada_aire){
             if(! buscar_en_lista("P. Aire BAJO")){
                 agregar_en_lista("P. Aire BAJO", 1);
@@ -7232,6 +7261,7 @@ void Monitor::revisar_entra_gases(){
         ///////
         if(listo_medir_fio2 && estadoVentilador){
             float fio2 = tramaVentilador.mid(29,3).toFloat();
+            fio2_final = fio2;
             if(nivel_oxi < (fio2 -5)){
                 if(! buscar_en_lista("FIO2 BAJO")){
                     agregar_en_lista("FIO2 BAJO", 1);
