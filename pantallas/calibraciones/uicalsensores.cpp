@@ -194,7 +194,7 @@ void UiCalSensores::revisarCambios(){
     try {
         if(monitor->cambiosCalibrar){
             bool temp = monitor->consul->guarda_cali(lEFactInh->text(), lEUmBajo->text(), lEFactExh->text(),
-                                                    lEUmAlto->text(), lEOffPres->text(), lEAjuExh->text(), lEOffExh->text(), lEFacVPH->text(), lblDeltaT->text());
+                                                    lEUmAlto->text(), lEOffPres->text(), lEAjuExh->text(), lEOffExh->text(), lEFacVPH->text(), lEDeltaT->text());
             if(temp){
                 labelInfo->setText("Los cambios fueron aplicados");
             }

@@ -35,6 +35,10 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
 
         pruebasPresionTerminadas = false;
 
+        top_presure = 0;
+        stable_presure = 0;
+        second_stable_presure = 0;
+        final_presure = 0;
 
         offset_pip = 0;
         /*QString tt_offset = consul->leer_com_pip();
@@ -3655,6 +3659,7 @@ void Monitor::receVent(QString trama){
                             esperando_presion_tope = false;
                             presion_inicial_pruebas = presion;
                             qDebug() << "[PRUEBAS] Llegó a la presión tope Q";
+                            stable_presure = presion;
                             timerPresionFinal->start(1000);
                         }
                         else{
@@ -3665,6 +3670,7 @@ void Monitor::receVent(QString trama){
                     else{
                         if(revisar_presion_tope){
                             presion_pruebas = presion;
+                            second_stable_presure = presion_pruebas;
                             if((presion_inicial_pruebas - presion_pruebas) > presion_tope*0.1){
                                 fuga();
                                 revisar_presion_tope = false;
@@ -3677,6 +3683,7 @@ void Monitor::receVent(QString trama){
                         }
                         else if(revisar_liberacion_presion){
                             presion_pruebas = presion;
+                            final_presure = presion_pruebas;
                             if((presion_inicial_salida - presion_pruebas) > presion_tope * 0.5){
                                 libera();
                                 revisar_liberacion_presion = false;
@@ -3692,6 +3699,7 @@ void Monitor::receVent(QString trama){
                     QThread::msleep(50);
                     int presion = trama.mid(1,3).toInt();
                     qDebug() << "[PRUEBAS] PRESION U: " + QString::number(presion);
+                    top_presure = presion;
                     QString estado_sensor = trama.mid(4,1);
                     serVent->envia_trama_config("U\n");
                     //checar si la presión es mayor a 35, mandar a detener y mostrar error
@@ -3804,7 +3812,7 @@ void Monitor::libera(){
             pruebas->label_presion_estado->setStyleSheet("color: green; background-color: #D5D8DC;");
             //numero_prueba ++;
             pruebas->label_info->setText("Presione INICIAR \n para iniciar prueba de sensor de oxígeno.");
-            consul->agregar_evento("PRUEBAS", obtener_modo(), "FIN PRESION CORRECTA");
+            consul->agregar_evento("PRUEBAS", obtener_modo(), "FIN PRESION CORRECTA " + QString::number(top_presure) + " - " + QString::number(stable_presure) + " - " + QString::number(second_stable_presure) + " - " + QString::number(final_presure));
             timerFinPruebaPresion->start(5000);
             detener_pruebas_presion();
             oxis->mostrar();
@@ -4429,7 +4437,7 @@ void Monitor::recePresion(QString trama){
 
                         if(temp_parts.size() == 2){
                             //separar partes para la calibracion
-                            if(temp_parts.at(1).size() == 24){
+                            if(temp_parts.at(1).size() == 28){
                                 QString b1 = temp_parts.at(1).mid(0, 3);
                                 QString b2 = temp_parts.at(1).mid(3, 3);
                                 QString b3 = temp_parts.at(1).mid(6, 3);

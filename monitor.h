@@ -663,6 +663,11 @@ public:
 
     void get_last_event();
 
+    int top_presure;
+    int stable_presure;
+    int second_stable_presure;
+    int final_presure;
+
 public slots:
     void revisarErrorWDT();
 
