@@ -18,9 +18,9 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
     try {
         cargaMonitorListo = false;
         versionVentiladorEsperada = "4.0.0";
-        versionSenPresionEsperada = "3.2.0";
+        versionSenPresionEsperada = "3.3.0";
         versionTecladoEsperada = "1.0";
-        versionPi = "3.7.7E";
+        versionPi = "3.7.8E";
 
         mainwindow = parent;
         this->consul = consul;
@@ -4436,9 +4436,10 @@ void Monitor::recePresion(QString trama){
                                 QString b4 = temp_parts.at(1).mid(9, 3);
                                 QString b5 = temp_parts.at(1).mid(12, 3);
                                 QString b6 = temp_parts.at(1).mid(15, 3);
-                                QString b7 = temp_parts.at(1).mid(18, 3);
-                                QString b8 = temp_parts.at(1).mid(21, 3);
-                                consul->guarda_cali(b1, b2, b3, b4, b5, b6, b7, b8);
+                                QString b7 = temp_parts.at(1).mid(18, 4);
+                                QString b8 = temp_parts.at(1).mid(22, 3);
+                                QString b9 = temp_parts.at(1).mid(25, 3);
+                                consul->guarda_cali(b1, b2, b3, b4, b5, b6, b7, b8, b9);
                             }
                             else{
                                 qDebug() << "[CONFIGURACION] Error al recibir datos calibracion sensores ";

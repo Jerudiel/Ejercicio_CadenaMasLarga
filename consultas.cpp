@@ -690,12 +690,12 @@ QString Consultas::leer_calibracion(){
     }
 }
 
-bool Consultas::guarda_cali(QString b1, QString b2, QString b3, QString b4, QString b5, QString b6, QString b7, QString b8){
+bool Consultas::guarda_cali(QString b1, QString b2, QString b3, QString b4, QString b5, QString b6, QString b7, QString b8, QString b9){
     try {
         QString id_cali = obtener_id_calibracion();
         if(id_cali != ""){
             QString update_query = "UPDATE Calibracion SET f1 = " + b1 + ", f2 = " + b2 + ", f3 = " + b3 +
-                    ", f4 = " + b4 + ", f5 = " + b5 + ", f6 = " + b6 + ", f7 = " + b7 + ", f8 = " + b8 + " WHERE id = " + id_cali;
+                    ", f4 = " + b4 + ", f5 = " + b5 + ", f6 = " + b6 + ", f7 = " + b7 + ", f8 = " + b8 + ", f9 = " + b9 + " WHERE id = " + id_cali;
             QString resultados = consulta(update_query);
             if(resultados.at(1) != ""){
                 return true;

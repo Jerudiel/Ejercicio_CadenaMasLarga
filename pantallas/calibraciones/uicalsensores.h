@@ -38,6 +38,8 @@ public:
     QPushButton *btnAplicarCambios;
     QLabel * lblFacVPH;
     QLineEdit * lEFacVPH;
+    QLabel * lblDeltaT;
+    QLineEdit * lEDeltaT;
     QLabel *labelInfo;
     QTimer *timerCambiosAplicados;
 
@@ -48,6 +50,7 @@ public:
     virtual void paintEvent(QPaintEvent *event);
     void cargarFactores();
     QString darFormato3Bytes(QString numero);
+    QString darFormato4Bytes(QString numero);
 
 public slots:
     void aplicarCambios();

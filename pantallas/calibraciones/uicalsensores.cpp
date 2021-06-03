@@ -115,6 +115,19 @@ UiCalSensores::UiCalSensores(QWidget *parent, Monitor *monitor) : QWidget(parent
         lEFacVPH->setAlignment(Qt::AlignCenter);
         lEFacVPH->setObjectName("lEFacVPH");
 
+        lblDeltaT = new QLabel(this);
+        lblDeltaT->setGeometry(QRect(340, 170, 130, 30));
+        lblDeltaT->setFont(*fuente);
+        lblDeltaT->setStyleSheet("color: white;");
+        lblDeltaT->setAlignment(Qt::AlignCenter);
+        lblDeltaT->setObjectName("lblDeltaT");
+
+        lEDeltaT = new QLineEdit(this);
+        lEDeltaT->setGeometry(QRect(470, 170, 100, 30));
+        lEDeltaT->setFont(*fuente);
+        lEDeltaT->setAlignment(Qt::AlignCenter);
+        lEDeltaT->setObjectName("lEDeltaT");
+
         btnAplicarCambios = new QPushButton(this);
         btnAplicarCambios->setGeometry(QRect(200, 300, 225, 50));
         btnAplicarCambios->setFont(*fuente);
@@ -154,8 +167,9 @@ void UiCalSensores::retranslateUi(){
         lblUmBAlto->setText("Factor In4: ");
         lblOffPres->setText("Offset Pre: ");
         lblAjuExh->setText("Factor Exh: ");
-        lblOffExh->setText("Factor V-P L: ");
-        lblFacVPH->setText("Factor V-P H: ");
+        lblOffExh->setText("Factor V-P: ");
+        lblFacVPH->setText("Limite C: ");
+        lblDeltaT->setText("Delta T: ");
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
 
@@ -180,7 +194,7 @@ void UiCalSensores::revisarCambios(){
     try {
         if(monitor->cambiosCalibrar){
             bool temp = monitor->consul->guarda_cali(lEFactInh->text(), lEUmBajo->text(), lEFactExh->text(),
-                                                    lEUmAlto->text(), lEOffPres->text(), lEAjuExh->text(), lEOffExh->text(), lEFacVPH->text());
+                                                    lEUmAlto->text(), lEOffPres->text(), lEAjuExh->text(), lEOffExh->text(), lEFacVPH->text(), lblDeltaT->text());
             if(temp){
                 labelInfo->setText("Los cambios fueron aplicados");
             }
@@ -208,6 +222,29 @@ QString UiCalSensores::darFormato3Bytes(QString numero){
             res = "0" + QString::number(temp_int);
         }
         else if(100 <= temp_int && temp_int < 1000){
+            res = QString::number(temp_int);
+        }
+        return res;
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        return "";
+    }
+}
+
+QString UiCalSensores::darFormato4Bytes(QString numero){
+    try {
+        QString res = "";
+        int temp_int = numero.toInt();
+        if(0 <= temp_int && temp_int < 10){
+            res = "000" + QString::number(temp_int);
+        }
+        else if(10 <= temp_int && temp_int < 100){
+            res = "00" + QString::number(temp_int);
+        }
+        else if(100 <= temp_int && temp_int < 1000){
+            res = "0" + QString::number(temp_int);
+        }
+        else if(1000 <= temp_int && temp_int < 10000){
             res = QString::number(temp_int);
         }
         return res;
@@ -253,13 +290,19 @@ void UiCalSensores::aplicarCambios(){
         temp_list->append(temp7);
         QString temp8 = lEFacVPH->text();
         temp_list->append(temp8);
+        QString temp9 = lEDeltaT->text();
+        temp_list->append(temp9);
 
         try {
             bool resultado = true;
             for(int j=0; j < temp_list->size(); j++){
                 try {
                     int tt_int = temp_list->at(j).toInt();
-                    if(tt_int > 999){
+                    if(tt_int > 999 && j != 6){
+                        resultado = false;
+                        break;
+                    }
+                    if(tt_int > 9999 && j == 6){
                         resultado = false;
                         break;
                     }
@@ -271,10 +314,15 @@ void UiCalSensores::aplicarCambios(){
             QString trama = "B";
             if(resultado){
                 for(int j=0; j < temp_list->size(); j++){
-                    trama += darFormato3Bytes(temp_list->at(j));
+                    if(j != 6){
+                        trama += darFormato3Bytes(temp_list->at(j));
+                    }
+                    else{
+                        trama += darFormato4Bytes(temp_list->at(j));
+                    }
                 }
                 trama += "\n";
-                if(trama.size() == 26){
+                if(trama.size() == 30){
                     monitor->serPresion->escribir(trama);
                     labelInfo->setText("Configurando...");
                     timerCambiosAplicados->start(6000);
@@ -343,6 +391,7 @@ void UiCalSensores::cargarFactores(){
         lEAjuExh->setText(parts.at(6));
         lEOffExh->setText(parts.at(7));
         lEFacVPH->setText(parts.at(8));
+        lEDeltaT->setText(parts.at(9));
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
 
