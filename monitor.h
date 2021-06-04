@@ -34,6 +34,7 @@
 #include "utilidades/uiqwidgetmenugrafica.h"
 #include "utilidades/ventanaaviso.h"
 #include "utilidades/ventanaavisotest.h"
+#include "utilidades/ventanainfo.h"
 #include "utilidades/widgetgrafica.h"
 #include "utilidades/widgetgraficalazo.h"
 #include "utilidades/ventanainsfuga.h"
@@ -297,6 +298,10 @@ public:
     VentanaCalibrar *calibrar;
 
     VentanaConfigPI *configPI;
+
+    VentanaInfo *ventanaInfo;
+    QTimer *timerVentanaInfo;
+    void mostrarVentanaInfo(QString mensaje);
 
     bool inicializacion;
 
@@ -748,6 +753,8 @@ public slots:
     void limpiarInfoAltura();
 
     void limpiarMensajeVentanaPruebas();
+
+    void ocultarVentanaInfo();
 signals:
     void calTeclado(QString trama);
     void get_mode_keyboard_frame(QString frame);

@@ -17,10 +17,10 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
 {
     try {
         cargaMonitorListo = false;
-        versionVentiladorEsperada = "4.0.0";
+        versionVentiladorEsperada = "4.1.0";
         versionSenPresionEsperada = "3.3.0";
         versionTecladoEsperada = "1.0";
-        versionPi = "3.7.8E";
+        versionPi = "3.7.9E";
 
         mainwindow = parent;
         this->consul = consul;
@@ -606,6 +606,16 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
         connect(menu->btn_pruebas, SIGNAL(clicked()), this, SLOT(abrir_pruebas()));
         menu->hide();
 
+        //ventana info
+        ventanaInfo = new VentanaInfo(this, 500, 300);
+        ventanaInfo->move(0,0);
+        ventanaInfo->resize(mainwindow->width(), mainwindow->height());
+        ventanaInfo->hide();
+
+        timerVentanaInfo = new QTimer;
+        timerVentanaInfo->setSingleShot(3000);
+        connect(timerVentanaInfo, SIGNAL(timeout()), this, SLOT(ocultarVentanaInfo()));
+
         //qDebug() << "Termina de VentanaMenu";
 
         contador_apagar = 0;
@@ -922,6 +932,26 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
     }
     catch(...){
         qWarning("ERROR AL CREAR CLASE MONITOR");
+    }
+}
+
+void Monitor::mostrarVentanaInfo(QString mensaje){
+    try {
+        QStringList *tt = new QStringList{"", "", "", "", mensaje};
+        ventanaInfo->textoMostrar(tt);
+        ventanaInfo->show();
+        timerVentanaInfo->start();
+
+    }  catch (std::exception &e) {
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+    }
+}
+
+void Monitor::ocultarVentanaInfo(){
+    try {
+        ventanaInfo->hide();
+    }  catch (std::exception &e) {
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -1605,12 +1635,22 @@ void Monitor::espera_si_confirmacion(){
             espera_parar = false;
         }
         else if(espera_iniciar){
-            controlVentilador();
             espera_parar = false;
+            if(!ino_wdt_alarm){
+                controlVentilador();
+            }
+            else{
+                mostrarVentanaInfo("Ventilador inoperante");
+            }
         }
         else if(espera_actualizar){
-            actualizarDatosVentilador();
             espera_actualizar = false;
+            if(!ino_wdt_alarm){
+                actualizarDatosVentilador();
+            }
+            else{
+                mostrarVentanaInfo("Ventilador inoperante");
+            }
         }
         else if(espera_apagar){
             //QProcess::execute("sudo shutdown now");
