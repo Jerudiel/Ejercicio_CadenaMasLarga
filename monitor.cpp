@@ -20,7 +20,7 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
         versionVentiladorEsperada = "4.1.0";
         versionSenPresionEsperada = "3.3.0";
         versionTecladoEsperada = "1.0";
-        versionPi = "3.7.9E";
+        versionPi = "3.7.10E";
 
         mainwindow = parent;
         this->consul = consul;
@@ -4837,7 +4837,7 @@ void Monitor::revisar_alarmas_senpresion(){
                 if(buscar_en_lista("Vol min MAX")){
                     actualizar_en_lista("Vol min MAX", 0);
                     consul->agregar_evento("ALARMA", obtener_modo(), "VOLUMEN MIN ALTO DESACTIVADO - 4");
-                    if(diccionario_alarma->value("Vol min MAX") == 0){
+                    if(diccionario_alarma->value("Vol min MAX") == 0 && diccionario_alarma->value("Vol min MIN") == 0){
                         if(estadoAlarmaVolMin){
                             estadoAlarmaVolMin = false;
                             alarmaControl->detenAlarma(alarmaControl->VOLMINIMO);
@@ -4883,7 +4883,7 @@ void Monitor::revisar_alarmas_senpresion(){
                     consul->agregar_evento("ALARMA", obtener_modo(), "PRESION ALTA DESACTIVADA - 5");
                     signoPIP->bar->setPalette(*paleNormal);
                     signoPIP->label_title->setStyleSheet("color: white;");
-                    if(diccionario_alarma->value("Presion MAX") == 0){
+                    if(diccionario_alarma->value("Presion MAX") == 0 && diccionario_alarma->value("Presion baja") == 0 && diccionario_alarma->value("Presion MIN") == 0){
                         if(estadoAlarmaPresion){
                             estadoAlarmaPresion = false;
                             alarmaControl->detenAlarma(alarmaControl->PRESION);
@@ -4998,7 +4998,7 @@ void Monitor::revisar_alarmas_senpresion(){
                 if(buscar_en_lista("Vol tidal MAX")){
                     actualizar_en_lista("Vol tidal MAX", 0);
                     consul->agregar_evento("ALARMA", obtener_modo(), "VOLUMEN TIDAL ALTO DESACTIVADO - 7");
-                    if(diccionario_alarma->value("Vol tidal MAX") == 0){
+                    if(diccionario_alarma->value("Vol tidal MAX") == 0 && diccionario_alarma->value("Vol tidal MIN") == 0){
                         if(estadoAlarmaVol){
                             estadoAlarmaVol = false;
                             alarmaControl->detenAlarma(alarmaControl->VOLUMEN);
@@ -5063,7 +5063,7 @@ void Monitor::revisar_alarmas_senpresion(){
                 if(buscar_en_lista("Frec. MAX")){
                     actualizar_en_lista("Frec. MAX", 0);
                     consul->agregar_evento("ALARMA", obtener_modo(), "FRECUENCIA ALTA DESACTIVADA - 8");
-                    if(diccionario_alarma->value("Frec. MAX") == 0){
+                    if(diccionario_alarma->value("Frec. MAX") == 0 && diccionario_alarma->value("Frec. MIN") == 0){
                         if(estadoAlarmaFr){
                             estadoAlarmaFr = false;
                             alarmaControl->detenAlarma(alarmaControl->FRECUENCIA);
@@ -5128,7 +5128,7 @@ void Monitor::revisar_alarmas_senpresion(){
                 if(buscar_en_lista("Frec. MIN")){
                     actualizar_en_lista("Frec. MIN", 0);
                     consul->agregar_evento("ALARMA", obtener_modo(),  "FRECUENCIA BAJA DESACTIVADA - 9");
-                    if(diccionario_alarma->value("Frec. MIN") == 0){
+                    if(diccionario_alarma->value("Frec. MIN") == 0 && diccionario_alarma->value("Frec. MAX") == 0){
                         if(estadoAlarmaFr){
                             estadoAlarmaFr = false;
                             alarmaControl->detenAlarma(alarmaControl->FRECUENCIA);
@@ -5179,7 +5179,7 @@ void Monitor::revisar_alarmas_senpresion(){
                 if(buscar_en_lista("Vol min MIN")){
                     actualizar_en_lista("Vol min MIN", 0);
                     consul->agregar_evento("ALARMA", obtener_modo(), "VOLUMEN MIN BAJO DESACTIVADO - A");
-                    if(diccionario_alarma->value("Vol min MIN") == 0){
+                    if(diccionario_alarma->value("Vol min MIN") == 0 && diccionario_alarma->value("Vol min MAX") == 0){
                         if(estadoAlarmaVolMin){
                             estadoAlarmaVolMin = false;
                             alarmaControl->detenAlarma(alarmaControl->VOLMINIMO);
@@ -5237,7 +5237,7 @@ void Monitor::revisar_alarmas_senpresion(){
                 if(buscar_en_lista("Vol tidal MIN")){
                     actualizar_en_lista("Vol tidal MIN", 0);
                     consul->agregar_evento("ALARMA", obtener_modo(), "VOLUMEN TIDAL BAJO DESACTIVADO - B");
-                    if(diccionario_alarma->value("Vol tidal MIN") == 0){
+                    if(diccionario_alarma->value("Vol tidal MIN") == 0 && diccionario_alarma->value("Vol tidal MAX") == 0){
                         if(estadoAlarmaVol){
                             estadoAlarmaVol = false;
                             alarmaControl->detenAlarma(alarmaControl->VOLUMEN);
@@ -5290,7 +5290,7 @@ void Monitor::revisar_alarmas_senpresion(){
                     consul->agregar_evento("ALARMA", obtener_modo(), "PRESION BAJA DESACTIVADA - C");
                     signoPEEP->bar->setPalette(*paleNormal);
                     signoPEEP->label_title->setStyleSheet("color: white;");
-                    if(diccionario_alarma->value("Presion MIN") == 0){
+                    if(diccionario_alarma->value("Presion MIN") == 0 && diccionario_alarma->value("Presion MAX") == 0 && diccionario_alarma->value("Presion baja") == 0){
                         if(estadoAlarmaPresion){
                             estadoAlarmaPresion = false;
                             alarmaControl->detenAlarma(alarmaControl->PRESION);
@@ -5328,7 +5328,7 @@ void Monitor::revisar_alarmas_senpresion(){
                 if(buscar_en_lista("Presion baja")){
                     actualizar_en_lista("Presion baja", 0);
                     consul->agregar_evento("ALARMA", obtener_modo(), "PRESION BAJA CONFIG DESACTIVADA - D");
-                    if(diccionario_alarma->value("Presion baja") == 0){
+                    if(diccionario_alarma->value("Presion baja") == 0 && diccionario_alarma->value("Presion MIN") == 0 && diccionario_alarma->value("Presion MAX") == 0){
                         if(estadoAlarmaPresion){
                             estadoAlarmaPresion = false;
                             alarmaControl->detenAlarma(alarmaControl->PRESION);
@@ -5886,6 +5886,15 @@ void Monitor::iniciar_ventilador(){
         QString tram = tramaVentilador.mid(0,44);
         tram = tram + "1\n";
         tramaVentilador = tram;
+        // Aqui se va a modificar los bytes del PWM del oxigeno, si la bandera está activa
+        //mandar pwm de 60 a la de oxígeno
+        if(s_o2_psi_final == "1"){
+            QString ttram_1 = tramaVentilador.mid(0,21);
+            QString temp = "0060";
+            QString ttram_2 = tramaVentilador.mid(25);
+            tramaVentilador = ttram_1 + temp + ttram_2;
+        }
+        //
         qDebug() << "[CONTROL] trama a ventilador encender: " + tramaVentilador;
         serVent->iniciar_ventilador(tramaVentilador);
         desactivar_s = false;
