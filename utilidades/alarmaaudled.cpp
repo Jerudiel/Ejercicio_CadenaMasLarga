@@ -162,6 +162,7 @@ void AlarmaAudLed::durationChanged(qint64 duracion){
         if(audio_corriendo){
             //qDebug() << "duracion cargada: manda a reproducir!";
             duracion_sonido = duracion;
+            qDebug() << "[AlarmaAudLed] durationChanged: " << reproductorMulti->isAudioAvailable();
             reproductorMulti->play();
         }
 
@@ -185,6 +186,7 @@ void AlarmaAudLed::positionChanged(qint64 posicion){
             if(audio_corriendo && ! enPausa && ! cambioAudio){
                 //qDebug() << "cargando para volver a reproducir";
                 reproductorMulti->setMedia(wave_actual);
+                qDebug() << "[AlarmaAudLed] positionChanged: " <<reproductorMulti->isAvailable();
             }
 
             //reproductorMulti->play();
@@ -392,9 +394,9 @@ void AlarmaAudLed::iniciaAlarma(int tipo){
                 //listaReproduccion->setCurrentIndex(INDEX_INOPERANTE);
                 //listaReproduccion->setPlaybackMode(QMediaPlaylist::CurrentItemInLoop);
                 //reproductorMulti->setPlaylist(listaReproduccion);
-                reproductorMulti->setMedia(wave_inoperante);
-                //reproductorMulti->play();
                 wave_actual = wave_inoperante;
+                reproductorMulti->setMedia(wave_inoperante);
+                //reproductorMulti->play(); 
                 qDebug() << "[AUDIO] reproducir alarma inoperante";
             }
             else if(prioAltaAct){
@@ -403,9 +405,9 @@ void AlarmaAudLed::iniciaAlarma(int tipo){
                 //listaReproduccion->setCurrentIndex(INDEX_ALTA);
                 //listaReproduccion->setPlaybackMode(QMediaPlaylist::CurrentItemInLoop);
                 //reproductorMulti->setPlaylist(listaReproduccion);
+                wave_actual = wave_alta;
                 reproductorMulti->setMedia(wave_alta);
                 //reproductorMulti->play();
-                wave_actual = wave_alta;
                 qDebug() << "[AUDIO] reproducir alarma alta";
             }
             else{
@@ -414,9 +416,9 @@ void AlarmaAudLed::iniciaAlarma(int tipo){
                 //listaReproduccion->setCurrentIndex(INDEX_MEDIA);
                 //listaReproduccion->setPlaybackMode(QMediaPlaylist::CurrentItemInLoop);
                 //reproductorMulti->setPlaylist(listaReproduccion);
+                wave_actual = wave_media;
                 reproductorMulti->setMedia(wave_media);
                 //reproductorMulti->play();
-                wave_actual = wave_media;
                 qDebug() << "[AUDIO] reproducir alarma media";
             }
             //reproductor->play();
