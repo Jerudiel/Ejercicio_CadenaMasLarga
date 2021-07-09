@@ -30,7 +30,7 @@ SenPresion::SenPresion(bool debug)
         corriendo = false;
         tramaConf = "";
         //listaErrores = {"NoError","DeviceNotFoundError","PermissionError","OpenError","ParityError","FramingError","BreakConditionError","WriteError","ReadError","ResourceError","UnsupportedOperationError","UnknownError","TimeoutError","NotOpenError"};
-        strDisp = "SenPresion - ";
+        strDisp = "[SenPresion] - ";
         contador_errores = 0;
         ready = false;
         if(debug){

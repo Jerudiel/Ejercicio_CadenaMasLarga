@@ -296,8 +296,8 @@ QString TramaVSIMV::obtener_trama_ventilador(){
             return trama;
         }
         else{
-            qDebug() << "trama incorrecta M: " + trama;
-            qDebug() << "longitud: " + QString::number(trama.size());
+            qDebug() << "[TRAMA VSIMV] trama incorrecta M: " + trama;
+            qDebug() << "[TRAMA VSIMV] longitud: " + QString::number(trama.size());
             return "";
         }
     }  catch (std::exception &e) {

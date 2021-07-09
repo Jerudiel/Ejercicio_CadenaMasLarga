@@ -592,8 +592,8 @@ void UiCalTeclado::check_new_data_keyboard(){
         if(monitor->isReadyKeyFromKeyboard){
             //poner checked la tecla
             int indice_tecla = mapKey->value(monitor->valueFromKeyboard.toUpper());
-            qDebug() << "check_new_data_keyboard - Indice: " + QString::number(indice_tecla);
-            qDebug() << "check_new_data_keyboard - tecla: " + monitor->valueFromKeyboard.toUpper();
+            //qDebug() << "check_new_data_keyboard - Indice: " + QString::number(indice_tecla);
+            //qDebug() << "check_new_data_keyboard - tecla: " + monitor->valueFromKeyboard.toUpper();
             set_checked_button(indice_tecla, true);
             monitor->isReadyKeyFromKeyboard = false;
             dataKeyboard.append(monitor->valueFromKeyboard + "\n");

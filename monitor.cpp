@@ -4016,7 +4016,7 @@ void Monitor::cierraAvisoPresion(){
 
 void Monitor::muestraAvisoTest(QString mensajes){
     try {
-        qDebug() << mensajes;
+        //qDebug() << mensajes;
         vAvisoT = new VentanaAvisoTest(this, 500, 450,"PRUEBA DEL EQUIPO");
         vAvisoT->move(0,0);
         vAvisoT->resize(mainwindow->width(), mainwindow->height());
@@ -5163,7 +5163,7 @@ void Monitor::revisar_alarmas_senpresion(){
                 else{
                     if(diccionario_alarma->value("Vol min MIN") == 0){
                         actualizar_en_lista("Vol min MIN", 1);
-                        qDebug() << "___Agrega Vol min MIN";
+                        qDebug() << "[ALARMA] Agrega Vol min MIN";
                         signoVm->bar->setPalette(*paleAlta);
                         signoVm->label_title->setStyleSheet("color: red;");
                         consul->agregar_evento("ALARMA", obtener_modo(),  "VOLUMEN MIN BAJO ACTIVADO - A");

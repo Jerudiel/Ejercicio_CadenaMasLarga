@@ -21,7 +21,7 @@ Teclado::Teclado(bool debug) : QWidget() //, void *funcion
         connect(monitor, SIGNAL(timeout()), this, SLOT(run()));
         primera = true;
         //listaErrores = {"NoError","DeviceNotFoundError","PermissionError","OpenError","ParityError","FramingError","BreakConditionError","WriteError","ReadError","ResourceError","UnsupportedOperationError","UnknownError","TimeoutError","NotOpenError"};
-        strDisp = "Teclado - ";
+        strDisp = "[Teclado] - ";
         contador_errores = 0;
         if(debug){
             msg("puerto" + puerto);

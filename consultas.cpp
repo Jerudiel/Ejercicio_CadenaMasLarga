@@ -148,7 +148,7 @@ QString Consultas::buscar_ult_config(QString nombreTabla){
             return res_list.at(1);
         }
         else{
-            qDebug() << "buscar_ult_config vacia";
+            //qDebug() << "[DB] buscar_ult_config vacia";
             return "";
         }
     }  catch (std::exception &e) {
@@ -230,7 +230,7 @@ bool Consultas::guardar_config_ultima_PCMV(QString pinsp, QString ipap, QString 
                 return true;
             }
             else{
-                qDebug("False guardar_config_ultima_PCMV");
+                qDebug("[DB] False guardar_config_ultima_PCMV");
                 return false;
             }
         }
@@ -257,12 +257,12 @@ bool Consultas::guardar_config_ultima_VCMV(QString vtinsp, QString peep, QString
                                    ", trigger_presion = " + trigger_presion + " WHERE id = " + id_config_ultima;
             //qDebug() << "guardar_config_ultima_VCMV - query: " + update_query;
             QString resultados = consulta(update_query);
-            //qDebug() << "guardar_config_ultima_VCMV - resultado: " + resultados;
+            qDebug() << "[DB] guardar_config_ultima_VCMV - resultado: " + resultados;
             if(resultados.at(1) != ""){
                 return true;
             }
             else{
-                qDebug("False guardar_config_ultima_VCMV");
+                //qDebug("False guardar_config_ultima_VCMV");
                 return false;
             }
         }
@@ -292,7 +292,7 @@ bool Consultas::guardar_config_ultima_VSIMV(QString vtinsp, QString psoporte, QS
                 return true;
             }
             else{
-                qDebug("False guardar_config_ultima_VSIMV");
+                qDebug("[DB] False guardar_config_ultima_VSIMV");
                 return false;
             }
         }
@@ -322,7 +322,7 @@ bool Consultas::guardar_config_ultima_PSIMV(QString pinsp, QString psoporte, QSt
                 return true;
             }
             else{
-                qDebug("False guardar_config_ultima_PSIMV");
+                qDebug("[DB] False guardar_config_ultima_PSIMV");
                 return false;
             }
         }
@@ -352,7 +352,7 @@ bool Consultas::guardar_config_ultima_PCPAP(QString cpap, QString ps, QString ox
                 return true;
             }
             else{
-                qDebug("False guardar_config_ultima_PCPAP");
+                qDebug("[DB] False guardar_config_ultima_PCPAP");
                 return false;
             }
         }
@@ -382,7 +382,7 @@ bool Consultas::guardar_config_ultima_VCPAP(QString cpap, QString ps, QString ox
                 return true;
             }
             else{
-                qDebug("False guardar_config_ultima_VCPAP");
+                qDebug("[DB] False guardar_config_ultima_VCPAP");
                 return false;
             }
         }
@@ -466,7 +466,7 @@ bool Consultas::guardar_config_ultima_alarm(QString pre_max, QString pre_min, QS
                 return true;
             }
             else{
-                qDebug("False guardar_config_ultima_alarm");
+                qDebug("[DB] False guardar_config_ultima_alarm");
                 return false;
             }
         }
@@ -528,7 +528,7 @@ bool Consultas::actualizar_modo(int modo){
                 return true;
             }
             else{
-                qDebug("False actualizar_modo");
+                qDebug("[DB] False actualizar_modo");
                 return false;
             }
         }
@@ -585,7 +585,7 @@ bool Consultas::cambiar_sentido_giro(QString sentido){
                 return true;
             }
             else{
-                qDebug("False cambiar_sentido_giro");
+                qDebug("[DB] False cambiar_sentido_giro");
                 return false;
             }
         }
@@ -637,13 +637,13 @@ bool Consultas::cambiar_tipo_sensor(QString sentido){
         QString id_giro = obtener_id_tipo_sensor();
         if(id_giro != ""){
             QString update_query = "UPDATE Tipo_Sensor SET tipo = " + sentido + " WHERE id = " + id_giro;
-            qDebug() << "query - cambiar_tipo_sensor " + update_query;
+            //qDebug() << "query - cambiar_tipo_sensor " + update_query;
             QString resultados = consulta(update_query);
             if(resultados.at(1) != ""){
                 return true;
             }
             else{
-                qDebug("False cambiar_tipo_sensor");
+                qDebug("[DB] False cambiar_tipo_sensor");
                 return false;
             }
         }
@@ -701,7 +701,7 @@ bool Consultas::guarda_cali(QString b1, QString b2, QString b3, QString b4, QStr
                 return true;
             }
             else{
-                qDebug("False guarda_cali");
+                qDebug("[DB] False guarda_cali");
                 return false;
             }
         }
@@ -759,7 +759,7 @@ bool Consultas::guarda_offsets(QString b1, QString b2, QString b3, QString b4, Q
                 return true;
             }
             else{
-                qDebug("False guarda_cali");
+                qDebug("[DB] False guarda_cali");
                 return false;
             }
         }
@@ -816,7 +816,7 @@ bool Consultas::guarda_altura(QString b1){
                 return true;
             }
             else{
-                qDebug("False guarda_cali");
+                qDebug("[DB] False guarda_cali");
                 return false;
             }
         }
@@ -839,7 +839,7 @@ bool Consultas::guarda_cali_flujo(QString flujo){
                 return true;
             }
             else{
-                qDebug("False guarda_cali");
+                qDebug("[DB] False guarda_cali");
                 return false;
             }
         }
@@ -862,7 +862,7 @@ bool Consultas::guarda_cali_presion(QString presion){
                 return true;
             }
             else{
-                qDebug("False guarda_cali");
+                qDebug("[DB] False guarda_cali");
                 return false;
             }
         }
@@ -1014,7 +1014,7 @@ bool Consultas::borrar_evento(QString id){
             return true;
         }
         else{
-            qDebug("False actualizar_modo");
+            qDebug("[DB] False actualizar_modo");
             return false;
         }
     }  catch (std::exception &e) {
@@ -1078,7 +1078,7 @@ bool Consultas::guarda_teclado(QString pres, QString solt){
                 return true;
             }
             else{
-                qDebug("False guarda_cali");
+                qDebug("[DB] False guarda_cali");
                 return false;
             }
         }

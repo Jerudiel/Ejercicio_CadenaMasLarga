@@ -19,7 +19,7 @@ ServerWS::ServerWS(quint16 port, bool debug, QObject *parent) : QObject(parent),
     //QHostAddress::Any
     if(m_pWebSocketServer->listen(QHostAddress(ip), port)){
         if(m_debug)
-            qDebug() << "Servidor Mon" << port;
+            qDebug() << "[ServerWS] Servidor Mon" << port;
         connect(m_pWebSocketServer, &QWebSocketServer::newConnection, this, &ServerWS::onNewConnection);
         connect(m_pWebSocketServer, &QWebSocketServer::closed, this, &ServerWS::closed);
     }
@@ -46,7 +46,7 @@ void ServerWS::processTextMessage(QString message)
 {
     //QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
     if (m_debug)
-        qDebug() << "Message received:" << message;
+        qDebug() << "[ServerWS] Message received:" << message;
     emit enviaComando(message);
     /*if (pClient) {
         pClient->sendTextMessage(message);
@@ -59,7 +59,7 @@ void ServerWS::processBinaryMessage(QByteArray message)
 {
     QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
     if (m_debug)
-        qDebug() << "Binary Message received:" << message;
+        qDebug() << "[ServerWS] Binary Message received:" << message;
     if (pClient) {
         pClient->sendBinaryMessage(message);
     }
@@ -71,7 +71,7 @@ void ServerWS::socketDisconnected()
 {
     QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
     if (m_debug)
-        qDebug() << "socketDisconnected:" << pClient;
+        qDebug() << "[ServerWS] socketDisconnected:" << pClient;
     if (pClient) {
         m_clients.removeAll(pClient);
         pClient->deleteLater();

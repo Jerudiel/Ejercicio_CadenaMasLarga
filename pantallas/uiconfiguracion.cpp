@@ -1127,10 +1127,10 @@ void UiConfiguracion::elementoNoChecked(){
 void UiConfiguracion::guardarModo(int modo){
     try {
         if(monitor->consul->actualizar_modo(modo)){
-            qDebug() << "***Modo guardado: " + QString::number(modo);
+            qDebug() << "[UI CONFIGURACION] Modo guardado: " + QString::number(modo);
         }
         else{
-            qDebug() << "***Modo no guardado: " + QString::number(modo);
+            qDebug() << "[UI CONFIGURACION] Modo no guardado: " + QString::number(modo);
         }
     } catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
@@ -1148,11 +1148,11 @@ void UiConfiguracion::guardarConfigPCMV(){
                 configModo->modoPCMV->mostrar_mensaje("Datos guardados");
             }
             else{
-                qDebug() << "Error al guardar datos";
+                qDebug() << "[UI CONFIGURACION] Error al guardar datos 1";
             }
         }
         else{
-            qDebug() << "Error al obtener los datos";
+            qDebug() << "[UI CONFIGURACION] Error al obtener los datos 2";
         }
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
@@ -1170,11 +1170,11 @@ void UiConfiguracion::guardarConfigVCMV(){
                 configModo->modoVCMV->mostrar_mensaje("Datos guardados");
             }
             else{
-                qDebug() << "Error al guardar datos";
+                qDebug() << "[UI CONFIGURACION] Error al guardar datos 3";
             }
         }
         else{
-            qDebug() << "Error al obtener los datos";
+            qDebug() << "[UI CONFIGURACION] Error al obtener los datos 4";
         }
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
@@ -1192,11 +1192,11 @@ void UiConfiguracion::guardarConfigPSIMV(){
                 configModo->modoPSIMV->mostrar_mensaje("Datos guardados");
             }
             else{
-                qDebug() << "Error al guardar datos";
+                qDebug() << "[UI CONFIGURACION] Error al guardar datos 5";
             }
         }
         else{
-            qDebug() << "Error al obtener los datos";
+            qDebug() << "[UI CONFIGURACION] Error al obtener los datos 6";
         }
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
@@ -1214,11 +1214,11 @@ void UiConfiguracion::guardarConfigVSIMV(){
                 configModo->modoVSIMV->mostrar_mensaje("Datos guardados");
             }
             else{
-                qDebug() << "Error al guardar datos";
+                qDebug() << "[UI CONFIGURACION] Error al guardar datos 7";
             }
         }
         else{
-            qDebug() << "Error al obtener los datos";
+            qDebug() << "[UI CONFIGURACION] Error al obtener los datos 8";
         }
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
@@ -1236,11 +1236,11 @@ void UiConfiguracion::guardarConfigPCPAP(){
                 configModo->modoPCPAP->mostrar_mensaje("Datos guardados");
             }
             else{
-                qDebug() << "Error al guardar datos";
+                qDebug() << "[UI CONFIGURACION] Error al guardar datos 9";
             }
         }
         else{
-            qDebug() << "Error al obtener los datos";
+            qDebug() << "[UI CONFIGURACION] Error al obtener los datos 10";
         }
     } catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
@@ -1258,11 +1258,11 @@ void UiConfiguracion::guardarConfigVCPAP(){
                 configModo->modoVCPAP->mostrar_mensaje("Datos guardados");
             }
             else{
-                qDebug() << "Error al guardar datos";
+                qDebug() << "[UI CONFIGURACION] Error al guardar datos 11";
             }
         }
         else{
-            qDebug() << "Error al obtener los datos";
+            qDebug() << "[UI CONFIGURACION] Error al obtener los datos 12";
         }
     } catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );

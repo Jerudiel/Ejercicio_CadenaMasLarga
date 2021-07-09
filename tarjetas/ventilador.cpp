@@ -289,9 +289,10 @@ void Ventilador::run(){
 
 void Ventilador::msg(QString mensaje){
     try {
-        QDateTime dateTime = QDateTime::currentDateTime();
-        QString dateTimeString = dateTime.toString("yyyy-MM-dd hh:mm:ss.zzz");
-        qDebug() << dateTimeString + " " + strDisp + mensaje + " ";
+        //QDateTime dateTime = QDateTime::currentDateTime();
+        //QString dateTimeString = dateTime.toString("yyyy-MM-dd hh:mm:ss.zzz");
+        //dateTimeString + " " +
+        qDebug() << strDisp + mensaje + " ";
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
 

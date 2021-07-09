@@ -263,8 +263,8 @@ QString TramaPCPAP::obtener_trama_ventilador(){
             return trama;
         }
         else{
-            qDebug() << "trama incorrecta M: " + trama;
-            qDebug() << "longitud: " + QString::number(trama.size());
+            qDebug() << "[TRAMA PCPAP] trama incorrecta M: " + trama;
+            qDebug() << "[TRAMA PCPAP] longitud: " + QString::number(trama.size());
             return "";
         }
     }  catch (std::exception &e) {

@@ -105,7 +105,7 @@ void UiEventos::obtener_numero_scrolls(){
         else{
             numero_scrolls = 0;
         }
-        qDebug() << "obtener_numero_scrolls: " + QString::number(numero_scrolls);
+        //qDebug() << "obtener_numero_scrolls: " + QString::number(numero_scrolls);
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
 

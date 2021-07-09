@@ -70,7 +70,7 @@ QString TramaAlarmas::obtener_fr_max(){
     try {
         QString fr_max_s = "";
         int fr_max_int = fr_max.toInt();
-        qDebug() << "val int fr_max: " + QString::number(fr_max_int);
+        //qDebug() << "val int fr_max: " + QString::number(fr_max_int);
         if(fr_max_int >= 0 && fr_max_int < 10){
             fr_max_s = "0" + fr_max;
         }

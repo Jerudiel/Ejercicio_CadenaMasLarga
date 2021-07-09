@@ -5,7 +5,7 @@ MainWindow::MainWindow(ServerWS *server, QWidget *parent, bool debug_t, bool deb
 {
     try {
         QString ruta = QDir::currentPath();
-        qDebug() << "ruat path: " + ruta ;
+        //qDebug() << "ruat path: " + ruta ;
 
         this->server = server;
         connect(server, SIGNAL(enviaComando(QString)), this, SLOT(tecladoVirtual(QString)));
@@ -202,16 +202,16 @@ void MainWindow::tecladoVirtual(QString trama){
                 else{
                     //qDebug() << "teclado------10";
                     if(trama == "cfg"){
-                        qDebug() << "teclado cfg";
+                        qDebug() << "[MainWindow] teclado cfg";
                         tecladoComandoRecibido = true;
                     }
                     else if(trama == "MPR_timeout"){
-                        qDebug() << "Error teclado";
+                        qDebug() << "[MainWindow] Error teclado";
                         monitor->muestraAviso("ERROR TECLADO\n REVISAR SENSOR");
                     }
                     else if(trama.contains("listo")){
                         tecladoConectado = true;
-                        qDebug() << "Teclado dice que esta listo";
+                        qDebug() << "[MainWindow] Teclado dice que esta listo";
                         if(trama.mid(6) != monitor->versionTecladoEsperada){
                             monitor->muestraAviso("VERSION OBSOLETA\n ACTUALIZAR TECLADO");
                         }
@@ -221,7 +221,7 @@ void MainWindow::tecladoVirtual(QString trama){
                         }
                     }
                     else if(trama == "error"){
-                        qDebug() << "Hubo un error en el teclado";
+                        qDebug() << "[MainWindow] Hubo un error en el teclado";
                     }
 
                     //
@@ -263,7 +263,7 @@ void MainWindow::tecladoVirtual(QString trama){
                         monitor->contador_apagar ++;
                     }
                     else{
-                        qDebug() << "Apagar por teclado!!!";
+                        qDebug() << "[MainWindow] Apagar por teclado!!!";
                         QProcess::execute("sudo shutdown now");
                     }
                 }
@@ -312,16 +312,16 @@ void MainWindow::recteclado(QString trama){
                 else{
                     //qDebug() << "teclado------4";
                     if(trama == "cfg"){
-                        qDebug() << "teclado cfg";
+                        qDebug() << "[MainWindow] teclado cfg";
                         tecladoComandoRecibido = true;
                     }
                     else if(trama == "MPR_timeout"){
-                        qDebug() << "Error teclado";
+                        qDebug() << "[MainWindow] Error teclado";
                         monitor->muestraAviso("ERROR TECLADO\n REVISAR SENSOR");
                     }
                     else if(trama.contains("listo")){
                         tecladoConectado = true;
-                        qDebug() << "Teclado dice que esta listo";
+                        qDebug() << "[MainWindow] Teclado dice que esta listo";
                         if(trama.mid(6) != monitor->versionTecladoEsperada){
                             monitor->muestraAviso("VERSION OBSOLETA\nACTUALIZAR TECLADO");
                         }
@@ -331,7 +331,7 @@ void MainWindow::recteclado(QString trama){
                         }
                     }
                     else if(trama == "error"){
-                        qDebug() << "Hubo un error en el teclado";
+                        qDebug() << "[MainWindow] Hubo un error en el teclado";
                     }
 
                     //

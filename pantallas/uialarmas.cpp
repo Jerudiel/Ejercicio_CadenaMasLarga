@@ -283,7 +283,7 @@ void UiAlarmas::resetValoresDefault(){
     try {
         QString conf_default = monitor->consul->cargar_config_default_alarm();
         if(conf_default == ""){
-            qDebug() << "No hay parametros por default en la bd";
+            qDebug() << "[UI ALARMAS] No hay parametros por default en la bd";
         }
         else{
             QStringList conf_default_list = conf_default.split(",");
@@ -291,7 +291,7 @@ void UiAlarmas::resetValoresDefault(){
                 cargaValoresDB(conf_default_list);
             }
             else{
-                qDebug() << "Numero de elementos incorrecto , base de datos no actualizada";
+                qDebug() << "[UI ALARMAS] Numero de elementos incorrecto , base de datos no actualizada";
             }
         }
     }  catch (std::exception &e) {
@@ -312,7 +312,7 @@ void UiAlarmas::cargaConfiguracion(){
         else{
             QString conf_default = monitor->consul->cargar_config_default_alarm();
             if(conf_default == ""){
-                qDebug() << "No hay datos por default en la bd";
+                qDebug() << "[UI ALARMAS] No hay datos por default en la bd";
             }
             else{
                 QStringList conf_default_list = conf_default.split(",");
