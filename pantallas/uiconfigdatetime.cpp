@@ -296,9 +296,22 @@ void UiConfigDatetime::aplicarCambios(){
        if(temp_minuto < 10){
            temp_minuto_s = "0" + QString::number(temp_minuto);
        }
-       QString trama = temp_year_s + "-" + temp_month_s + "-" + temp_day_s + " " + temp_hora_s + ":" + temp_minuto_s + ":00";
+       /*QString trama = temp_year_s + "-" + temp_month_s + "-" + temp_day_s + " " + temp_hora_s + ":" + temp_minuto_s + ":00";
        QString trama_comando = "sudo date --set='" + trama + "'";
-       QProcess::execute(trama_comando);
+       QProcess::execute(trama_comando);*/
+
+       QString trama = temp_year_s + "-" + temp_month_s + "-" + temp_day_s + " " + temp_hora_s + ":" + temp_minuto_s + ":00";
+       QString comando = "sudo /bin/bash -c date -s '" + trama + "'";
+       qDebug() << "comando: " << comando;
+       int rr = QProcess::execute(comando);
+       //qDebug() << "[DATE EXECUTE] " << rr;
+       if(rr == -2){
+           qDebug() << "[SET DATE] no inicia";
+       }
+       else if(rr == -1){
+           qDebug() << "[SET DATE] crash";
+       }
+
        label_info->setText("Se cambio la fecha y hora");
        timerAnuncio->start(5000);
 

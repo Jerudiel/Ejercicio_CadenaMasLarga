@@ -35,6 +35,9 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
 
         pruebasPresionTerminadas = false;
 
+        // bandera modo test rcuperacion
+        recuperacion_modo_test = false;
+
         top_presure = 0;
         stable_presure = 0;
         second_stable_presure = 0;
@@ -3789,12 +3792,21 @@ void Monitor::receVent(QString trama){
                             timerOffsetsVent->start(4000);
                             consul->agregar_evento("INICIO", obtener_modo(), "CORRECTO CONTROL");
                         }
-                        else{
+                        else if(trama[1] == "1"){
                             estadoVentilador = true;
                             ventiladorListo = true;
                             origenListo = true;
                             cambiosMIni = true;
                             consul->agregar_evento("INICIO", obtener_modo(), "RECUPERACION");
+                        }
+                        else if(trama[1] == "2"){
+                            //aqui está en modo teste, se debe mandar a salir de ahí y ponerlo a modo detenido (0)
+                            //ver qué banderas de aqui debo de quitar o poner
+                            origenListo = true; // para detener timer
+                            recuperacion_modo_test = true;
+                            detener_pruebas_presion();
+                            consul->agregar_evento("INICIO", obtener_modo(), "MODO TEST");
+                            qDebug() << "[INICIO] Control está en modo test";
                         }
                     }
                 }
@@ -3831,6 +3843,12 @@ void Monitor::receVent(QString trama){
                         else{
                             qDebug() << "[PRUEBAS] Fin de pruebas de presion serventilador";
                             fin_prueba_presion_serventilador = true;
+
+                            if(recuperacion_modo_test){
+                                recuperacion_modo_test = false;
+                                ventiladorListo = true;
+                                qDebug() << "[INICIO] sale del modo test";
+                            }
                         }
                         pruebasPresionTerminadas = false;
                     }

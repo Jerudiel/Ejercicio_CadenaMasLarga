@@ -680,6 +680,9 @@ public:
     QString s_air_psi_final;
     QString s_o2_psi_final;
 
+    //recuperacion modo test
+    bool recuperacion_modo_test;
+
 public slots:
     void revisarErrorWDT();
 
