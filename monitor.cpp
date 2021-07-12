@@ -20,7 +20,7 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
         versionVentiladorEsperada = "4.1.0";
         versionSenPresionEsperada = "3.3.0";
         versionTecladoEsperada = "1.0";
-        versionPi = "3.7.10E";
+        versionPi = "3.7.11E";
 
         mainwindow = parent;
         this->consul = consul;
@@ -1551,6 +1551,7 @@ void Monitor::revisarListoApagar(){
             if(listoApagarControl && listoApagarSensores){
                 qDebug() << "[SISTEMA] Apagar sistema!!!";
                 QProcess::execute("sudo shutdown now");
+                //QCoreApplication::exit(58);
             }
             else{
                 if(! listoApagarControl){
@@ -4936,7 +4937,7 @@ void Monitor::revisar_alarmas_senpresion(){
             }
             else if(estado == 2){
                 if(! buscar_en_lista("Apnea")){
-                    agregar_en_lista("Apnea", 2);
+                    agregar_en_lista("Apnea", 1); //2
                     qDebug() << "[ALARMAS] Agrega  Apnea A";
                     consul->agregar_evento("ALARMA", obtener_modo(), "APNEA R ACTIVADA - 6");
                     if(buscar_en_lista("APNEA")){
@@ -4950,6 +4951,11 @@ void Monitor::revisar_alarmas_senpresion(){
                 else{
                     if(diccionario_alarma->value("Apnea") == 0){
                         actualizar_en_lista("Apnea", 1);
+                        consul->agregar_evento("ALARMA", obtener_modo(), "APNEA R ACTIVADA - 6");
+                        if(buscar_en_lista("APNEA")){
+                            borrar_en_lista("APNEA");
+                        }
+
                         if(! estadoAlarmaApnea){
                             estadoAlarmaApnea = true;
                             alarmaControl->iniciaAlarma(alarmaControl->APNEA);
@@ -4960,7 +4966,17 @@ void Monitor::revisar_alarmas_senpresion(){
             else{
                 if(buscar_en_lista("Apnea")){
                     actualizar_en_lista("Apnea", 0);
-                    if(diccionario_alarma->value("Presion MAX") == 0){
+                    if(diccionario_alarma->value("Apnea") == 0){ //Presion MAX
+                        if(estadoAlarmaPresion){
+                            estadoAlarmaPresion = false;
+                            alarmaControl->detenAlarma(alarmaControl->APNEA);
+                        }
+                    }
+                }
+
+                if(buscar_en_lista("APNEA")){
+                    actualizar_en_lista("APNEA", 0);
+                    if(diccionario_alarma->value("APNEA") == 0){
                         if(estadoAlarmaPresion){
                             estadoAlarmaPresion = false;
                             alarmaControl->detenAlarma(alarmaControl->APNEA);
@@ -7172,6 +7188,7 @@ void Monitor::revisar_entra_gases(){
             else{
                 if(diccionario_alarma->value("P. Aire BAJO") == 0){
                     actualizar_en_lista("P. Aire BAJO", 1);
+                    consul->agregar_evento("ALARMA", obtener_modo(), "Presión baja aire ACTIVADO - " + QString::number(aire_of,'f',1));
                     if(! estadoAlarmaGases){
                         estadoAlarmaGases = true;
                         alarmaControl->iniciaAlarma(alarmaControl->GASES);
@@ -7202,6 +7219,7 @@ void Monitor::revisar_entra_gases(){
             else{
                 if(diccionario_alarma->value("P. Aire ALTO") == 0){
                     actualizar_en_lista("P. Aire ALTO", 1);
+                    consul->agregar_evento("ALARMA", obtener_modo(), "Presión alta aire ACTIVADO - " + QString::number(aire_of,'f',1));
                     if(! estadoAlarmaGases){
                         estadoAlarmaGases = true;
                         alarmaControl->iniciaAlarma(alarmaControl->GASES);
@@ -7255,6 +7273,7 @@ void Monitor::revisar_entra_gases(){
             else{
                 if(diccionario_alarma->value("P. O2 BAJO") == 0){
                     actualizar_en_lista("P. O2 BAJO", 1);
+                    consul->agregar_evento("ALARMA", obtener_modo(), "Presión baja oxigeno ACTIVADO - " + QString::number(oxigeno_of,'f',1));
                     if(! estadoAlarmaGases){
                         estadoAlarmaGases = true;
                         alarmaControl->iniciaAlarma(alarmaControl->GASES);
@@ -7285,6 +7304,7 @@ void Monitor::revisar_entra_gases(){
             else{
                 if(diccionario_alarma->value("P. O2 ALTO") == 0){
                     actualizar_en_lista("P. O2 ALTO", 1);
+                    consul->agregar_evento("ALARMA", obtener_modo(), "Presión alta oxigeno ACTIVADO - " + QString::number(oxigeno_of,'f',1));
                     if(! estadoAlarmaGases){
                         estadoAlarmaGases = true;
                         alarmaControl->iniciaAlarma(alarmaControl->GASES);
@@ -7341,6 +7361,7 @@ void Monitor::revisar_entra_gases(){
                 else{
                     if(diccionario_alarma->value("FIO2 BAJO") == 0){
                         actualizar_en_lista("FIO2 BAJO", 1);
+                         consul->agregar_evento("ALARMA", obtener_modo(), "FIO2 ACTIVADO - " + QString::number(nivel_oxi,'f',1) + ":" + QString::number(fio2 - 5));
                         if(! estadoAlarmaGases){
                             estadoAlarmaGases = true;
                             alarmaControl->iniciaAlarma(alarmaControl->GASES);
@@ -7371,6 +7392,7 @@ void Monitor::revisar_entra_gases(){
                 else{
                     if(diccionario_alarma->value("FIO2 ALTO") == 0){
                         actualizar_en_lista("FIO2 ALTO", 1);
+                        consul->agregar_evento("ALARMA", obtener_modo(), "FIO2 ACTIVADO - " + QString::number(nivel_oxi,'f',1) + ":" + QString::number(fio2 - 5));
                         if(! estadoAlarmaGases){
                             estadoAlarmaGases = true;
                             alarmaControl->iniciaAlarma(alarmaControl->GASES);

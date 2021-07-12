@@ -42,6 +42,7 @@ SOURCES += \
     utilidades/alarmasx.cpp \
     utilidades/formulas.cpp \
     utilidades/infoalarma.cpp \
+    utilidades/logutils.cpp \
     utilidades/myswitch.cpp \
     utilidades/qcustomplot.cpp \
     utilidades/qroundprogressbar.cpp \
@@ -108,6 +109,7 @@ HEADERS += \
     utilidades/alarmasx.h \
     utilidades/formulas.h \
     utilidades/infoalarma.h \
+    utilidades/logutils.h \
     utilidades/myswitch.h \
     utilidades/qcustomplot.h \
     utilidades/qroundprogressbar.h \

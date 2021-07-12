@@ -1,0 +1,131 @@
+#include "logutils.h"
+
+#include <QTime>
+#include <QFile>
+#include <QFileInfo>
+#include <QDebug>
+#include <QDir>
+#include <QFileInfoList>
+#include <iostream>
+
+namespace LOGUTILS
+{
+  static QString logFileName;
+
+  void initLogFileName()
+  {
+    logFileName = QString(logFolderName + "/Log_%1__%2.txt")
+                  .arg(QDate::currentDate().toString("yyyy_MM_dd"))
+                  .arg(QTime::currentTime().toString("hh_mm_ss_zzz"));
+  }
+
+  /**
+   * @brief deletes old log files, only the last ones are kept
+   */
+  /*void deleteOldLogs()
+  {
+    QDir dir;
+    dir.setFilter(QDir::Files | QDir::Hidden | QDir::NoSymLinks);
+    dir.setSorting(QDir::Time | QDir::Reversed);
+    dir.setPath(logFolderName);
+
+    QFileInfoList list = dir.entryInfoList();
+    if (list.size() <= LOGFILES)
+    {
+      return; //no files to delete
+    } else
+    {
+      for (int i = 0; i < (list.size() - LOGFILES); i++)
+      {
+        QString path = list.at(i).absoluteFilePath();
+        QFile file(path);
+        file.remove();
+      }
+    }
+  }*/
+
+  void deleteOldLogs()
+  {
+    const QDate today = QDate::currentDate();
+
+    QDir dir;
+    dir.setFilter(QDir::Files | QDir::Hidden | QDir::NoSymLinks);
+    dir.setSorting(QDir::Time | QDir::Reversed);
+    dir.setPath(logFolderName);
+
+    //aqui se debe cambiar el borrado, solo aplicar a logs con antiguedad mayor a 7 días
+
+    QFileInfoList list = dir.entryInfoList();
+    foreach(QFileInfo f, list){
+        if(f.birthTime().date().daysTo(today) > 7){
+            QString filepath = f.absoluteFilePath();
+            QDir deletefile;
+            deletefile.setPath(filepath);
+            deletefile.remove(filepath);
+            qDebug() << "Archivo: " + filepath + " fue borrado." ;
+        }
+    }
+  }
+
+  bool initLogging()
+  {
+      // Create folder for logfiles if not exists
+      if(!QDir(logFolderName).exists())
+      {
+        QDir().mkdir(logFolderName);
+      }
+
+      deleteOldLogs(); //delete old log files
+      initLogFileName(); //create the logfile name
+
+      QFile outFile(logFileName);
+      if(outFile.open(QIODevice::WriteOnly | QIODevice::Append))
+      {
+        qInstallMessageHandler(LOGUTILS::myMessageHandler);
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+  }
+
+  void myMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString& txt)
+  {
+    //check file size and if needed create new log!
+    {
+      QFile outFileCheck(logFileName);
+      int size = outFileCheck.size();
+
+      if (size > LOGSIZE) //check current log size
+      {
+        deleteOldLogs();
+        initLogFileName();
+      }
+    }
+
+    //poner fecha al mensaje
+      QString msg;
+      QDateTime dateTime = QDateTime::currentDateTime();
+      QString dateTimeString = dateTime.toString("yyyy-MM-dd hh:mm:ss.zzz");
+      switch (type) {
+      case QtDebugMsg:
+          msg = QString("%1 Debug: %2").arg(dateTimeString, txt);
+          break;
+      case QtWarningMsg:
+          msg = QString("%1 Warning: %2").arg(dateTimeString, txt);
+      break;
+      case QtCriticalMsg:
+          msg = QString("%1 Critical: %2").arg(dateTimeString, txt);
+      break;
+      case QtFatalMsg:
+          msg = QString("%1 Fatal: %2").arg(dateTimeString, txt);
+      break;
+      }
+
+    QFile outFile(logFileName);
+    outFile.open(QIODevice::WriteOnly | QIODevice::Append);
+    QTextStream ts(&outFile);
+    ts << msg << endl;
+  }
+}

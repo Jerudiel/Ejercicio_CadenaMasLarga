@@ -2,6 +2,8 @@
 
 #include <QApplication>
 
+#include <QObject>
+
 #include <QtDebug>
 #include <QFile>
 #include <QTextStream>
@@ -13,8 +15,9 @@
 #include <QDir>
 
 #include <utilidades/serverws.h>
+#include "utilidades/logutils.h"
 
-void myMessageHandler(QtMsgType type, const QMessageLogContext &, const QString & msg)
+/*void myMessageHandler(QtMsgType type, const QMessageLogContext &, const QString & msg)
 {
     QString txt;
     QDateTime dateTime = QDateTime::currentDateTime();
@@ -46,14 +49,19 @@ void myMessageHandler(QtMsgType type, const QMessageLogContext &, const QString 
 
 
 
-}
+}*/
 
 void signal_handler(int signum) {
     signal(SIGSEGV, SIG_DFL);
     signal(SIGFPE, SIG_DFL);
     //aewm_obj.show_fault(signum);
     qDebug() << "[SIGNAL] VIOLACION DE SEGMENTO" << QString::number(signum);
-    QCoreApplication::quit();
+    //QCoreApplication::quit();
+    QCoreApplication::exit(signum);
+}
+
+void signal_off(int code){
+
 }
 
 int main(int argc, char *argv[])
@@ -65,6 +73,8 @@ int main(int argc, char *argv[])
 
     QApplication a(argc, argv);
 
+    //QObject::connect(a, SIGNAL(aboutToQuit()), this, SLOT());
+
     bool debug_s = false;
     bool debug_t = false;
     bool debug_c = false;
@@ -74,7 +84,8 @@ int main(int argc, char *argv[])
         //recorrer los argumentos
         for(int j=0; j < args.count(); j++){
             if(args.at(j).contains("-l")){
-                qInstallMessageHandler(myMessageHandler);
+                //qInstallMessageHandler(myMessageHandler);
+                LOGUTILS::initLogging();
             }
             else if(args.at(j).contains("-s")){
                 //activar debug sensores
@@ -92,8 +103,6 @@ int main(int argc, char *argv[])
     }
 
     ServerWS *server = new ServerWS(9090, true);
-
-
 
     MainWindow w(server, nullptr, debug_t, debug_c, debug_s);
     w.show();
