@@ -20,7 +20,7 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
         versionVentiladorEsperada = "4.1.0";
         versionSenPresionEsperada = "3.3.0";
         versionTecladoEsperada = "1.0";
-        versionPi = "3.7.11E";
+        versionPi = "3.7.12E";
 
         mainwindow = parent;
         this->consul = consul;
@@ -46,6 +46,10 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
         air_psi_final = 0;
         o2_psi_final = 0;
         fio2_final = 0;
+
+        ultimo_valor_alarma_aire = "";
+        valor_alarma_aire = "";
+        primera_alarma_aire = true;
 
         offset_pip = 0;
         /*QString tt_offset = consul->leer_com_pip();
@@ -5688,21 +5692,37 @@ void Monitor::revisarConexionVentilador(){
         }
         if(! configurandoVentilador){
             //preparar trama | air_psi_final, o2_psi_final,fio2_final
+            //ultimo_valor_alarma_aire = "";
+            //valor_alarma_aire = "";
+            //primera_alarma_aire = true;
             QString trama_temp = "P";
-            if(air_psi_final < 20 && !(o2_psi_final > 30 && fio2_final == 100)){
+            if((fio2_final <= 95 && air_psi_final < min_entrada_aire) || (o2_psi_final < min_entrada_oxi)){
                 trama_temp += "1";
+                if(primera_alarma_aire){
+                    valor_alarma_aire = "1";
+                    ultimo_valor_alarma_aire = "1";
+                }
+                else{
+                    valor_alarma_aire = "1";
+                }
             }
             else{
                 trama_temp += "0";
+                if(primera_alarma_aire){
+                    valor_alarma_aire = "0";
+                    ultimo_valor_alarma_aire = "0";
+                }
+                else{
+                    valor_alarma_aire = "0";
+                    if(valor_alarma_aire != ultimo_valor_alarma_aire){
+                        //mandar de nuevo la trama M
+                        iniciar_ventilador();
+                    }
+                }
             }
-
-            if(o2_psi_final < 30 && !(fio2_final == 100)){
-                trama_temp += "1";
-            }
-            else{
-                trama_temp += "0";
-            }
-            trama_temp += "\n";
+            ultimo_valor_alarma_aire = valor_alarma_aire;
+            //
+            trama_temp += "0\n";
             serVent->envia_trama_config(trama_temp);
         }
         timerConVentilador->start(7000);
@@ -7346,6 +7366,7 @@ void Monitor::revisar_entra_gases(){
             }
         }
         ///////
+        fio2_final = tramaVentilador.mid(29,3).toFloat(); //saber el valor de fio2 para alarmas
         if(listo_medir_fio2 && estadoVentilador){
             float fio2 = tramaVentilador.mid(29,3).toFloat();
             fio2_final = fio2;

@@ -677,6 +677,10 @@ public:
     int o2_psi_final;
     int fio2_final;
 
+    QString ultimo_valor_alarma_aire;
+    QString valor_alarma_aire;
+    bool primera_alarma_aire;
+
     QString s_air_psi_final;
     QString s_o2_psi_final;
 

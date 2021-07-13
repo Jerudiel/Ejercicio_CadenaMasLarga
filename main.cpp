@@ -106,7 +106,12 @@ int main(int argc, char *argv[])
 
     MainWindow w(server, nullptr, debug_t, debug_c, debug_s);
     w.show();
-    return a.exec();
+
+    //res
+    int res_app = a.exec();
+    //qDebug() << "res_app: " << res_app;
+    //QCoreApplication::exit(res_app);
+    return res_app;
 }
 
 /*#include "widgetsigno3.h"
