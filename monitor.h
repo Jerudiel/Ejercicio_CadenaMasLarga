@@ -687,6 +687,10 @@ public:
     //recuperacion modo test
     bool recuperacion_modo_test;
 
+    bool listo_borrar_alarma;
+    int indice_borrar_alarma;
+    QString nombre_borrar_alarma;
+
 public slots:
     void revisarErrorWDT();
 

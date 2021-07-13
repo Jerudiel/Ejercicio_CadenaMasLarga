@@ -22,9 +22,10 @@ UiCalTeclado::UiCalTeclado(QWidget *parent, Monitor *monitor) : QWidget(parent)
         btnOk->setCheckable(true);
         btnOk->setChecked(false);
         btnOk->setStyleSheet(styleButton);
-        QPixmap pixmap(ruta+"/graficos/teclado/ok.png");
-        QIcon btnOkIcon(pixmap);
-        btnOk->setIcon(btnOkIcon);
+        //QPixmap pixmap(":/teclado/graficos/teclado/ok.png");
+        //QIcon btnOkIcon(pixmap);
+        //btnOk->setIcon(btnOkIcon);
+        btnOk->setIcon(QIcon(":/teclado/graficos/teclado/ok.png"));
         btnOk->setIconSize(QSize(50,50));
         connect(btnOk, &QPushButton::clicked, [=](){
             emit get_config_key(0);
@@ -37,9 +38,9 @@ UiCalTeclado::UiCalTeclado(QWidget *parent, Monitor *monitor) : QWidget(parent)
         btnCan->setChecked(false);
         //btnCan->setText("X");
         btnCan->setStyleSheet(styleButton);
-        QPixmap pixmap2(ruta+"/graficos/teclado/can.png");
-        QIcon btnCanIcon(pixmap2);
-        btnCan->setIcon(btnCanIcon);
+        //QPixmap pixmap2(":/teclado/graficos/teclado/can.png");
+        //QIcon btnCanIcon(pixmap2);
+        btnCan->setIcon(QIcon(":/teclado/graficos/teclado/can.png"));
         btnCan->setIconSize(QSize(50,50));
         connect(btnCan, &QPushButton::clicked, [=](){
             emit get_config_key(2);
@@ -52,9 +53,9 @@ UiCalTeclado::UiCalTeclado(QWidget *parent, Monitor *monitor) : QWidget(parent)
         btnPlay->setChecked(false);
         //btnIniDet->setText("Play");
         btnPlay->setStyleSheet(styleButton);
-        QPixmap pixmap3(ruta+"/graficos/teclado/playpause.png");
-        QIcon btnIniDetIcon(pixmap3);
-        btnPlay->setIcon(btnIniDetIcon);
+        //QPixmap pixmap3(":/teclado/graficos/teclado/playpause.png");
+        //QIcon btnIniDetIcon(pixmap3);
+        btnPlay->setIcon(QIcon(":/teclado/graficos/teclado/playpause.png"));
         btnPlay->setIconSize(QSize(50,50));
         connect(btnPlay, &QPushButton::clicked, [=](){
             emit get_config_key(4);
@@ -67,9 +68,9 @@ UiCalTeclado::UiCalTeclado(QWidget *parent, Monitor *monitor) : QWidget(parent)
         btnSetAlarm->setChecked(false);
         //btnLimpAla->setText("L A");
         btnSetAlarm->setStyleSheet(styleButton);
-        QPixmap pixmap4(ruta+"/graficos/teclado/alarmlimp.png");
-        QIcon btnLimpAlaIcon(pixmap4);
-        btnSetAlarm->setIcon(btnLimpAlaIcon);
+        //QPixmap pixmap4(":/teclado/graficos/teclado/alarmlimp.png");
+        //QIcon btnLimpAlaIcon(pixmap4);
+        btnSetAlarm->setIcon(QIcon(":/teclado/graficos/teclado/alarmlimp.png"));
         btnSetAlarm->setIconSize(QSize(50,50));
         connect(btnSetAlarm, &QPushButton::clicked, [=](){
             emit get_config_key(5);
@@ -83,9 +84,9 @@ UiCalTeclado::UiCalTeclado(QWidget *parent, Monitor *monitor) : QWidget(parent)
         btnMon->setChecked(false);
         //btnPrin->setText("M");
         btnMon->setStyleSheet(styleButton);
-        QPixmap pixmap5(ruta+"/graficos/teclado/home.png");
-        QIcon btnPrinIcon(pixmap5);
-        btnMon->setIcon(btnPrinIcon);
+        //QPixmap pixmap5(ruta+"/graficos/teclado/home.png");
+        //QIcon btnPrinIcon(pixmap5);
+        btnMon->setIcon(QIcon(":/teclado/graficos/teclado/home.png"));
         btnMon->setIconSize(QSize(50,50));
         connect(btnMon, &QPushButton::clicked, [=](){
             emit get_config_key(1);
@@ -98,9 +99,9 @@ UiCalTeclado::UiCalTeclado(QWidget *parent, Monitor *monitor) : QWidget(parent)
         btnCon->setChecked(false);
         //btnConfig->setText("C");
         btnCon->setStyleSheet(styleButton);
-        QPixmap pixmap6(ruta+"/graficos/teclado/config.png");
-        QIcon btnConfigIcon(pixmap6);
-        btnCon->setIcon(btnConfigIcon);
+        //QPixmap pixmap6(ruta+"/graficos/teclado/config.png");
+        //QIcon btnConfigIcon(pixmap6);
+        btnCon->setIcon(QIcon(":/teclado/graficos/teclado/config.png"));
         btnCon->setIconSize(QSize(50,50));
         connect(btnCon, &QPushButton::clicked, [=](){
             emit get_config_key(3);
@@ -113,9 +114,9 @@ UiCalTeclado::UiCalTeclado(QWidget *parent, Monitor *monitor) : QWidget(parent)
         btnAlarm->setChecked(false);
         //btnAla->setText("A");
         btnAlarm->setStyleSheet(styleButton);
-        QPixmap pixmap7(ruta+"/graficos/teclado/ala.png");
-        QIcon btnAlaIcon(pixmap7);
-        btnAlarm->setIcon(btnAlaIcon);
+        //QPixmap pixmap7(ruta+"/graficos/teclado/ala.png");
+        //QIcon btnAlaIcon(pixmap7);
+        btnAlarm->setIcon(QIcon(":/teclado/graficos/teclado/ala.png"));
         btnAlarm->setIconSize(QSize(50,50));
         connect(btnAlarm, &QPushButton::clicked, [=](){
             emit get_config_key(6);
@@ -129,9 +130,9 @@ UiCalTeclado::UiCalTeclado(QWidget *parent, Monitor *monitor) : QWidget(parent)
         btnLeft->setChecked(false);
         //btnIzq->setText("<-");
         btnLeft->setStyleSheet(styleButton);
-        QPixmap pixmap8(ruta+"/graficos/teclado/izq.png");
-        QIcon btnIzqIcon(pixmap8);
-        btnLeft->setIcon(btnIzqIcon);
+        //QPixmap pixmap8(ruta+"/graficos/teclado/izq.png");
+        //QIcon btnIzqIcon(pixmap8);
+        btnLeft->setIcon(QIcon(":/teclado/graficos/teclado/izq.png"));
         btnLeft->setIconSize(QSize(50,50));
         connect(btnLeft, &QPushButton::clicked, [=](){
             emit get_config_key(9);
@@ -144,9 +145,9 @@ UiCalTeclado::UiCalTeclado(QWidget *parent, Monitor *monitor) : QWidget(parent)
         btnUp->setChecked(false);
         //btnArr->setText("^");
         btnUp->setStyleSheet(styleButton);
-        QPixmap pixmap9(ruta+"/graficos/teclado/arr.png");
-        QIcon btnArrIcon(pixmap9);
-        btnUp->setIcon(btnArrIcon);
+        //QPixmap pixmap9(ruta+"/graficos/teclado/arr.png");
+        //QIcon btnArrIcon(pixmap9);
+        btnUp->setIcon(QIcon(":/teclado/graficos/teclado/arr.png"));
         btnUp->setIconSize(QSize(50,50));
         connect(btnUp, &QPushButton::clicked, [=](){
             emit get_config_key(8);
@@ -159,9 +160,9 @@ UiCalTeclado::UiCalTeclado(QWidget *parent, Monitor *monitor) : QWidget(parent)
         btnRight->setChecked(false);
         //btnDer->setText("->");
         btnRight->setStyleSheet(styleButton);
-        QPixmap pixmap10(ruta+"/graficos/teclado/der.png");
-        QIcon btnDerIcon(pixmap10);
-        btnRight->setIcon(btnDerIcon);
+        //QPixmap pixmap10(ruta+"/graficos/teclado/der.png");
+        //QIcon btnDerIcon(pixmap10);
+        btnRight->setIcon(QIcon(":/teclado/graficos/teclado/der.png"));
         btnRight->setIconSize(QSize(50,50));
         connect(btnRight, &QPushButton::clicked, [=](){
             emit get_config_key(10);
@@ -174,9 +175,9 @@ UiCalTeclado::UiCalTeclado(QWidget *parent, Monitor *monitor) : QWidget(parent)
         btnDown->setChecked(false);
         //btnAba->setText("v");
         btnDown->setStyleSheet(styleButton);
-        QPixmap pixmap11(ruta+"/graficos/teclado/aba.png");
-        QIcon btnAbaIcon(pixmap11);
-        btnDown->setIcon(btnAbaIcon);
+        //QPixmap pixmap11(ruta+"/graficos/teclado/aba.png");
+        //QIcon btnAbaIcon(pixmap11);
+        btnDown->setIcon(QIcon(":/teclado/graficos/teclado/aba.png"));
         btnDown->setIconSize(QSize(50,50));
         connect(btnDown, &QPushButton::clicked, [=](){
             emit get_config_key(11);
@@ -190,9 +191,9 @@ UiCalTeclado::UiCalTeclado(QWidget *parent, Monitor *monitor) : QWidget(parent)
         btnDesAlarm->setChecked(false);
         //btnDesAla->setText("D A");
         btnDesAlarm->setStyleSheet(styleButton);
-        QPixmap pixmap12(ruta+"/graficos/teclado/alarmdes.png");
-        QIcon btnDesAlaIcon(pixmap12);
-        btnDesAlarm->setIcon(btnDesAlaIcon);
+        //QPixmap pixmap12(ruta+"/graficos/teclado/alarmdes.png");
+        //QIcon btnDesAlaIcon(pixmap12);
+        btnDesAlarm->setIcon(QIcon(":/teclado/graficos/teclado/alarmdes.png"));
         btnDesAlarm->setIconSize(QSize(50,50));
         connect(btnDesAlarm, &QPushButton::clicked, [=](){
             emit get_config_key(7);
@@ -204,9 +205,9 @@ UiCalTeclado::UiCalTeclado(QWidget *parent, Monitor *monitor) : QWidget(parent)
         btnOut->setObjectName("btnOut");
         btnOut->setStyleSheet("QPushButton:pressed { border: 4px solid gray; background-color: gray; border-radius: 5px; color: black;}"
                                 "QPushButton { border: 4px solid rgb(255,112,61); background-color: rgb(255,112,61); border-radius: 5px; color: black;}");
-        QPixmap pixmap13(ruta+"/graficos/teclado/can.png");
-        QIcon btnOutIcon(pixmap13);
-        btnOut->setIcon(btnOutIcon);
+        //QPixmap pixmap13(ruta+"/graficos/teclado/can.png");
+        //QIcon btnOutIcon(pixmap13);
+        btnOut->setIcon(QIcon(":/teclado/graficos/teclado/can.png"));
         btnOut->setIconSize(QSize(50,50));
         connect(btnOut, &QPushButton::clicked, this, &UiCalTeclado::out);
 
@@ -246,7 +247,7 @@ UiCalTeclado::UiCalTeclado(QWidget *parent, Monitor *monitor) : QWidget(parent)
         btnApply= new QPushButton(this);
         btnApply->setGeometry(QRect(375, 200, 150, 60));
         btnApply->setFont(*font);
-        btnApply->setObjectName("btnOut");
+        btnApply->setObjectName("btnApply");
         btnApply->setStyleSheet(styleButton);
         btnApply->setText("APLICAR");
         connect(btnApply, &QPushButton::clicked, this, &UiCalTeclado::apply);

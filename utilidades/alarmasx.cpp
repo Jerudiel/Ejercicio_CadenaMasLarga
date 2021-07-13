@@ -10,21 +10,21 @@ AlarmasX::AlarmasX(QWidget *parent) : QWidget(parent)
         toggleBEdo=true;
 
         QString ruta = QDir::currentPath();
-        irespiOn = new QPixmap(ruta+"/graficos/respia.png");
-        irespiOff = new QPixmap(ruta+"/graficos/norespia.png");
+        irespiOn = new QPixmap(":/general/graficos/respia.png"); //:/general/graficos/respia.png
+        irespiOff = new QPixmap(":/general/graficos/norespia.png");
 
-        ibat100 = new QPixmap(ruta+"/graficos/100a.png");
-        ibat75 = new QPixmap(ruta+"/graficos/75a.png");
-        ibat50 = new QPixmap(ruta+"/graficos/50a.png");
-        ibat25 = new QPixmap(ruta+"/graficos/25a.png");
-        ibat00 = new QPixmap(ruta+"/graficos/00a.png");
-        ibatAC = new QPixmap(ruta+"/graficos/aca.png");
+        ibat100 = new QPixmap(":/general/graficos/100a.png");
+        ibat75 = new QPixmap(":/general/graficos/75a.png");
+        ibat50 = new QPixmap(":/general/graficos/50a.png");
+        ibat25 = new QPixmap(":/general/graficos/25a.png");
+        ibat00 = new QPixmap(":/general/graficos/00a.png");
+        ibatAC = new QPixmap(":/general/graficos/aca.png");
 
-        ibat100c = new QPixmap(ruta+"/graficos/100c.png");
-        ibat75c = new QPixmap(ruta + "/graficos/75c.png");
-        ibat50c = new QPixmap(ruta + "/graficos/50c.png");
-        ibat25c = new QPixmap(ruta + "/graficos/25c.png");
-        ibat00c = new QPixmap(ruta + "/graficos/00c.png");
+        ibat100c = new QPixmap(":/general/graficos/100c.png");
+        ibat75c = new QPixmap(":/general/graficos/75c.png");
+        ibat50c = new QPixmap(":/general/graficos/50c.png");
+        ibat25c = new QPixmap(":/general/graficos/25c.png");
+        ibat00c = new QPixmap(":/general/graficos/00c.png");
 
         lrespi = new QLabel(this);
         lrespi->setGeometry(QRect(0, 0, 50, 53));

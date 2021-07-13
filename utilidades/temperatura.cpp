@@ -14,11 +14,11 @@ Temperatura::Temperatura(QWidget *parent, Monitor *monitor) : QWidget(parent)
 
         QString ruta = QDir::currentPath();
         iconTemp1 = new QIcon;
-        iconTemp1->addPixmap(QPixmap(ruta+"/graficos/ter0.png"), QIcon::Normal, QIcon::Off);
+        iconTemp1->addPixmap(QPixmap(":/general/graficos/ter0.png"), QIcon::Normal, QIcon::Off);
         iconTemp2 = new QIcon;
-        iconTemp2->addPixmap(QPixmap(ruta+"/graficos/ter2.png"), QIcon::Normal, QIcon::Off);
+        iconTemp2->addPixmap(QPixmap(":/general/graficos/ter2.png"), QIcon::Normal, QIcon::Off);
         iconTemp3 = new QIcon;
-        iconTemp3->addPixmap(QPixmap(ruta+"/graficos/ter3.png"), QIcon::Normal, QIcon::Off);
+        iconTemp3->addPixmap(QPixmap(":/general/graficos/ter3.png"), QIcon::Normal, QIcon::Off);
 
         temperatura->setIcon(*iconTemp1);
         temperatura->setIconSize(QSize(60,50));

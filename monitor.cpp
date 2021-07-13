@@ -51,6 +51,10 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
         valor_alarma_aire = "";
         primera_alarma_aire = true;
 
+        listo_borrar_alarma = false;
+        indice_borrar_alarma = 0;
+        nombre_borrar_alarma = "";
+
         offset_pip = 0;
         /*QString tt_offset = consul->leer_com_pip();
         QStringList tt_off_pip = tt_offset.split(",");
@@ -285,23 +289,23 @@ Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s)
 
         opcionesLayout = new QVBoxLayout;
         opcionesLayout->setObjectName("opcionesLayout");
-        //aqui se agregan los los widgetSigno3 los laterales
-        widgetPresPrin = new WidgetSigno3(this, "Pm", "widgetPresPrin", "cmH<sub>2</sub>O", "White", 167, 94, "graficos/alarmay.png");
+        //aqui se agregan los los widgetSigno3 los laterales //:/general/graficos/alarmay.png
+        widgetPresPrin = new WidgetSigno3(this, "Pm", "widgetPresPrin", "cmH<sub>2</sub>O", "White", 167, 94, ":/general/graficos/alarmay.png");
         contornoColor(widgetPresPrin);
         opcionesLayout->addWidget(widgetPresPrin);
-        widgetVoli = new WidgetSigno3(this, "Vol I", "widgetVoli", "ml", "White", 167, 94, "graficos/alarmay.png");
+        widgetVoli = new WidgetSigno3(this, "Vol I", "widgetVoli", "ml", "White", 167, 94, ":/general/graficos/alarmay.png");
         contornoColor(widgetVoli);
         opcionesLayout->addWidget(widgetVoli);
-        widgetVole = new WidgetSigno3(this, "Vol E", "widgetVole", "ml", "White", 167, 94, "graficos/alarmay.png");
+        widgetVole = new WidgetSigno3(this, "Vol E", "widgetVole", "ml", "White", 167, 94, ":/general/graficos/alarmay.png");
         contornoColor(widgetVole);
         opcionesLayout->addWidget(widgetVole);
-        widgetFR = new WidgetSigno3(this, "FR", "widgetFR", "r/min", "White", 167, 94, "graficos/alarmay.png");
+        widgetFR = new WidgetSigno3(this, "FR", "widgetFR", "r/min", "White", 167, 94, ":/general/graficos/alarmay.png");
         contornoColor(widgetFR);
         opcionesLayout->addWidget(widgetFR);
-        widgetTiTe = new WidgetSigno3(this, "TI:TE", "widgetTiTe", "  ", "White", 167, 94, "graficos/alarmaw.png");
+        widgetTiTe = new WidgetSigno3(this, "TI:TE", "widgetTiTe", "  ", "White", 167, 94, ":/general/graficos/alarmaw.png");
         contornoColor(widgetTiTe);
         opcionesLayout->addWidget(widgetTiTe);
-        widgetFlujo = new WidgetSigno3(this, "Fp", "widgetFlujo", "L/min", "White", 167, 94, "graficos/alarmay.png");
+        widgetFlujo = new WidgetSigno3(this, "Fp", "widgetFlujo", "L/min", "White", 167, 94, ":/general/graficos/alarmay.png");
         contornoColor(widgetFlujo);
         opcionesLayout->addWidget(widgetFlujo);
 
@@ -4917,11 +4921,14 @@ void Monitor::revisar_alarmas_senpresion(){
         }
         else if(tipo == "6"){
             if(estado == 1){
-                qDebug() << "[ALARMAS] Alarma apnea";
+                qDebug() << "[ALARMAS] Alarma APNEA";
                 if(! buscar_en_lista("APNEA")){
                     agregar_en_lista("APNEA", 1);
                     qDebug() << "[ALARMAS] Agrega APNEA";
                     consul->agregar_evento("ALARMA", obtener_modo(), "APNEA R ACTIVADA - 6");
+                    if(buscar_en_lista("Apnea")){
+                        borrar_en_lista("Apnea");
+                    }
                     if(! estadoAlarmaApnea){
                         estadoAlarmaApnea = true;
                         alarmaControl->iniciaAlarma(alarmaControl->APNEA);
@@ -4932,18 +4939,27 @@ void Monitor::revisar_alarmas_senpresion(){
                         actualizar_en_lista("APNEA", 1);
                         qDebug() << "[ALARMAS] Agrega APNEA";
                         consul->agregar_evento("ALARMA", obtener_modo(), "APNEA R ACTIVADA - 6");
+                        if(buscar_en_lista("Apnea")){
+                            borrar_en_lista("Apnea");
+                        }
                         if(! estadoAlarmaApnea){
                             estadoAlarmaApnea = true;
                             alarmaControl->iniciaAlarma(alarmaControl->APNEA);
                         }
                     }
+                    else if(diccionario_alarma->value("APNEA") == 1){
+                        actualizar_en_lista("APNEA", 1);
+                        qDebug() << "[ALARMAS] Actualiza APNEA";
+                        consul->agregar_evento("ALARMA", obtener_modo(), "APNEA R REACTIVADA - 6");
+                    }
                 }
             }
             else if(estado == 2){
+                qDebug() << "[ALARMAS] Alarma Apnea";
                 if(! buscar_en_lista("Apnea")){
                     agregar_en_lista("Apnea", 1); //2
                     qDebug() << "[ALARMAS] Agrega  Apnea A";
-                    consul->agregar_evento("ALARMA", obtener_modo(), "APNEA R ACTIVADA - 6");
+                    consul->agregar_evento("ALARMA", obtener_modo(), "APNEA L ACTIVADA - 6");
                     if(buscar_en_lista("APNEA")){
                         borrar_en_lista("APNEA");
                     }
@@ -4955,7 +4971,8 @@ void Monitor::revisar_alarmas_senpresion(){
                 else{
                     if(diccionario_alarma->value("Apnea") == 0){
                         actualizar_en_lista("Apnea", 1);
-                        consul->agregar_evento("ALARMA", obtener_modo(), "APNEA R ACTIVADA - 6");
+                        qDebug() << "[ALARMAS] Actualiza Apnea";
+                        consul->agregar_evento("ALARMA", obtener_modo(), "APNEA L ACTIVADA - 6");
                         if(buscar_en_lista("APNEA")){
                             borrar_en_lista("APNEA");
                         }
@@ -4965,9 +4982,15 @@ void Monitor::revisar_alarmas_senpresion(){
                             alarmaControl->iniciaAlarma(alarmaControl->APNEA);
                         }
                     }
+                    else if(diccionario_alarma->value("Apnea") == 1){
+                        actualizar_en_lista("Apnea", 1);
+                        qDebug() << "[ALARMAS] Actualiza Apnea";
+                        consul->agregar_evento("ALARMA", obtener_modo(), "APNEA L REACTIVADA - 6");
+                    }
                 }
             }
             else{
+                qDebug() << "[ALARMAS] Alarma APNEAs desactivadas";
                 if(buscar_en_lista("Apnea")){
                     actualizar_en_lista("Apnea", 0);
                     if(diccionario_alarma->value("Apnea") == 0){ //Presion MAX
@@ -6976,6 +6999,12 @@ void Monitor::muestraAlarmas(){
                 label_info_alarma->setText(lista_alarmas->at(contadorMuestraAlarmas));
 
             }
+            //aqui preguntar po si hay que mandar a borrar de la lista y diccionario
+            if(listo_borrar_alarma){
+                qDebug() << "[ALARMA] borrar desde donde se muestra";
+                listo_borrar_alarma = false;
+                borrar_en_lista(nombre_borrar_alarma);
+            }
         }
         else{
             label_info_alarma->setStyleSheet("background-color: black; color: black;");
@@ -7093,7 +7122,7 @@ void Monitor::actualizar_en_lista(QString alarma,int estado){
             lista_alarmas->replace(indice,temp);
         }
         else{
-            qDebug() << "[ALARMAS] Actualizar en lista, no encontrado: " + alarma + "al estado: " + QString::number(estado);
+            qDebug() << "[ALARMAS] Actualizar en lista, no encontrado: " + alarma + " al estado: " + QString::number(estado);
         }
     }  catch (std::exception &e) {
         qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
@@ -7118,10 +7147,21 @@ void Monitor::borrar_en_lista(QString alarma){
                 cont++;
             }
             if(borrar){
-                //qDebug() << "elemento borrado" +  lista_alarmas->at(indice_borrar);
-                lista_alarmas->removeAt(indice_borrar);
+                if(indice_borrar == contadorMuestraAlarmas){
+                    //no borrar, activar bandera e indice
+                    qDebug() << "[ALARMA] no borrar hasta que se termine de mostrar";
+                    listo_borrar_alarma = true;
+                    indice_borrar_alarma = indice_borrar;
+                    nombre_borrar_alarma = alarma;
+                }
+                else{
+                    //qDebug() << "elemento borrado" +  lista_alarmas->at(indice_borrar);
+                    lista_alarmas->removeAt(indice_borrar);
+                    diccionario_alarma->remove(alarma);
+                }
+
             }
-            diccionario_alarma->remove(alarma);
+
         }
     }  catch (std::exception &e) {
         qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );

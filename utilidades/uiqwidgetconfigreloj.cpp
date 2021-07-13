@@ -13,7 +13,8 @@ UiQWidgetConfigReloj::UiQWidgetConfigReloj(QWidget *parent) : QWidget(parent)
         btnMasHora = new QPushButton(this);
         btnMasHora->setStyleSheet(btn);
         btnMasHora->setObjectName("btnMasHora");
-        btnMasHora->setIcon(QIcon("graficos/124arriba.png"));
+        //:/general/graficos/124abajo.png
+        btnMasHora->setIcon(QIcon(":/general/graficos/124arriba.png"));
         btnMasHora->setIconSize(QSize(24,24));
         gridLayout->addWidget(btnMasHora, 0, 0, 1, 1);
 
@@ -25,7 +26,7 @@ UiQWidgetConfigReloj::UiQWidgetConfigReloj(QWidget *parent) : QWidget(parent)
         btnMasMinuto = new QPushButton(this);
         btnMasMinuto->setStyleSheet(btn);
         btnMasMinuto->setObjectName("btnMasMinuto");
-        btnMasMinuto->setIcon(QIcon("graficos/124arriba.png"));
+        btnMasMinuto->setIcon(QIcon(":/general/graficos/124arriba.png"));
         btnMasMinuto->setIconSize(QSize(24,24));
         gridLayout->addWidget(btnMasMinuto, 0, 2, 1, 1);
 
@@ -60,14 +61,14 @@ UiQWidgetConfigReloj::UiQWidgetConfigReloj(QWidget *parent) : QWidget(parent)
 
         btnMenosHora = new QPushButton(this);
         btnMenosHora->setObjectName("btnMenosHora");
-        btnMenosHora->setIcon(QIcon("graficos/124abajo.png"));
+        btnMenosHora->setIcon(QIcon(":/general/graficos/124abajo.png"));
         btnMenosHora->setIconSize(QSize(24,24));
         btnMenosHora->setStyleSheet(btn);
         gridLayout->addWidget(btnMenosHora, 2, 0, 1, 1);
 
         btnMenosMinuto = new QPushButton(this);
         btnMenosMinuto->setObjectName("btnMenosMinuto");
-        btnMenosMinuto->setIcon(QIcon("graficos/124abajo.png"));
+        btnMenosMinuto->setIcon(QIcon(":/general/graficos/124abajo.png"));
         btnMenosMinuto->setIconSize(QSize(24,24));
         btnMenosMinuto->setStyleSheet(btn);
         gridLayout->addWidget(btnMenosMinuto, 2, 2, 1, 1);

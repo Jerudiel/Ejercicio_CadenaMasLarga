@@ -7,11 +7,11 @@ AlarmaAudLed::AlarmaAudLed(InfoAlarma *infoAlarmas)
         audio_corriendo = false;
 
         QString ruta = QDir::currentPath();
-        //qDebug() << "ruat alarmas: " + ruta ;
-        wave_alta = QUrl::fromLocalFile(ruta + "/audios/prioridad_alta.wav");
-        wave_media = QUrl::fromLocalFile(ruta + "/audios/prioridad_media.wav");
-        wave_baja =  QUrl::fromLocalFile(ruta + "/audios/prioridad_baja.wav");
-        wave_inoperante = QUrl::fromLocalFile(ruta + "/audios/prioridad_alta_super.wav");
+        //qDebug() << "ruat alarmas: " + ruta ; //:/audios/audios/prioridad_alta_super.wav
+        wave_alta = QUrl::fromLocalFile(":/audios/audios/prioridad_alta.wav");
+        wave_media = QUrl::fromLocalFile(":/audios/audios/prioridad_media.wav");
+        wave_baja =  QUrl::fromLocalFile(":/audios/audios/prioridad_baja.wav");
+        wave_inoperante = QUrl::fromLocalFile(":/audios/audios/prioridad_alta_super.wav");
         wave_actual = wave_media;
 
         /*const auto deviceInfos = QAudioDeviceInfo::availableDevices(QAudio::AudioOutput);

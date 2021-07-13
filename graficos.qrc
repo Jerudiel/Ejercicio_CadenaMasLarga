@@ -1,0 +1,74 @@
+<RCC>
+    <qresource prefix="/fuga">
+        <file>graficos/fuga/vent01.png</file>
+        <file>graficos/fuga/vent02.png</file>
+        <file>graficos/fuga/vent03.png</file>
+        <file>graficos/fuga/vent04.png</file>
+        <file>graficos/fuga/vent05.png</file>
+        <file>graficos/fuga/vent06.png</file>
+        <file>graficos/fuga/vent07.png</file>
+        <file>graficos/fuga/vent08.png</file>
+    </qresource>
+    <qresource prefix="/oxi">
+        <file>graficos/oxi/des01.png</file>
+        <file>graficos/oxi/des02.png</file>
+        <file>graficos/oxi/des03.png</file>
+    </qresource>
+    <qresource prefix="/teclado">
+        <file>graficos/teclado/aba.png</file>
+        <file>graficos/teclado/ala.png</file>
+        <file>graficos/teclado/alarmdes.png</file>
+        <file>graficos/teclado/alarmlimp.png</file>
+        <file>graficos/teclado/arr.png</file>
+        <file>graficos/teclado/can.png</file>
+        <file>graficos/teclado/config.png</file>
+        <file>graficos/teclado/der.png</file>
+        <file>graficos/teclado/home.png</file>
+        <file>graficos/teclado/izq.png</file>
+        <file>graficos/teclado/mas.png</file>
+        <file>graficos/teclado/men.png</file>
+        <file>graficos/teclado/mod.png</file>
+        <file>graficos/teclado/ok.png</file>
+        <file>graficos/teclado/playpause.png</file>
+    </qresource>
+    <qresource prefix="/general">
+        <file>graficos/00a.png</file>
+        <file>graficos/00c.png</file>
+        <file>graficos/25a.png</file>
+        <file>graficos/25c.png</file>
+        <file>graficos/50a.png</file>
+        <file>graficos/50c.png</file>
+        <file>graficos/75a.png</file>
+        <file>graficos/75c.png</file>
+        <file>graficos/100a.png</file>
+        <file>graficos/100c.png</file>
+        <file>graficos/124abajo.png</file>
+        <file>graficos/124arriba.png</file>
+        <file>graficos/256abajo.png</file>
+        <file>graficos/256arriba.png</file>
+        <file>graficos/ac2a.png</file>
+        <file>graficos/aca.png</file>
+        <file>graficos/alarma.png</file>
+        <file>graficos/alarma40b.png</file>
+        <file>graficos/alarmaw.png</file>
+        <file>graficos/alarmay.png</file>
+        <file>graficos/alarmd40b.png</file>
+        <file>graficos/alarml40b.png</file>
+        <file>graficos/alarmv40b.png</file>
+        <file>graficos/ambu-azul.jpg</file>
+        <file>graficos/ambu-blanco.jpg</file>
+        <file>graficos/ambu-verde.jpg</file>
+        <file>graficos/battery.png</file>
+        <file>graficos/norespia.png</file>
+        <file>graficos/respia.png</file>
+        <file>graficos/ter2.png</file>
+        <file>graficos/ter3.png</file>
+        <file>graficos/ter4.png</file>
+    </qresource>
+    <qresource prefix="/audios">
+        <file>audios/prioridad_alta_super.wav</file>
+        <file>audios/prioridad_alta.wav</file>
+        <file>audios/prioridad_baja.wav</file>
+        <file>audios/prioridad_media.wav</file>
+    </qresource>
+</RCC>

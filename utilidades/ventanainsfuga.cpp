@@ -72,7 +72,7 @@ VentanaInsFuga::VentanaInsFuga(QWidget *parent, int width, int height, QString t
         QString ruta = QDir::currentPath();
         //qDebug() << "ruta: " + ruta + "/graficos/fuga";
         //QStringList lista = QDir(ruta + "/graficos/fuga", QString(), QDir::SortFlags(QDir::Name | QDir::IgnoreCase ), QDir::Filters ( QDir::NoDotAndDotDot) ).entryList();
-        QDir directory(ruta + "/graficos/fuga");
+        QDir directory(":/fuga/graficos/fuga"); //ruta + "/graficos/fuga"
         QStringList lista = directory.entryList(QStringList() << "*.jpg" << "*.JPG" << "*.png", QDir::Files);
         num_imagenes = lista.size();
         //qDebug() << "ruta tam: " + QString::number(num_imagenes);

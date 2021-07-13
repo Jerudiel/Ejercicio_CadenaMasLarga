@@ -114,6 +114,8 @@ int main(int argc, char *argv[])
     return res_app;
 }
 
+//:/iconos/btn_GraficaSI.png
+
 /*#include "widgetsigno3.h"
 
 #include <QApplication>

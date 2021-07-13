@@ -72,7 +72,7 @@ VentanaInsOxi::VentanaInsOxi(QWidget *parent, int width, int height, QString tit
         QString ruta = QDir::currentPath();
         //qDebug() << "ruta: " + ruta + "/graficos/oxi";
         //QStringList lista = QDir(ruta + "/graficos/oxi", QString(), QDir::SortFlags(QDir::Name | QDir::IgnoreCase ), QDir::Filters ( QDir::NoDotAndDotDot) ).entryList();
-        QDir directory(ruta + "/graficos/oxi");
+        QDir directory(":/oxi/graficos/oxi"); //ruta + "/graficos/oxi"
         QStringList lista = directory.entryList(QStringList() << "*.jpg" << "*.JPG" << "*.png", QDir::Files);
         num_imagenes = lista.size();
         //qDebug() << "ruta tam: " + QString::number(num_imagenes);
