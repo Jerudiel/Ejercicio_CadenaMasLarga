@@ -11,6 +11,7 @@ CONFIG += c++11
 
 SOURCES += \
     consultas.cpp \
+    consultasdb.cpp \
     main.cpp \
     mainwindow.cpp \
     monitor.cpp \
@@ -79,6 +80,7 @@ SOURCES += \
 
 HEADERS += \
     consultas.h \
+    consultasdb.h \
     mainwindow.h \
     monitor.h \
     pantallas/calibraciones/uicalcontrol.h \

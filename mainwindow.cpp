@@ -21,6 +21,8 @@ MainWindow::MainWindow(ServerWS *server, QWidget *parent, bool debug_t, bool deb
 
         vAviso = nullptr;
 
+        //prueba db postgres
+        consulDb = new ConsultasDb;
         //aqui debería ir la inicialización de las consultas a sqlite
         consul = new Consultas;
         bool conectado = consul->conecta();

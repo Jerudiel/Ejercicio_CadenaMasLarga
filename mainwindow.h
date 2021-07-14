@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "consultas.h"
+#include "consultasdb.h"
 
 #include <QStackedWidget>
 #include <QDateTime>
@@ -26,6 +27,9 @@ public:
     ServerWS *server;
     QStackedWidget * contenedorPrincipal;
     Consultas *consul;
+
+    ConsultasDb *consulDb;
+
     Monitor * monitor;
     UiConfiguracion *configuracion;
     UiAlarmas *alarmas;
