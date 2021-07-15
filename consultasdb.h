@@ -70,8 +70,9 @@ public:
     QString leer_com_pip();
     bool guarda_com_pip(QString b1);
     QStringList obtener_ultimo_evento();
-private:
     QSqlDatabase baseDatos;
+private:
+
 };
 
 #endif // CONSULTASDB_H

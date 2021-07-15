@@ -13,7 +13,7 @@
 #include "signos/widgetsigno3.h"
 #include "utilidades/widgetsignobar.h"
 
-Monitor::Monitor(QWidget *parent, Consultas *consul, bool debug_c, bool debug_s) : QWidget(parent)
+Monitor::Monitor(QWidget *parent, ConsultasDb *consul, bool debug_c, bool debug_s) : QWidget(parent)
 {
     try {
         cargaMonitorListo = false;

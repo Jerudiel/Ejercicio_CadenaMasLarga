@@ -29,12 +29,13 @@ QString ConsultasDb::consulta(QString query){
         //2 preparar la consulta
         baseDatos.transaction();
         QSqlQuery consul;
-        consul.prepare(query);
+        consul.prepare(query + ";");
+        //qDebug() << "query consulta: " << query + ";";
         //3 ejecutar la consulta
         bool resultado = consul.exec();
         //3.1 revisar que no haya error, en caso de que si, hacer rollback
         if(consul.lastError().type() != QSqlError::NoError || !resultado){
-            qDebug() << "[DB] Error: "<< consul.lastError().text();
+            qDebug() << "[DB] consulta Error: " << consul.lastError(); //.text();
             baseDatos.rollback();
             return "";
         }
@@ -74,7 +75,7 @@ void ConsultasDb::vaciar_tabla(QString query){
             bool resultado = consul.exec();
             if (consul.lastError().type() != QSqlError::NoError || !resultado)
             {
-                qDebug() << "[DB] Error: " << consul.lastError().text();
+                qDebug() << "[DB] vaciar_tabla Error: " << consul.lastError(); //.text();
                 baseDatos.rollback();
             }
             baseDatos.commit();
@@ -87,13 +88,14 @@ void ConsultasDb::vaciar_tabla(QString query){
 bool ConsultasDb::inserta_tabla(QString query){
     try {
         if(baseDatos.isOpen()){
+            //qDebug() << "[DB] inserta tabla query: " << query;
             baseDatos.transaction();
             QSqlQuery consul;
             consul.prepare(query);
             bool resultado = consul.exec();
             if (consul.lastError().type() != QSqlError::NoError || !resultado)
             {
-                qDebug() << "[DB] Error: " << consul.lastError().text();
+                qDebug() << "[DB] inserta_tabla Error: " << consul.lastError(); //.text();
                 baseDatos.rollback();
             }
             baseDatos.commit();
@@ -110,7 +112,7 @@ bool ConsultasDb::inserta_tabla(QString query){
 
 QString ConsultasDb::buscar_ult_config(QString nombreTabla){
     try {
-        QString quer = "SELECT * FROM Config_Ultima_" + nombreTabla;
+        QString quer = "SELECT * FROM public.\"Config_Ultima_" + nombreTabla + "\"";
         QString resultados = consulta(quer);
         QStringList res_list = resultados.split("?");
         //qDebug() << "buscar_ult_config: " + QString::number(res_list.count());
@@ -129,7 +131,7 @@ QString ConsultasDb::buscar_ult_config(QString nombreTabla){
 
 QString ConsultasDb::cargar_config_default(QString nombreTabla){
     try {
-        QString quer = "SELECT * FROM Config_Default_" + nombreTabla;
+        QString quer = "SELECT * FROM public.\"Config_Default_" + nombreTabla + "\"";
         QString resultados = consulta(quer);
         QStringList res_list = resultados.split("?");
         if(res_list.contains("result")){
@@ -146,7 +148,7 @@ QString ConsultasDb::cargar_config_default(QString nombreTabla){
 
 QString ConsultasDb::buscar_id_config_ultima_param(){
     try {
-        QString quer = "SELECT id FROM Config_Ultima_Param";
+        QString quer = "SELECT id FROM public.\"Config_Ultima_Param\"";
         QString resultados = consulta(quer);
         QStringList res_list = resultados.split("?");
         if(res_list.contains("result")){
@@ -163,7 +165,7 @@ QString ConsultasDb::buscar_id_config_ultima_param(){
 
 QString ConsultasDb::buscar_id_config_ultima(QString nombreTabla){
     try {
-        QString quer = "SELECT id FROM Config_Ultima_" + nombreTabla;
+        QString quer = "SELECT id FROM public.\"Config_Ultima_" + nombreTabla + "\"";
         QString resultados = consulta(quer);
         QStringList res_list = resultados.split("?");
         if(res_list.contains("result")){
@@ -180,7 +182,7 @@ QString ConsultasDb::buscar_id_config_ultima(QString nombreTabla){
 
 void ConsultasDb::reiniciar_valores(QString nombreTabla){
     try {
-        QString quer = "DELETE FROM Config_Ultima_" + nombreTabla;
+        QString quer = "DELETE FROM public.\"Config_Ultima_" + nombreTabla + "\"";
         vaciar_tabla(quer);
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
@@ -191,7 +193,7 @@ bool ConsultasDb::guardar_config_ultima_PCMV(QString pinsp, QString ipap, QStrin
     try {
         QString id_config_ultima = buscar_id_config_ultima("PCMV");
         if(id_config_ultima != ""){
-            QString update_query = "UPDATE Config_Ultima_PCMV SET pinsp = " + pinsp + ", ipap = " + ipap + ", peep = " +
+            QString update_query = "UPDATE public.\"Config_Ultima_PCMV\" SET pinsp = " + pinsp + ", ipap = " + ipap + ", peep = " +
                     peep + ", fr = " + fr + ", tinsp = " + tinsp + ", tincr = " + tincr + ", oxigeno = " +
                     oxigeno + ", mod_trigger = " + mod_trigger + ", trigger_flujo = " + trigger_flujo +
                     ", trigger_presion = " + trigger_presion + " WHERE id = " + id_config_ultima;
@@ -205,7 +207,7 @@ bool ConsultasDb::guardar_config_ultima_PCMV(QString pinsp, QString ipap, QStrin
             }
         }
         else{
-            QString query_insert = "INSERT INTO Config_Ultima_PCMV(pinsp, ipap, peep, fr, tinsp, tincr, oxigeno,"
+            QString query_insert = "INSERT INTO public.\"Config_Ultima_PCMV \"(pinsp, ipap, peep, fr, tinsp, tincr, oxigeno,"
                                    " mod_trigger, trigger_flujo, trigger_presion) VALUES(" + pinsp + "," + ipap + "," +
                                    peep + "," + fr + "," + tinsp + "," + tincr + "," + oxigeno + "," + mod_trigger + "," +
                                    trigger_flujo + "," + trigger_presion + ")";
@@ -221,7 +223,7 @@ bool ConsultasDb::guardar_config_ultima_VCMV(QString vtinsp, QString peep, QStri
     try {
         QString id_config_ultima = buscar_id_config_ultima("VCMV");
         if(id_config_ultima != ""){
-            QString update_query = "UPDATE Config_Ultima_VCMV SET vtinsp = " + vtinsp + ", peep = " + peep + ", fr = " +
+            QString update_query = "UPDATE public.\"Config_Ultima_VCMV\" SET vtinsp = " + vtinsp + ", peep = " + peep + ", fr = " +
                                    fr + ", tinsp = " + tinsp + ", meseta = " + meseta + ", patron = " + patron + ", oxigeno = " +
                                    oxigeno + ", mod_trigger = " + mod_trigger + ", trigger_flujo = " + trigger_flujo +
                                    ", trigger_presion = " + trigger_presion + " WHERE id = " + id_config_ultima;
@@ -237,7 +239,7 @@ bool ConsultasDb::guardar_config_ultima_VCMV(QString vtinsp, QString peep, QStri
             }
         }
         else{
-            QString query_insert = "INSERT INTO Config_Ultima_VCMV(vtinsp, peep, fr, tinsp, meseta, patron, oxigeno,"
+            QString query_insert = "INSERT INTO public.\"Config_Ultima_VCMV\"(vtinsp, peep, fr, tinsp, meseta, patron, oxigeno,"
                                    " mod_trigger, trigger_flujo, trigger_presion) VALUES(" + vtinsp + "," + peep + "," +
                                    fr + "," + tinsp + "," + meseta + "," + patron + "," + oxigeno + "," + mod_trigger + "," +
                                    trigger_flujo + "," + trigger_presion + ")";
@@ -253,7 +255,7 @@ bool ConsultasDb::guardar_config_ultima_VSIMV(QString vtinsp, QString psoporte, 
     try {
         QString id_config_ultima = buscar_id_config_ultima("VSIMV");
         if(id_config_ultima != ""){
-            QString update_query = "UPDATE Config_Ultima_VSIMV SET vtinsp = " + vtinsp + ", psoporte = " + psoporte + ", peep = " + peep + ", fr = " +
+            QString update_query = "UPDATE public.\"Config_Ultima_VSIMV\" SET vtinsp = " + vtinsp + ", psoporte = " + psoporte + ", peep = " + peep + ", fr = " +
                                     fr + ", tinsp = " + tinsp + ", tincr = " + tincr + ", meseta = " + meseta + ", ets = " + ets + ", patron = " + patron + ", oxigeno = " +
                                     oxigeno + ", mod_trigger = " + mod_trigger + ", trigger_flujo = " + trigger_flujo +
                                     ", trigger_presion = " + trigger_presion + " WHERE id = " + id_config_ultima;
@@ -267,7 +269,7 @@ bool ConsultasDb::guardar_config_ultima_VSIMV(QString vtinsp, QString psoporte, 
             }
         }
         else{
-            QString query_insert = "INSERT INTO Config_Ultima_VSIMV(vtinsp, psoporte, peep, fr, tinsp, tincr, meseta, ets, patron, oxigeno,"
+            QString query_insert = "INSERT INTO public.\"Config_Ultima_VSIMV\"(vtinsp, psoporte, peep, fr, tinsp, tincr, meseta, ets, patron, oxigeno,"
                                    " mod_trigger, trigger_flujo, trigger_presion) VALUES(" + vtinsp + "," + psoporte + "," + peep + "," +
                                    fr + "," + tinsp + "," + tincr + ","+ meseta + "," + ets + "," + patron + "," + oxigeno + "," + mod_trigger + "," +
                                    trigger_flujo + "," + trigger_presion + ")";
@@ -283,7 +285,7 @@ bool ConsultasDb::guardar_config_ultima_PSIMV(QString pinsp, QString psoporte, Q
     try {
         QString id_config_ultima = buscar_id_config_ultima("PSIMV");
         if(id_config_ultima != ""){
-            QString update_query = "UPDATE Config_Ultima_PSIMV SET pinsp = " + pinsp + ", psoporte = " + psoporte + ", peep = " + peep + ", fr = " +
+            QString update_query = "UPDATE public.\"Config_Ultima_PSIMV\" SET pinsp = " + pinsp + ", psoporte = " + psoporte + ", peep = " + peep + ", fr = " +
                     fr + ", tinsp = " + tinsp + ", tincr = " + tincr + ", oxigeno = " + oxigeno + ", ets = " +
                     ets + ", mod_trigger = " + mod_trigger + ", trigger_flujo = " + trigger_flujo +
                     ", trigger_presion = " + trigger_presion + " WHERE id = " + id_config_ultima;
@@ -297,7 +299,7 @@ bool ConsultasDb::guardar_config_ultima_PSIMV(QString pinsp, QString psoporte, Q
             }
         }
         else{
-            QString query_insert = "INSERT INTO Config_Ultima_PSIMV(pinsp, psoporte, peep, fr, tinsp, tincr, oxigeno, ets,"
+            QString query_insert = "INSERT INTO public.\"Config_Ultima_PSIMV\"(pinsp, psoporte, peep, fr, tinsp, tincr, oxigeno, ets,"
                                    " mod_trigger, trigger_flujo, trigger_presion) VALUES(" + pinsp + "," + psoporte + "," + peep + "," +
                                    fr + "," + tinsp + "," + tincr + ","+ oxigeno + "," + ets + "," + mod_trigger + "," +
                                    trigger_flujo + "," + trigger_presion + ")";
@@ -313,7 +315,7 @@ bool ConsultasDb::guardar_config_ultima_PCPAP(QString cpap, QString ps, QString 
     try {
         QString id_config_ultima = buscar_id_config_ultima("PCPAP");
         if(id_config_ultima != ""){
-            QString update_query = "UPDATE Config_Ultima_PCPAP SET cpap = " + cpap + ", ps = " + ps + ", oxigeno = " + oxigeno + ", apnea = " +
+            QString update_query = "UPDATE public.\"Config_Ultima_PCPAP\" SET cpap = " + cpap + ", ps = " + ps + ", oxigeno = " + oxigeno + ", apnea = " +
                                     apnea + ", mod_trigger = " + mod_trigger + ", trigger_flujo = " + trigger_flujo + ", trigger_presion = " +
                                     trigger_presion + ", frecuencia = " + frecuencia + ", pinsp = " + pinsp + ", tinsp = " + tinsp +
                                     " WHERE id = " + id_config_ultima;
@@ -327,7 +329,7 @@ bool ConsultasDb::guardar_config_ultima_PCPAP(QString cpap, QString ps, QString 
             }
         }
         else{
-            QString query_insert = "INSERT INTO Config_Ultima_PCPAP(cpap, ps, oxigeno, apnea, mod_trigger, trigger_flujo, "
+            QString query_insert = "INSERT INTO public.\"Config_Ultima_PCPAP\"(cpap, ps, oxigeno, apnea, mod_trigger, trigger_flujo, "
                                    "trigger_presion, frecuencia, pinsp, tinsp) VALUES(" + cpap + "," + ps + "," + oxigeno + "," +
                                    apnea + "," + mod_trigger + "," + trigger_flujo + "," + trigger_presion + "," + frecuencia + "," + pinsp + "," +
                                    tinsp + ")";
@@ -343,7 +345,7 @@ bool ConsultasDb::guardar_config_ultima_VCPAP(QString cpap, QString ps, QString 
     try {
         QString id_config_ultima = buscar_id_config_ultima("VCPAP");
         if(id_config_ultima != ""){
-            QString update_query = "UPDATE Config_Ultima_VCPAP SET cpap = " + cpap + ", ps = " + ps + ", oxigeno = " + oxigeno + ", apnea = " +
+            QString update_query = "UPDATE public.\"Config_Ultima_VCPAP\" SET cpap = " + cpap + ", ps = " + ps + ", oxigeno = " + oxigeno + ", apnea = " +
                                     apnea + ", mod_trigger = " + mod_trigger + ", trigger_flujo = " + trigger_flujo + ", trigger_presion = " +
                                     trigger_presion + ", frecuencia = " + frecuencia + ", vtidal = " + vtidal + ", flujo = " + flujo +
                                     " WHERE id = " + id_config_ultima;
@@ -357,7 +359,7 @@ bool ConsultasDb::guardar_config_ultima_VCPAP(QString cpap, QString ps, QString 
             }
         }
         else{
-            QString query_insert = "INSERT INTO Config_Ultima_VCPAP(cpap, ps, oxigeno, apnea, mod_trigger, trigger_flujo, "
+            QString query_insert = "INSERT INTO public.\"Config_Ultima_VCPAP\"(cpap, ps, oxigeno, apnea, mod_trigger, trigger_flujo, "
                                    "trigger_presion, frecuencia, vtidal, flujo) VALUES(" + cpap + "," + ps + "," + oxigeno + "," +
                                    apnea + "," + mod_trigger + "," + trigger_flujo + "," + trigger_presion + "," + frecuencia + "," + vtidal + "," +
                                    flujo + ")";
@@ -371,7 +373,7 @@ bool ConsultasDb::guardar_config_ultima_VCPAP(QString cpap, QString ps, QString 
 
 QString ConsultasDb::cargar_config_default_alarm(){
     try {
-        QString quer = "SELECT * FROM Config_Default_Alarm";
+        QString quer = "SELECT * FROM public.\"Config_Default_Alarm\"";
         QString resultados = consulta(quer);
         QStringList res_list = resultados.split("?");
         if(res_list.contains("result")){
@@ -388,7 +390,7 @@ QString ConsultasDb::cargar_config_default_alarm(){
 
 QString ConsultasDb::buscar_id_config_ultima_alarm(){
     try {
-        QString quer = "SELECT id FROM Config_Ultima_Alarm";
+        QString quer = "SELECT id FROM public.\"Config_Ultima_Alarm\"";
         QString resultados = consulta(quer);
         QStringList res_list = resultados.split("?");
         if(res_list.contains("result")){
@@ -405,7 +407,7 @@ QString ConsultasDb::buscar_id_config_ultima_alarm(){
 
 QString ConsultasDb::buscar_ult_config_alarm(){
     try {
-        QString quer = "SELECT * FROM Config_Ultima_Alarm";
+        QString quer = "SELECT * FROM public.\"Config_Ultima_Alarm\"";
         QString resultados = consulta(quer);
         QStringList res_list = resultados.split("?");
         if(res_list.contains("result")){
@@ -424,7 +426,7 @@ bool ConsultasDb::guardar_config_ultima_alarm(QString pre_max, QString pre_min, 
     try {
         QString id_config_ultima = buscar_id_config_ultima_alarm();
         if(id_config_ultima != ""){
-            QString update_query = "UPDATE Config_Ultima_Alarm SET pre_max = "+pre_max+" , pre_min = "+pre_min +" , volm_max = " +
+            QString update_query = "UPDATE public.\"Config_Ultima_Alarm\" SET pre_max = "+pre_max+" , pre_min = "+pre_min +" , volm_max = " +
                                     volm_max +" , volm_min = "+ volm_min+ " , fre_max = " +fre_max+ " , fre_min = "+
                                     fre_min+ " , vole_max = "+ vole_max + " , vole_min = "+vole_min+ " , edo_apre = "+
                                     edo_apre+ " , edo_avolm = "+edo_avolm+ " , edo_afre = "+ edo_avolm + " , edo_afre = "+
@@ -441,7 +443,7 @@ bool ConsultasDb::guardar_config_ultima_alarm(QString pre_max, QString pre_min, 
             }
         }
         else{
-            QString query_insert = "INSERT INTO Config_Ultima_Alarm(pre_max, pre_min, volm_max, volm_min, fre_max, fre_min, "
+            QString query_insert = "INSERT INTO public.\"Config_Ultima_Alarm\"(pre_max, pre_min, volm_max, volm_min, fre_max, fre_min, "
                                 "vole_max, vole_min, edo_apre, edo_avolm, edo_afre, edo_avole, t_apnea) VALUES ("+pre_max+" , " +
                                 pre_min+" , "+volm_max+ " , "+ volm_min+ " , "+fre_max+ " , "+
                                 fre_min+" , "+ vole_max+ " , "+ vole_min+ " , "+ edo_apre+ " , " +
@@ -456,7 +458,7 @@ bool ConsultasDb::guardar_config_ultima_alarm(QString pre_max, QString pre_min, 
 
 QString ConsultasDb::leer_modo(){
     try {
-        QString quer = "SELECT * FROM Modo_Config";
+        QString quer = "SELECT * FROM public.\"Modo_Config\"";
         QString resultados = consulta(quer);
         QStringList res_list = resultados.split("?");
         if(res_list.contains("result")){
@@ -473,7 +475,7 @@ QString ConsultasDb::leer_modo(){
 
 QString ConsultasDb::obtener_id_modo(){
     try {
-        QString quer = "SELECT id FROM Modo_Config";
+        QString quer = "SELECT id FROM public.\"Modo_Config\"";
         QString resultados = consulta(quer);
         QStringList res_list = resultados.split("?");
         if(res_list.contains("result")){
@@ -492,7 +494,7 @@ bool ConsultasDb::actualizar_modo(int modo){
     try {
         QString id_modo = obtener_id_modo();
         if(id_modo != ""){
-            QString update_query = "UPDATE Modo_Config SET modo = " + QString::number(modo) + " WHERE id = " + id_modo;
+            QString update_query = "UPDATE public.\"Modo_Config\" SET modo = " + QString::number(modo) + " WHERE id = " + id_modo;
             QString resultados = consulta(update_query);
             if(resultados.at(1) != ""){
                 return true;
@@ -513,7 +515,7 @@ bool ConsultasDb::actualizar_modo(int modo){
 
 QString ConsultasDb::obtener_id_giro(){
     try {
-        QString quer = "SELECT id FROM Modo_Giro";
+        QString quer = "SELECT id FROM public.\"Modo_Giro\"";
         QString resultados = consulta(quer);
         QStringList res_list = resultados.split("?");
         if(res_list.contains("result")){
@@ -530,7 +532,7 @@ QString ConsultasDb::obtener_id_giro(){
 
 QString ConsultasDb::leer_sentido_giro(){
     try {
-        QString quer = "SELECT * FROM Modo_Giro";
+        QString quer = "SELECT * FROM public.\"Modo_Giro\"";
         QString resultados = consulta(quer);
         QStringList res_list = resultados.split("?");
         if(res_list.contains("result")){
@@ -549,7 +551,7 @@ bool ConsultasDb::cambiar_sentido_giro(QString sentido){
     try {
         QString id_giro = obtener_id_giro();
         if(id_giro != ""){
-            QString update_query = "UPDATE Modo_Giro SET sentido = " + sentido + " WHERE id = " + id_giro;
+            QString update_query = "UPDATE public.\"Modo_Giro\" SET sentido = " + sentido + " WHERE id = " + id_giro;
             QString resultados = consulta(update_query);
             if(resultados.at(1) != ""){
                 return true;
@@ -570,7 +572,7 @@ bool ConsultasDb::cambiar_sentido_giro(QString sentido){
 
 QString ConsultasDb::obtener_id_tipo_sensor(){
     try {
-        QString quer = "SELECT id FROM Tipo_Sensor";
+        QString quer = "SELECT id FROM public.\"Tipo_Sensor\"";
         QString resultados = consulta(quer);
         QStringList res_list = resultados.split("?");
         if(res_list.contains("result")){
@@ -587,7 +589,7 @@ QString ConsultasDb::obtener_id_tipo_sensor(){
 
 QString ConsultasDb::leer_tipo_sensor(){
     try {
-        QString quer = "SELECT * FROM Tipo_Sensor";
+        QString quer = "SELECT * FROM public.\"Tipo_Sensor\"";
         QString resultados = consulta(quer);
         QStringList res_list = resultados.split("?");
         if(res_list.contains("result")){
@@ -606,7 +608,7 @@ bool ConsultasDb::cambiar_tipo_sensor(QString sentido){
     try {
         QString id_giro = obtener_id_tipo_sensor();
         if(id_giro != ""){
-            QString update_query = "UPDATE Tipo_Sensor SET tipo = " + sentido + " WHERE id = " + id_giro;
+            QString update_query = "UPDATE public.\"Tipo_Sensor\" SET tipo = " + sentido + " WHERE id = " + id_giro;
             //qDebug() << "query - cambiar_tipo_sensor " + update_query;
             QString resultados = consulta(update_query);
             if(resultados.at(1) != ""){
@@ -628,7 +630,7 @@ bool ConsultasDb::cambiar_tipo_sensor(QString sentido){
 
 QString ConsultasDb::obtener_id_calibracion(){
     try {
-        QString quer = "SELECT id FROM Calibracion";
+        QString quer = "SELECT id FROM public.\"Calibracion\"";
         QString resultados = consulta(quer);
         QStringList res_list = resultados.split("?");
         if(res_list.contains("result")){
@@ -645,7 +647,7 @@ QString ConsultasDb::obtener_id_calibracion(){
 
 QString ConsultasDb::leer_calibracion(){
     try {
-        QString quer = "SELECT * FROM Calibracion";
+        QString quer = "SELECT * FROM public.\"Calibracion\"";
         QString resultados = consulta(quer);
         QStringList res_list = resultados.split("?");
         if(res_list.contains("result")){
@@ -664,7 +666,7 @@ bool ConsultasDb::guarda_cali(QString b1, QString b2, QString b3, QString b4, QS
     try {
         QString id_cali = obtener_id_calibracion();
         if(id_cali != ""){
-            QString update_query = "UPDATE Calibracion SET f1 = " + b1 + ", f2 = " + b2 + ", f3 = " + b3 +
+            QString update_query = "UPDATE public.\"Calibracion\" SET f1 = " + b1 + ", f2 = " + b2 + ", f3 = " + b3 +
                     ", f4 = " + b4 + ", f5 = " + b5 + ", f6 = " + b6 + ", f7 = " + b7 + ", f8 = " + b8 + ", f9 = " + b9 + " WHERE id = " + id_cali;
             QString resultados = consulta(update_query);
             if(resultados.at(1) != ""){
@@ -686,7 +688,7 @@ bool ConsultasDb::guarda_cali(QString b1, QString b2, QString b3, QString b4, QS
 
 QString ConsultasDb::obtener_id_offsets(){
     try {
-        QString quer = "SELECT id FROM Offsets";
+        QString quer = "SELECT id FROM public.\"Offsets\"";
         QString resultados = consulta(quer);
         QStringList res_list = resultados.split("?");
         if(res_list.contains("result")){
@@ -703,7 +705,7 @@ QString ConsultasDb::obtener_id_offsets(){
 
 QString ConsultasDb::leer_offsets(){
     try {
-        QString quer = "SELECT * FROM Offsets";
+        QString quer = "SELECT * FROM public.\"Offsets\"";
         QString resultados = consulta(quer);
         QStringList res_list = resultados.split("?");
         if(res_list.contains("result")){
@@ -722,7 +724,7 @@ bool ConsultasDb::guarda_offsets(QString b1, QString b2, QString b3, QString b4,
     try {
         QString id_cali = obtener_id_offsets();
         if(id_cali != ""){
-            QString update_query = "UPDATE Offsets SET of_peep = " + b1 + ", of_pip = " + b2 + ", of_cpeep = " + b3 +
+            QString update_query = "UPDATE public.\"Offsets\" SET of_peep = " + b1 + ", of_pip = " + b2 + ", of_cpeep = " + b3 +
                                     ", of_cpip = " + b4 + ", of_pre = " + b5 + ", of_bat = " + b6 + ", g_bat = " + b7 +  ", valvula = " + b8 +" WHERE id = " + id_cali;
             QString resultados = consulta(update_query);
             if(resultados.at(1) != ""){
@@ -744,7 +746,7 @@ bool ConsultasDb::guarda_offsets(QString b1, QString b2, QString b3, QString b4,
 
 QString ConsultasDb::obtener_id_altura(){
     try {
-        QString quer = "SELECT id FROM Altura";
+        QString quer = "SELECT id FROM public.\"Altura\"";
         QString resultados = consulta(quer);
         QStringList res_list = resultados.split("?");
         if(res_list.contains("result")){
@@ -761,7 +763,7 @@ QString ConsultasDb::obtener_id_altura(){
 
 QString ConsultasDb::leer_altura(){
     try {
-        QString quer = "SELECT * FROM Altura";
+        QString quer = "SELECT * FROM public.\"Altura\"";
         QString resultados = consulta(quer);
         QStringList res_list = resultados.split("?");
         if(res_list.contains("result")){
@@ -780,7 +782,7 @@ bool ConsultasDb::guarda_altura(QString b1){
     try {
         QString id_cali = obtener_id_altura();
         if(id_cali != ""){
-            QString update_query = "UPDATE Altura SET altura = " + b1 + " WHERE id = " + id_cali;
+            QString update_query = "UPDATE public.\"Altura\" SET altura = " + b1 + " WHERE id = " + id_cali;
             QString resultados = consulta(update_query);
             if(resultados.at(1) != ""){
                 return true;
@@ -803,7 +805,7 @@ bool ConsultasDb::guarda_cali_flujo(QString flujo){
     try {
         QString id_cali = obtener_id_calibracion();
         if(id_cali != ""){
-            QString update_query = "UPDATE Calibracion SET flujo = " + flujo + " WHERE id = " + id_cali;
+            QString update_query = "UPDATE public.\"Calibracion\" SET flujo = " + flujo + " WHERE id = " + id_cali;
             QString resultados = consulta(update_query);
             if(resultados.at(1) != ""){
                 return true;
@@ -826,7 +828,7 @@ bool ConsultasDb::guarda_cali_presion(QString presion){
     try {
         QString id_cali = obtener_id_calibracion();
         if(id_cali != ""){
-            QString update_query = "UPDATE Calibracion SET presion = " + presion + " WHERE id = " + id_cali;
+            QString update_query = "UPDATE public.\"Calibracion\" SET presion = " + presion + " WHERE id = " + id_cali;
             QString resultados = consulta(update_query);
             if(resultados.at(1) != ""){
                 return true;
@@ -848,14 +850,14 @@ bool ConsultasDb::guarda_cali_presion(QString presion){
 QStringList ConsultasDb::obtener_eventos(){
     try {
         if(baseDatos.isOpen()){
-            QString quer = "SELECT tipo, modo, descripcion, fecha, hora FROM eventos ORDER BY date(fecha), date(hora) DESC";
+            QString quer = "SELECT tipo, modo, descripcion, fecha, hora FROM public.\"eventos\" ORDER BY date(fecha), date(hora) DESC";
             baseDatos.transaction();
             QSqlQuery consul;
             consul.prepare(quer);
             bool resultado = consul.exec();
             if (consul.lastError().type() != QSqlError::NoError || !resultado)
                 {
-                    qDebug() << "[DB] Error: "<< consul.lastError().text();
+                    qDebug() << "[DB] obtener_eventos Error: "<< consul.lastError(); //.text();
                     baseDatos.rollback();
                 }
             baseDatos.commit();
@@ -893,14 +895,14 @@ QStringList ConsultasDb::obtener_eventos(){
 QStringList ConsultasDb::borrar_eventos(){
     try {
         if(baseDatos.isOpen()){
-            QString quer = "DELETE FROM eventos WHERE fecha <= date('now', '-7 day')";
+            QString quer = "DELETE FROM public.\"eventos\" WHERE fecha <= CURRENT_DATE - integer '7'";
             baseDatos.transaction();
             QSqlQuery consul;
             consul.prepare(quer);
             bool resultado = consul.exec();
             if (consul.lastError().type() != QSqlError::NoError || !resultado)
             {
-                qDebug() << "[DB] Error: " << consul.lastError().text();
+                qDebug() << "[DB] borrar_eventos Error: " << consul.lastError(); //.text();
                 baseDatos.rollback();
             }
             baseDatos.commit();
@@ -938,7 +940,7 @@ QStringList ConsultasDb::borrar_eventos(){
 
 bool ConsultasDb::borrar_evento(QString id){
     try {
-        QString update_query = "DELETE FROM eventos WHERE ID = " + id;
+        QString update_query = "DELETE FROM public.\"eventos\" WHERE ID = " + id;
         QString resultados = consulta(update_query);
         if(resultados.at(1) != ""){
             return true;
@@ -955,8 +957,8 @@ bool ConsultasDb::borrar_evento(QString id){
 
 bool ConsultasDb::agregar_evento(QString tipo, QString modo, QString descripcion){
     try {
-        QString query_insert = "INSERT INTO eventos(tipo, modo, descripcion, fecha, hora) VALUES ('"+ tipo +"' , '" + modo +"' , '" +
-                                descripcion +"' ,date('now'),time('now', 'localtime'))";
+        QString query_insert = "INSERT INTO public.\"eventos\"(tipo, modo, descripcion, fecha, hora) VALUES ('"+ tipo +"' , '" + modo +"' , '" +
+                                descripcion +"' ,date(CURRENT_DATE),CAST(CURRENT_TIME(0) as time))";
         return inserta_tabla(query_insert);
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
@@ -966,7 +968,7 @@ bool ConsultasDb::agregar_evento(QString tipo, QString modo, QString descripcion
 
 QString ConsultasDb::numero_serie(){
     try {
-        QString quer = "SELECT numero_serie FROM NumSerie WHERE id = 1";
+        QString quer = "SELECT numero_serie FROM public.\"NumSerie\" WHERE id = 1";
         QString resultados = consulta(quer);
         QStringList res_list = resultados.split("?");
         if(res_list.contains("result")){
@@ -983,7 +985,7 @@ QString ConsultasDb::numero_serie(){
 
 QString ConsultasDb::leer_teclado(){
     try {
-        QString quer = "SELECT * FROM teclado";
+        QString quer = "SELECT * FROM public.\"teclado\"";
         QString resultados = consulta(quer);
         QStringList res_list = resultados.split("?");
         if(res_list.contains("result")){
@@ -1002,7 +1004,7 @@ bool ConsultasDb::guarda_teclado(QString pres, QString solt){
     try {
         QString id_cali = obtener_id_teclado();
         if(id_cali != ""){
-            QString update_query = "UPDATE teclado SET presionar = " + pres + ", soltar = " + solt + " WHERE id = " + id_cali;
+            QString update_query = "UPDATE public.\"teclado\" SET presionar = " + pres + ", soltar = " + solt + " WHERE id = " + id_cali;
             QString resultados = consulta(update_query);
             if(resultados.at(1) != ""){
                 return true;
@@ -1023,7 +1025,7 @@ bool ConsultasDb::guarda_teclado(QString pres, QString solt){
 
 QString ConsultasDb::obtener_id_teclado(){
     try {
-        QString quer = "SELECT id FROM teclado";
+        QString quer = "SELECT id FROM public.\"teclado\"";
         QString resultados = consulta(quer);
         QStringList res_list = resultados.split("?");
         if(res_list.contains("result")){
@@ -1040,7 +1042,7 @@ QString ConsultasDb::obtener_id_teclado(){
 
 QString ConsultasDb::leer_fio2(){
     try {
-        QString quer = "SELECT * FROM fio2";
+        QString quer = "SELECT * FROM public.\"fio2\"";
         QString resultados = consulta(quer);
         QStringList res_list = resultados.split("?");
         if(res_list.contains("result")){
@@ -1060,7 +1062,7 @@ bool ConsultasDb::guarda_fio2(QString porce_cambio, QString ls_aire, QString li_
         QString id_fio2 = obtener_id_fio2();
         //qDebug() << "id fio2: " + id_fio2;
         if(id_fio2 != ""){
-            QString update_query = "UPDATE fio2 SET porce_cambio = " + porce_cambio + ", ls_aire = " + ls_aire +  ", li_aire = " + li_aire + ", ls_o2 = " + ls_o2 + ", li_o2 = " + li_o2 + " WHERE id = " + id_fio2;
+            QString update_query = "UPDATE public.\"fio2\" SET porce_cambio = " + porce_cambio + ", ls_aire = " + ls_aire +  ", li_aire = " + li_aire + ", ls_o2 = " + ls_o2 + ", li_o2 = " + li_o2 + " WHERE id = " + id_fio2;
             //qDebug() << "query fio2: " + update_query;
             QString resultados = consulta(update_query);
             if(resultados.at(1) != ""){
@@ -1082,7 +1084,7 @@ bool ConsultasDb::guarda_fio2(QString porce_cambio, QString ls_aire, QString li_
 
 QString ConsultasDb::obtener_id_fio2(){
     try {
-        QString quer = "SELECT id FROM fio2";
+        QString quer = "SELECT id FROM public.\"fio2\"";
         QString resultados = consulta(quer);
         QStringList res_list = resultados.split("?");
         if(res_list.contains("result")){
@@ -1099,7 +1101,7 @@ QString ConsultasDb::obtener_id_fio2(){
 
 QString ConsultasDb::obtener_id_com_pip(){
     try {
-        QString quer = "SELECT id FROM com_pip";
+        QString quer = "SELECT id FROM public.\"com_pip\"";
         QString resultados = consulta(quer);
         QStringList res_list = resultados.split("?");
         if(res_list.contains("result")){
@@ -1116,7 +1118,7 @@ QString ConsultasDb::obtener_id_com_pip(){
 
 QString ConsultasDb::leer_com_pip(){
     try {
-        QString quer = "SELECT * FROM com_pip";
+        QString quer = "SELECT * FROM public.\"com_pip\"";
         QString resultados = consulta(quer);
         QStringList res_list = resultados.split("?");
         if(res_list.contains("result")){
@@ -1135,7 +1137,7 @@ bool ConsultasDb::guarda_com_pip(QString b1){
     try {
         QString id_com_pip = obtener_id_com_pip();
         if(id_com_pip != ""){
-            QString update_query = "UPDATE com_pip SET compensacion = " + b1 + " WHERE id = " + id_com_pip;
+            QString update_query = "UPDATE public.\"com_pip\" SET compensacion = " + b1 + " WHERE id = " + id_com_pip;
             QString resultados = consulta(update_query);
             if(resultados.at(1) != ""){
                 return true;
@@ -1157,7 +1159,7 @@ bool ConsultasDb::guarda_com_pip(QString b1){
 QStringList ConsultasDb::obtener_ultimo_evento(){
     try {
         if(baseDatos.isOpen()){
-            QString quer = "SELECT fecha,hora FROM eventos ORDER BY id DESC LIMIT 1";
+            QString quer = "SELECT fecha,hora FROM public.\"eventos\" ORDER BY id DESC LIMIT 1";
             baseDatos.transaction();
             QSqlQuery consul;
             consul.prepare(quer);

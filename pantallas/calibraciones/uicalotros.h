@@ -52,15 +52,15 @@ public:
     virtual void paintEvent(QPaintEvent *event);
 
     void cargarAltura();
-    void cargarTeclado();
+    //void cargarTeclado();
     void cargarFio2();
-    void cargarOffPip();
+    //void cargarOffPip();
 public slots:
     void aplicarCambiosAltura();
-    void aplicarCambiosTeclado();
+    //void aplicarCambiosTeclado();
     void aplicarCambiosFio2();
-    void aplicarCambiosOffPip();
-    void revisarCambiosTeclado();
+    //void aplicarCambiosOffPip();
+    //void revisarCambiosTeclado();
 signals:
 
 };

@@ -145,7 +145,7 @@ UiCalOtros::UiCalOtros(QWidget *parent, Monitor *monitor) : QWidget(parent)
         btnAplicarTeclado->setFont(*fuente);
         btnAplicarTeclado->setText("Aplicar Teclado");
         btnAplicarTeclado->setObjectName("btnAplicarTeclado");
-        connect(btnAplicarTeclado, SIGNAL(clicked()), this, SLOT(aplicarCambiosTeclado()));
+        //connect(btnAplicarTeclado, SIGNAL(clicked()), this, SLOT(aplicarCambiosTeclado()));
 
         btnAplicarFio2 = new QPushButton(this);
         btnAplicarFio2->setGeometry(QRect(700, 275, 225, 50));
@@ -159,7 +159,7 @@ UiCalOtros::UiCalOtros(QWidget *parent, Monitor *monitor) : QWidget(parent)
         btnAplicarComPip->setFont(*fuente);
         btnAplicarComPip->setText("Aplicar Off pip");
         btnAplicarComPip->setObjectName("btnAplicarComPip");
-        connect(btnAplicarComPip, SIGNAL(clicked()), this, SLOT(aplicarCambiosOffPip()));
+        //connect(btnAplicarComPip, SIGNAL(clicked()), this, SLOT(aplicarCambiosOffPip()));
 
         labelInfo = new QLabel(this);
         labelInfo->setGeometry(QRect(40, 400, 600, 50));
@@ -170,7 +170,7 @@ UiCalOtros::UiCalOtros(QWidget *parent, Monitor *monitor) : QWidget(parent)
 
         timerTecladoAplicados = new QTimer;
         timerTecladoAplicados->setSingleShot(true);
-        connect(timerTecladoAplicados, SIGNAL(timeout()), this, SLOT(revisarCambiosTeclado()));
+        //connect(timerTecladoAplicados, SIGNAL(timeout()), this, SLOT(revisarCambiosTeclado()));
 
         retranslateUi();
     }  catch (std::exception &e) {
@@ -210,7 +210,7 @@ void UiCalOtros::paintEvent(QPaintEvent* /*event*/)
     }
 }
 
-void UiCalOtros::cargarOffPip(){
+/*void UiCalOtros::cargarOffPip(){
     try {
         QString temp = monitor->consul->leer_com_pip();
         QStringList parts = temp.split(",");
@@ -220,7 +220,7 @@ void UiCalOtros::cargarOffPip(){
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
 
     }
-}
+}*/
 
 void UiCalOtros::cargarAltura(){
     try {
@@ -234,7 +234,7 @@ void UiCalOtros::cargarAltura(){
     }
 }
 
-void UiCalOtros::cargarTeclado(){
+/*void UiCalOtros::cargarTeclado(){
     try {
         QString temp = monitor->consul->leer_teclado();
         QStringList parts = temp.split(",");
@@ -245,7 +245,7 @@ void UiCalOtros::cargarTeclado(){
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
 
     }
-}
+}*/
 
 void UiCalOtros::cargarFio2(){
     try {
@@ -263,7 +263,7 @@ void UiCalOtros::cargarFio2(){
     }
 }
 
-void UiCalOtros::aplicarCambiosOffPip(){
+/*void UiCalOtros::aplicarCambiosOffPip(){
     try {
         QString offpip = lEOffPip->text();
         bool entero = false;
@@ -286,7 +286,7 @@ void UiCalOtros::aplicarCambiosOffPip(){
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
 
     }
-}
+}*/
 
 void UiCalOtros::aplicarCambiosAltura(){
     try {
@@ -313,7 +313,7 @@ void UiCalOtros::aplicarCambiosAltura(){
     }
 }
 
-void UiCalOtros::aplicarCambiosTeclado(){
+/*void UiCalOtros::aplicarCambiosTeclado(){
     try {
         QString presionar = lEPresionar->text();
         QString soltar = lESoltar->text();
@@ -342,7 +342,7 @@ void UiCalOtros::aplicarCambiosTeclado(){
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
 
     }
-}
+}*/
 
 void UiCalOtros::aplicarCambiosFio2(){
     try {
@@ -384,7 +384,7 @@ void UiCalOtros::aplicarCambiosFio2(){
     }
 }
 
-void UiCalOtros::revisarCambiosTeclado(){
+/*void UiCalOtros::revisarCambiosTeclado(){
     try {
         if(monitor->cambiosCalTeclado){
             bool temp = monitor->consul->guarda_teclado(lEPresionar->text(),lESoltar->text());
@@ -402,4 +402,4 @@ void UiCalOtros::revisarCambiosTeclado(){
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
 
     }
-}
+}*/

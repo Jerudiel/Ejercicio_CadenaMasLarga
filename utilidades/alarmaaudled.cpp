@@ -8,10 +8,16 @@ AlarmaAudLed::AlarmaAudLed(InfoAlarma *infoAlarmas)
 
         QString ruta = QDir::currentPath();
         //qDebug() << "ruat alarmas: " + ruta ; //:/audios/audios/prioridad_alta_super.wav
-        wave_alta = QUrl::fromLocalFile(":/audios/audios/prioridad_alta.wav");
+        /*wave_alta = QUrl::fromLocalFile(":/audios/audios/prioridad_alta.wav");
         wave_media = QUrl::fromLocalFile(":/audios/audios/prioridad_media.wav");
         wave_baja =  QUrl::fromLocalFile(":/audios/audios/prioridad_baja.wav");
         wave_inoperante = QUrl::fromLocalFile(":/audios/audios/prioridad_alta_super.wav");
+        wave_actual = wave_media;*/
+
+        wave_alta = QUrl("qrc:/audios/audios/prioridad_alta.wav");
+        wave_media = QUrl("qrc:/audios/audios/prioridad_media.wav");
+        wave_baja =  QUrl("qrc:/audios/audios/prioridad_baja.wav");
+        wave_inoperante = QUrl("qrc:/audios/audios/prioridad_alta_super.wav");
         wave_actual = wave_media;
 
         /*const auto deviceInfos = QAudioDeviceInfo::availableDevices(QAudio::AudioOutput);
@@ -162,7 +168,7 @@ void AlarmaAudLed::durationChanged(qint64 duracion){
         if(audio_corriendo){
             //qDebug() << "duracion cargada: manda a reproducir!";
             duracion_sonido = duracion;
-            qDebug() << "[AlarmaAudLed] durationChanged: " << reproductorMulti->isAudioAvailable();
+            //qDebug() << "[AlarmaAudLed] durationChanged: " << reproductorMulti->isAudioAvailable();
             reproductorMulti->play();
         }
 
@@ -186,7 +192,7 @@ void AlarmaAudLed::positionChanged(qint64 posicion){
             if(audio_corriendo && ! enPausa && ! cambioAudio){
                 //qDebug() << "cargando para volver a reproducir";
                 reproductorMulti->setMedia(wave_actual);
-                qDebug() << "[AlarmaAudLed] positionChanged: " <<reproductorMulti->isAvailable();
+                //qDebug() << "[AlarmaAudLed] positionChanged: " <<reproductorMulti->isAvailable();
             }
 
             //reproductorMulti->play();

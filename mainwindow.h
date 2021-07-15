@@ -26,9 +26,9 @@ public:
     ~MainWindow();
     ServerWS *server;
     QStackedWidget * contenedorPrincipal;
-    Consultas *consul;
+    //Consultas *consul;
 
-    ConsultasDb *consulDb;
+    ConsultasDb *consul;
 
     Monitor * monitor;
     UiConfiguracion *configuracion;

@@ -22,12 +22,12 @@ MainWindow::MainWindow(ServerWS *server, QWidget *parent, bool debug_t, bool deb
         vAviso = nullptr;
 
         //prueba db postgres
-        consulDb = new ConsultasDb;
+        consul = new ConsultasDb;
         //aqui debería ir la inicialización de las consultas a sqlite
-        consul = new Consultas;
-        bool conectado = consul->conecta();
-        if(conectado){
-            consul->cerrar();
+        ///consul = new Consultas;
+        ///bool conectado = consul->conecta();
+        if(consul->baseDatos.isOpen()){
+            ///consul->cerrar();
 
             reloj = new Reloj;
 

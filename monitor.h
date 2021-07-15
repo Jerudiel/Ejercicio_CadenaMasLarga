@@ -21,6 +21,7 @@
 #include "signos/widgetsigno3.h"
 #include "utilidades/widgetsignobar.h"
 #include "consultas.h"
+#include "consultasdb.h"
 #include "utilidades/alarmasx.h"
 #include "utilidades/infoalarma.h"
 #include "tarjetas/ventilador.h"
@@ -45,11 +46,11 @@ class Monitor : public QWidget
 {
     Q_OBJECT
 public:
-    explicit Monitor(QWidget *parent = nullptr, Consultas *consul = nullptr, bool debug_c = false, bool debug_s = false);
+    explicit Monitor(QWidget *parent = nullptr, ConsultasDb *consul = nullptr, bool debug_c = false, bool debug_s = false);
 
     QWidget * mainwindow;
     QFont * fuente;
-    Consultas *consul;
+    ConsultasDb *consul;
     QWidget * centralwidget;
     QWidget * horizontalLayoutWidget;
     QHBoxLayout * principalLayout;
