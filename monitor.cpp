@@ -20,7 +20,7 @@ Monitor::Monitor(QWidget *parent, ConsultasDb *consul, bool debug_c, bool debug_
         versionVentiladorEsperada = "4.1.0";
         versionSenPresionEsperada = "3.3.0";
         versionTecladoEsperada = "1.0";
-        versionPi = "3.7.13E";
+        versionPi = "3.7.15E";
 
         mainwindow = parent;
         this->consul = consul;
@@ -3467,8 +3467,10 @@ void Monitor::receVent(QString trama){
                     timerREG->start(400);
                     /////estado de gases
                     //Se necesita saber el valor de: air_psi_final, o2_psi_final,fio2_final
-                    s_air_psi_final = trama.mid(19,1);
-                    s_o2_psi_final = trama.mid(20,1);
+                    ///s_air_psi_final = trama.mid(19,1);
+                    ///s_o2_psi_final = trama.mid(20,1);
+                    s_o2_psi_final = trama.mid(19,1);
+                    s_air_psi_final = trama.mid(20,1);
                 }
                 else if(trama == "S"){
                     if(! desactivar_s){
@@ -5718,7 +5720,7 @@ void Monitor::revisarConexionVentilador(){
             //ultimo_valor_alarma_aire = "";
             //valor_alarma_aire = "";
             //primera_alarma_aire = true;
-            QString trama_temp = "P";
+            QString trama_temp = "P0";
             if((fio2_final <= 95 && air_psi_final < min_entrada_aire) || (o2_psi_final < min_entrada_oxi)){
                 trama_temp += "1";
                 if(primera_alarma_aire){
@@ -5745,7 +5747,7 @@ void Monitor::revisarConexionVentilador(){
             }
             ultimo_valor_alarma_aire = valor_alarma_aire;
             //
-            trama_temp += "0\n";
+            trama_temp += "\n";
             serVent->envia_trama_config(trama_temp);
         }
         timerConVentilador->start(7000);

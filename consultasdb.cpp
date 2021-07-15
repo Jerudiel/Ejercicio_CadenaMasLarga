@@ -7,7 +7,7 @@ ConsultasDb::ConsultasDb()
     baseDatos.setPort(5432);
     baseDatos.setDatabaseName("ventiladordb");
     baseDatos.setUserName("pi");
-    baseDatos.setPassword("320b5784b0ee");
+    baseDatos.setPassword("c14a6db9ee6b"); //320b5784b0ee
     if(!baseDatos.open())
     {
         qDebug()<<"[DB] Error en la conexion de la base de datos postgres";
