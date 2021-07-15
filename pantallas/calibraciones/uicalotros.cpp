@@ -10,7 +10,7 @@ UiCalOtros::UiCalOtros(QWidget *parent, Monitor *monitor) : QWidget(parent)
         fuente->setBold(true);
         fuente->setWeight(75);
 
-        lblAltura = new QLabel(this);
+        /*lblAltura = new QLabel(this);
         lblAltura->setGeometry(QRect(10, 20, 100, 30));
         lblAltura->setFont(*fuente);
         lblAltura->setStyleSheet("color: white;");
@@ -47,7 +47,7 @@ UiCalOtros::UiCalOtros(QWidget *parent, Monitor *monitor) : QWidget(parent)
         lESoltar->setGeometry(QRect(450, 70, 100, 30));
         lESoltar->setFont(*fuente);
         lESoltar->setAlignment(Qt::AlignCenter);
-        lESoltar->setObjectName("lESoltar");
+        lESoltar->setObjectName("lESoltar");*/
 
         lblPorceCambio = new QLabel(this);
         lblPorceCambio->setGeometry(QRect(650, 20, 100, 30));
@@ -120,7 +120,7 @@ UiCalOtros::UiCalOtros(QWidget *parent, Monitor *monitor) : QWidget(parent)
 
         //
 
-        lblOffPip= new QLabel(this);
+        /*lblOffPip= new QLabel(this);
         lblOffPip->setGeometry(QRect(10, 150, 100, 30));
         lblOffPip->setFont(*fuente);
         lblOffPip->setStyleSheet("color: white;");
@@ -144,7 +144,7 @@ UiCalOtros::UiCalOtros(QWidget *parent, Monitor *monitor) : QWidget(parent)
         btnAplicarTeclado->setGeometry(QRect(370, 120, 225, 50));
         btnAplicarTeclado->setFont(*fuente);
         btnAplicarTeclado->setText("Aplicar Teclado");
-        btnAplicarTeclado->setObjectName("btnAplicarTeclado");
+        btnAplicarTeclado->setObjectName("btnAplicarTeclado");*/
         //connect(btnAplicarTeclado, SIGNAL(clicked()), this, SLOT(aplicarCambiosTeclado()));
 
         btnAplicarFio2 = new QPushButton(this);
@@ -154,11 +154,11 @@ UiCalOtros::UiCalOtros(QWidget *parent, Monitor *monitor) : QWidget(parent)
         btnAplicarFio2->setObjectName("btnAplicarFio2");
         connect(btnAplicarFio2, SIGNAL(clicked()), this, SLOT(aplicarCambiosFio2()));
 
-        btnAplicarComPip = new QPushButton(this);
+        /*btnAplicarComPip = new QPushButton(this);
         btnAplicarComPip->setGeometry(QRect(50, 200, 225, 50));
         btnAplicarComPip->setFont(*fuente);
         btnAplicarComPip->setText("Aplicar Off pip");
-        btnAplicarComPip->setObjectName("btnAplicarComPip");
+        btnAplicarComPip->setObjectName("btnAplicarComPip");*/
         //connect(btnAplicarComPip, SIGNAL(clicked()), this, SLOT(aplicarCambiosOffPip()));
 
         labelInfo = new QLabel(this);
@@ -168,8 +168,8 @@ UiCalOtros::UiCalOtros(QWidget *parent, Monitor *monitor) : QWidget(parent)
         labelInfo->setObjectName("labelInfo");
         labelInfo->setText("Prueba de label!!!");
 
-        timerTecladoAplicados = new QTimer;
-        timerTecladoAplicados->setSingleShot(true);
+        /*timerTecladoAplicados = new QTimer;
+        timerTecladoAplicados->setSingleShot(true);*/
         //connect(timerTecladoAplicados, SIGNAL(timeout()), this, SLOT(revisarCambiosTeclado()));
 
         retranslateUi();
@@ -181,15 +181,15 @@ UiCalOtros::UiCalOtros(QWidget *parent, Monitor *monitor) : QWidget(parent)
 
 void UiCalOtros::retranslateUi(){
     try {
-        lblAltura->setText("Altura(m): ");
-        lblPresionar->setText("Presionar: ");
-        lblSoltar->setText("Soltar: ");
+        //lblAltura->setText("Altura(m): ");
+        //lblPresionar->setText("Presionar: ");
+        //lblSoltar->setText("Soltar: ");
         lblPorceCambio->setText("% cambio: ");
         lblLsAire->setText("ls_aire: ");
         lblLiAire->setText("li_aire: ");
         lblLsO2->setText("ls_o2: ");
         lblLiO2->setText("li_o2: ");
-        lblOffPip->setText("Off pip: ");
+        //lblOffPip->setText("Off pip: ");
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
 
@@ -222,7 +222,7 @@ void UiCalOtros::paintEvent(QPaintEvent* /*event*/)
     }
 }*/
 
-void UiCalOtros::cargarAltura(){
+/*void UiCalOtros::cargarAltura(){
     try {
         QString temp = monitor->consul->leer_altura();
         QStringList parts = temp.split(",");
@@ -232,7 +232,7 @@ void UiCalOtros::cargarAltura(){
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
 
     }
-}
+}*/
 
 /*void UiCalOtros::cargarTeclado(){
     try {
@@ -288,7 +288,7 @@ void UiCalOtros::cargarFio2(){
     }
 }*/
 
-void UiCalOtros::aplicarCambiosAltura(){
+/*void UiCalOtros::aplicarCambiosAltura(){
     try {
         QString altura = lEAltura->text();
         bool entero = false;
@@ -311,7 +311,7 @@ void UiCalOtros::aplicarCambiosAltura(){
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
 
     }
-}
+}*/
 
 /*void UiCalOtros::aplicarCambiosTeclado(){
     try {

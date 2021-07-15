@@ -8,6 +8,7 @@
 #include <QStackedWidget>
 #include <QDateTime>
 #include <QProcess>
+#include <QSettings>
 #include "monitor.h"
 #include "pantallas/uiconfiguracion.h"
 #include "pantallas/uialarmas.h"
@@ -61,6 +62,8 @@ public:
     void abrePantallaAlarmas();
     void abrePantallaConfiguracion();
     void set_date(QString trama);
+
+    QSettings *config;
 
 public slots:
     void recteclado(QString trama);

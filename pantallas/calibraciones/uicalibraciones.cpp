@@ -73,7 +73,7 @@ void UiCalibraciones::llenarConfiguracion(){
     try {
         tab_sensores->cargarFactores();
         tab_control->cargarFactores();
-        tab_otros->cargarAltura();
+        //tab_otros->cargarAltura();
         //tab_otros->cargarTeclado();
         tab_otros->cargarFio2();
         //tab_otros->cargarOffPip();
@@ -109,7 +109,7 @@ void UiCalibraciones::cambioTab(int i){
             tab_control->cargarFactores();
         }
         else if(i == tabWidget->indexOf(tab_otros)){
-            tab_otros->cargarAltura();
+            //tab_otros->cargarAltura();
             //tab_otros->cargarTeclado();
             tab_otros->cargarFio2();
             //tab_otros->cargarOffPip();

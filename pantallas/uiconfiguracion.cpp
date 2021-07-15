@@ -197,7 +197,7 @@ void UiConfiguracion::cambioTab(int i){
         else if(i == tabWidget->indexOf(tab_calibrar)){
             tab_calibrar->calibraciones->tab_sensores->cargarFactores();
             tab_calibrar->calibraciones->tab_control->cargarFactores();
-            tab_calibrar->calibraciones->tab_otros->cargarAltura();
+            //tab_calibrar->calibraciones->tab_otros->cargarAltura();
             //tab_calibrar->calibraciones->tab_otros->cargarTeclado();
             tab_calibrar->calibraciones->tab_otros->cargarFio2();
             //tab_calibrar->calibraciones->tab_otros->cargarOffPip();

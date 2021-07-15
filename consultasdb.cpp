@@ -1,13 +1,40 @@
 #include "consultasdb.h"
 
-ConsultasDb::ConsultasDb()
+ConsultasDb::ConsultasDb(QSettings *config)
 {
+    int port = config->value("database/port", "5432").toString().toInt();
+    QString name_db = config->value("database/name", "ventiladordb").toString();
+    QString user_db = config->value("database/user", "pi").toString();
+    QString pass_db = config->value("database/pass", "123456789").toString();
+    QString numserie = config->value("database/numserie", "740000/20").toString();
+
+    //prueba para obtener desde aqui el md5
+    qDebug() << "[DB POS] port: " << port;
+    qDebug() << "[DB POS] name_db: " << name_db;
+    qDebug() << "[DB POS] user_db: " << user_db;
+    qDebug() << "[DB POS] pass_db: " << pass_db;
+    qDebug() << "[DB POS] numserie: " << numserie;
+
+    //macadres
+    //foreach(QNetworkInterface interface, QNetworkInterface::allInterfaces())
+    //{
+    //    qDebug() << "[DB POS] Interface:"+interface.hardwareAddress();
+    //}
+
+    //hacer todo por comandos linux!
+
+    //QString mac = "dc:a6:32:5b:4a:58";
+    //QString trama = "*" + mac + "&" + numserie + "?";
+    //QString md5 = QString(QCryptographicHash::hash((trama.toUtf8()),QCryptographicHash::Md5));
+
+    //qDebug() << "[DB POS] MD5: " << md5;
+
     baseDatos = QSqlDatabase::addDatabase("QPSQL");
     baseDatos.setHostName("localhost");
-    baseDatos.setPort(5432);
-    baseDatos.setDatabaseName("ventiladordb");
-    baseDatos.setUserName("pi");
-    baseDatos.setPassword("c14a6db9ee6b"); //320b5784b0ee
+    baseDatos.setPort(port);
+    baseDatos.setDatabaseName(name_db);
+    baseDatos.setUserName(user_db);
+    baseDatos.setPassword(pass_db); //320b5784b0ee
     if(!baseDatos.open())
     {
         qDebug()<<"[DB] Error en la conexion de la base de datos postgres";

@@ -7,6 +7,8 @@ MainWindow::MainWindow(ServerWS *server, QWidget *parent, bool debug_t, bool deb
         QString ruta = QDir::currentPath();
         //qDebug() << "ruat path: " + ruta ;
 
+        config = new QSettings(ruta + "/config.ini", QSettings::IniFormat);
+
         this->server = server;
         connect(server, SIGNAL(enviaComando(QString)), this, SLOT(tecladoVirtual(QString)));
         setGeometry(0,0,1024,650);
@@ -22,7 +24,7 @@ MainWindow::MainWindow(ServerWS *server, QWidget *parent, bool debug_t, bool deb
         vAviso = nullptr;
 
         //prueba db postgres
-        consul = new ConsultasDb;
+        consul = new ConsultasDb(config);
         //aqui debería ir la inicialización de las consultas a sqlite
         ///consul = new Consultas;
         ///bool conectado = consul->conecta();

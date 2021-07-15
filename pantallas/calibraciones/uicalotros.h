@@ -20,12 +20,12 @@ public:
     explicit UiCalOtros(QWidget *parent = nullptr, Monitor *monitor = nullptr);
     Monitor *monitor;
     QFont * fuente;
-    QLabel * lblAltura;
-    QLineEdit * lEAltura;
-    QLabel * lblPresionar;
-    QLineEdit * lEPresionar;
-    QLabel * lblSoltar;
-    QLineEdit * lESoltar;
+    //QLabel * lblAltura;
+    //QLineEdit * lEAltura;
+    //QLabel * lblPresionar;
+    //QLineEdit * lEPresionar;
+    //QLabel * lblSoltar;
+    //QLineEdit * lESoltar;
     QLabel * lblPorceCambio;
     QLineEdit * lEPorceCambio;
 
@@ -38,25 +38,25 @@ public:
     QLabel * lblLiO2;
     QLineEdit * lELiO2;
 
-    QLabel * lblOffPip;
-    QLineEdit * lEOffPip;
+    //QLabel * lblOffPip;
+    //QLineEdit * lEOffPip;
 
-    QPushButton *btnAplicarAltura;
-    QPushButton *btnAplicarTeclado;
+    //QPushButton *btnAplicarAltura;
+    //QPushButton *btnAplicarTeclado;
     QPushButton *btnAplicarFio2;
-    QPushButton *btnAplicarComPip;
+    //QPushButton *btnAplicarComPip;
     QLabel *labelInfo;
-    QTimer *timerTecladoAplicados;
+    //QTimer *timerTecladoAplicados;
 
     void retranslateUi();
     virtual void paintEvent(QPaintEvent *event);
 
-    void cargarAltura();
+    //void cargarAltura();
     //void cargarTeclado();
     void cargarFio2();
     //void cargarOffPip();
 public slots:
-    void aplicarCambiosAltura();
+    //void aplicarCambiosAltura();
     //void aplicarCambiosTeclado();
     void aplicarCambiosFio2();
     //void aplicarCambiosOffPip();

@@ -5,11 +5,14 @@
 #include <QSqlDatabase>
 #include <QtSql>
 #include <QTableWidget>
+#include <QSettings>
+#include <QCryptographicHash>
+#include <QNetworkInterface>
 
 class ConsultasDb
 {
 public:
-    ConsultasDb();
+    ConsultasDb(QSettings *config = nullptr);
     ~ConsultasDb();
     bool state;
 
