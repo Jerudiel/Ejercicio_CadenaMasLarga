@@ -121,20 +121,28 @@ void UiEventos::cargar_datos(){
          //int total = eventos.size() -1;
 
          //invertir orden de la lista
-         QStringList *neo_eventos = new QStringList;
+         /*QStringList *neo_eventos = new QStringList;
          for(int k= eventos.size()-1; k>=0; k--){
              neo_eventos->append(eventos.at(k));
-         }
+         }*/
          //
          //el siguiente for recorre las filas - elemento en lista
-         for(int row_number=0; row_number < neo_eventos->size() ;row_number++){
+         for(int row_number=0; row_number < eventos.size() ;row_number++){
              int indice = row_number; // se quita porque ya no hay reversa en lista total - row_number;
              tableView->insertRow(indice);
              numero_eventos = indice;
              //el siguiente for es para recorrer por el string con los datos del event
-             QStringList row_data = neo_eventos->at(indice).split(",");
+             QStringList row_data = eventos.at(indice).split(",");
              for(int column_number = 0; column_number < row_data.size() ;column_number++){
-                 QTableWidgetItem *item = new QTableWidgetItem(row_data.at(column_number));
+                 QString dato;
+                 if(column_number == row_data.size() -1 ){
+                     dato = row_data.at(column_number).split(".").at(0);
+                 }
+                 else{
+                     dato = row_data.at(column_number);
+                 }
+                 //QTableWidgetItem *item = new QTableWidgetItem(row_data.at(column_number));
+                 QTableWidgetItem *item = new QTableWidgetItem(dato);
                  item->setTextAlignment(Qt::AlignCenter | Qt::AlignVCenter);
                  //qDebug() << "item- indice: " + QString::number(indice) + ", column_number: " + QString::number(column_number) + " , data: " + row_data.at(column_number);
                  tableView->setItem(indice, column_number, item);

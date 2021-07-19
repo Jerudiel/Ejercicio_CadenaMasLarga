@@ -560,7 +560,9 @@ void MainWindow::set_date(QString trama){
     try {
         //poner el comando date --set ...
         QProcess process;
-        QString command = "date -s '" + trama + "'";
+        //QString command = "sudo date -s '" + trama + "'";
+        QString command = "sudo /bin/bash -c date -s '" + trama + "'";
+        qDebug() << "[RELOJ] set date comando: " << command;
         process.start(command);
         process.waitForFinished(-1);
         QString stdput_process = process.readAllStandardOutput();
@@ -578,6 +580,7 @@ void MainWindow::set_date(QString trama){
 
 void MainWindow::set_watch(QString trama){
     try {
+        //qDebug() << "set_watch: " << trama;
         bool rtc_ok = false;
         bool date_ok = false;
         QDateTime dateCurrent;
@@ -586,9 +589,9 @@ void MainWindow::set_watch(QString trama){
         QStringList partes = trama.split(',');
         if(partes.size() == 2){
             QString fecha_last_event = partes.at(0); //yyyy-mm-dd
-            QString hora_last_event = partes.at(1); //hh:mm:ss
+            QString hora_last_event = partes.at(1).split(".").at(0); //hh:mm:ss
             qDebug() << "[RELOJ] fecha last_event: " + fecha_last_event + " "+ hora_last_event;
-            QDateTime dateLastEvent = QDateTime::fromString(fecha_last_event + " "+ hora_last_event, "yyyy-MM-dd hh:mm:ss");
+            QDateTime dateLastEvent = QDateTime::fromString(fecha_last_event + " " + hora_last_event, "yyyy-MM-dd hh:mm:ss");
             dateLastEvent.setTimeSpec(Qt::UTC);
             QString tt = dateLastEvent.toString("d MMM yyyy hh:mm:ss");
             //qDebug() << "[RELOJ] fecha last_event-2: " + tt;
@@ -606,7 +609,7 @@ void MainWindow::set_watch(QString trama){
                     QString fecha_date = pparts.at(1) + " " + pparts.at(2) + " " + pparts.at(5).mid(0,4); // MMMM dd yyyy
                     QString hora_date = pparts.at(3); //hh:mm:ss
                     //qDebug() << "[RELOJ] fecha date2: " + fecha_date + " " + hora_date;
-                    dateCurrent = QDateTime::currentDateTimeUtc(); //QDateTime::fromString(fecha_date + " "+ hora_date, "MM/dd/yy hh:mm:ss");
+                    dateCurrent = QDateTime::currentDateTime();//Utc //"MM/dd/yy hh:mm:ss" //QDateTime::fromString(fecha_date + " "+ hora_date, "MMM dd yyyy hh:mm:ss");
                     dateCurrent.setTimeSpec(Qt::UTC);
                     QString ttt = dateCurrent.toString("d MMM yyyy hh:mm:ss");
                     //qDebug() << "[RELOJ] fecha dateCurrent-2: " + ttt;
@@ -677,6 +680,13 @@ void MainWindow::set_watch(QString trama){
             if(rtc_ok && date_ok){
                 // last_event > date
                 //qDebug() << "[RELOJ] valor: " + QString::number(dateCurrent.msecsTo(dateRTC));
+
+                //debug
+                //qDebug() << "[RELOJ] lastevent to current" << dateLastEvent.msecsTo(dateCurrent);
+                //qDebug() << "[RELOJ] dateCurrent to dateRTC" << dateCurrent.msecsTo(dateRTC);
+                //qDebug() << "[RELOJ] lastevent to dateRTC" << dateLastEvent.msecsTo(dateRTC) ;
+                //dateLastEvent.msecsTo(dateRTC)
+
                 if(dateLastEvent.msecsTo(dateCurrent) > 0){
                     //La hora es probable que esté correcta, ahora hay que preguntar por la del RTC respecto a current
                     if(dateCurrent.msecsTo(dateRTC) > 0){

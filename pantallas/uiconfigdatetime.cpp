@@ -300,7 +300,8 @@ void UiConfigDatetime::aplicarCambios(){
        QString trama_comando = "sudo date --set='" + trama + "'";
        QProcess::execute(trama_comando);*/
 
-       QString trama = temp_year_s + "-" + temp_month_s + "-" + temp_day_s + " " + temp_hora_s + ":" + temp_minuto_s + ":00";
+
+       /*QString trama = temp_year_s + "-" + temp_month_s + "-" + temp_day_s + " " + temp_hora_s + ":" + temp_minuto_s + ":00";
        QString comando = "sudo /bin/bash -c date -s '" + trama + "'";
        qDebug() << "comando: " << comando;
        int rr = QProcess::execute(comando);
@@ -313,7 +314,28 @@ void UiConfigDatetime::aplicarCambios(){
        }
 
        label_info->setText("Se cambio la fecha y hora");
+       timerAnuncio->start(5000);*/
+
+       ///////////nueva forma
+       //poner el comando date --set ...
+       QProcess process;
+       //QString command = "sudo date -s '" + trama + "'";
+       QString trama = temp_year_s + "-" + temp_month_s + "-" + temp_day_s + " " + temp_hora_s + ":" + temp_minuto_s + ":00";
+       QString command = "sudo /bin/bash -c date -s '" + trama + "'";
+       qDebug() << "[SET DATE] command: " << command;
+       process.start(command);
+       process.waitForFinished(-1);
+       QString stdput_process = process.readAllStandardOutput();
+       QString stderror_process = process.readAllStandardError();
+       if(stderror_process.size() > 0){
+           qDebug() << "[SET DATE] Error al actualizar fecha y hora: " << stderror_process;
+       }
+       else{
+           qDebug() << "[SET DATE] Se actualiza la fecha y hora con éxito: " << stdput_process;
+       }
+       label_info->setText("Se cambio la fecha y hora");
        timerAnuncio->start(5000);
+       /////////////////
 
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );

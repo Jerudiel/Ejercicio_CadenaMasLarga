@@ -9,11 +9,50 @@ ConsultasDb::ConsultasDb(QSettings *config)
     QString numserie = config->value("database/numserie", "740000/20").toString();
 
     //prueba para obtener desde aqui el md5
-    qDebug() << "[DB POS] port: " << port;
-    qDebug() << "[DB POS] name_db: " << name_db;
-    qDebug() << "[DB POS] user_db: " << user_db;
-    qDebug() << "[DB POS] pass_db: " << pass_db;
-    qDebug() << "[DB POS] numserie: " << numserie;
+    //qDebug() << "[DB POS] port: " << port;
+    //qDebug() << "[DB POS] name_db: " << name_db;
+    //qDebug() << "[DB POS] user_db: " << user_db;
+    //qDebug() << "[DB POS] pass_db: " << pass_db;
+    //qDebug() << "[DB POS] numserie: " << numserie;
+
+    //obtener la macaddres
+    QStringList listMac;
+    QString stdOutMac;
+    QString stdErrorMac;
+    listMac << "-c" << "ifconfig | grep ether | cut -f 10 -d ' '";
+    QProcess *processMac = new QProcess;
+    processMac->start("/bin/bash", listMac);
+    if(processMac->waitForFinished(3000)){
+        stdOutMac = processMac->readAllStandardOutput();
+        stdErrorMac = processMac->readAllStandardError();
+    }
+    else{
+        qDebug() << "[DB POS] Error al obtener MAC";
+    }
+    QString mac = stdOutMac.mid(0, stdOutMac.size()-1);
+    //qDebug() << "[DB POS] MAC: " << mac;
+
+    //ahora a sacar el md5
+    QStringList listMd5;
+    QString stdOutMd5;
+    QString stdErrorMd5;
+    //echo -n "*dc:a6:32:68:b2:72&740035/20?" | md5sum
+    listMd5 << "-c" << "echo -n '*"+ mac + "&" + numserie + "?' | md5sum";
+    QProcess *processMd5 = new QProcess;
+    processMd5->start("/bin/bash", listMd5);
+    if(processMd5->waitForFinished(3000)){
+        stdOutMd5 = processMd5->readAllStandardOutput();
+        stdErrorMd5 = processMd5->readAllStandardError();
+    }
+    else{
+        qDebug() << "[DB POS] Error 45";
+    }
+    QString md5 = stdOutMd5.split(" ").at(0);
+    //qDebug() << "[DB POS] MD5: " << md5;
+
+    //final pass
+    QString finalPass = md5.mid(0,1) + md5.mid(10,3) + md5.mid(8,1) + md5.mid(17,2) + md5.mid(26,5);
+    //qDebug() << "[DB POS] final pass: " << finalPass;
 
     //macadres
     //foreach(QNetworkInterface interface, QNetworkInterface::allInterfaces())
@@ -34,14 +73,14 @@ ConsultasDb::ConsultasDb(QSettings *config)
     baseDatos.setPort(port);
     baseDatos.setDatabaseName(name_db);
     baseDatos.setUserName(user_db);
-    baseDatos.setPassword(pass_db); //320b5784b0ee
+    baseDatos.setPassword(finalPass); //320b5784b0ee //pass_db
     if(!baseDatos.open())
     {
-        qDebug()<<"[DB] Error en la conexion de la base de datos postgres";
+        qDebug()<<"[DB POS] Error en la conexion de la base de datos";
     }
     else
     {
-        qDebug()<<"[DB] Conexion con la base de datos realizada postgres";
+        qDebug()<<"[DB POS] Conexion con la base de datos realizada";
     }
 }
 
@@ -877,7 +916,7 @@ bool ConsultasDb::guarda_cali_presion(QString presion){
 QStringList ConsultasDb::obtener_eventos(){
     try {
         if(baseDatos.isOpen()){
-            QString quer = "SELECT tipo, modo, descripcion, fecha, hora FROM public.\"eventos\" ORDER BY date(fecha), date(hora) DESC";
+            QString quer = "SELECT tipo, modo, descripcion, fecha, hora FROM public.\"eventos\" ORDER BY fecha DESC, hora DESC";
             baseDatos.transaction();
             QSqlQuery consul;
             consul.prepare(quer);
