@@ -12,7 +12,7 @@ UiModoPCMV::UiModoPCMV() : QWidget()
         pcmv_pinsp->set_lim_inf(1);
         pcmv_pinsp->setObjectName("pcmv_pinsp");
         pcmv_pinsp->setGeometry(QRect(50,0,150,140));
-        pcmv_pinsp->set_lim_inf(10);
+        pcmv_pinsp->set_lim_inf(10); //10
 
         pcmv_oxi = new WidgetParametro(this, "Oxigeno", "%", 100.0, 0 ,"1", 0, 1, 0, false);
         pcmv_oxi->setObjectName("pcmv_oxi");

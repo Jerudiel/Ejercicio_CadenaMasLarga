@@ -692,6 +692,16 @@ public:
     int indice_borrar_alarma;
     QString nombre_borrar_alarma;
 
+    //buffer parametros
+    bool Actualiza_buffer_fio2;
+    QMap<int, QString> *dict_buffer_signos;
+    void Agregar_buffer_signo(int signo, QString valores);
+    void mostrar_buffer_signos();
+    void colorear_buffer_signos(QString color);
+    bool hay_datos_buffer_standby;
+    void colorear_default_buffer_signos();
+    bool primera_vez_buffer;
+
 public slots:
     void revisarErrorWDT();
 

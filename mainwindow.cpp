@@ -559,11 +559,12 @@ void MainWindow::send_frame_keyboard(QString trama){
 void MainWindow::set_date(QString trama){
     try {
         //poner el comando date --set ...
-        QProcess process;
+        ///QProcess process;
         //QString command = "sudo date -s '" + trama + "'";
-        QString command = "sudo /bin/bash -c date -s '" + trama + "'";
+        //QString command = "sudo /bin/bash -c date -s '" + trama + "'";
+        QString command = "sudo date --set='" + trama + "'";
         qDebug() << "[RELOJ] set date comando: " << command;
-        process.start(command);
+        /*process.start(command);
         process.waitForFinished(-1);
         QString stdput_process = process.readAllStandardOutput();
         QString stderror_process = process.readAllStandardError();
@@ -572,6 +573,21 @@ void MainWindow::set_date(QString trama){
         }
         else{
             qDebug() << "[RELOJ] Se actualiza la fecha y hora con éxito: " << stdput_process;
+        }*/
+        //
+        //int res = QProcess::execute(command);
+        int res = system(command.toStdString().c_str());
+        if(res == -2){
+            qDebug() << "[RELOJ] NO inicia execute";
+        }
+        else if(res == -1){
+            qDebug() << "[RELOJ] Crash execute";
+        }
+        else if(res == 0){
+            qDebug() << "[RELOJ] OK execute";
+        }
+        else{
+            qDebug() << "[SET DATE] execute: " << res;
         }
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );

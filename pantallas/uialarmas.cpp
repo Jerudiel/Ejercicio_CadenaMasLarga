@@ -165,6 +165,10 @@ UiAlarmas::UiAlarmas(Monitor *monitor, QWidget *parent) : QWidget(parent)
         retranslateUi();
 
         actualizaVentana();
+
+        timerLimpiarInfo = new QTimer;
+        timerLimpiarInfo->setSingleShot(true);
+        connect(timerLimpiarInfo, SIGNAL(timeout()), this, SLOT(limpiar()));
     } catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
 
@@ -179,6 +183,28 @@ UiAlarmas::UiAlarmas(Monitor *monitor, QWidget *parent) : QWidget(parent)
 
     }
 }*/
+
+void UiAlarmas::mostrarMensaje(QString mensaje){
+    try {
+        estadoMensajes->setText(mensaje);
+        if(timerLimpiarInfo->isActive()){
+            timerLimpiarInfo->stop();
+        }
+        timerLimpiarInfo->start(5000);
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+
+    }
+}
+
+void UiAlarmas::limpiar(){
+    try {
+    estadoMensajes->setText("");
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+
+    }
+}
 
 QString UiAlarmas::IDTOSTR(int idObjeto){
     try {
@@ -354,7 +380,8 @@ void UiAlarmas::guardaCambios(){
 
          bool resultado = monitor->consul->guardar_config_ultima_alarm(QString::number(valPMAX),QString::number(valPMIN),QString::number(valVMMAX,'f',1),QString::number(valVMMIN,'f',1),QString::number(valFTMAX),QString::number(valFTMIN),QString::number(valVTMAX),QString::number(valVTMIN),edoAPRE,edoAVOM,edoAFTO,edoAVTI,QString::number(valTAPNE));
          if(resultado){
-             estadoMensajes->setText("CAMBIOS GUARDADOS");
+             //estadoMensajes->setText("CAMBIOS GUARDADOS");
+             mostrarMensaje("CAMBIOS GUARDADOS");
              monitor->consul->agregar_evento("Alarmas", monitor->obtener_modo(), "Se guardaron cambios en alarmas");
          }
     }  catch (std::exception &e) {

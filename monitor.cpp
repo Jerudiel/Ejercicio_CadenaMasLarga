@@ -20,7 +20,7 @@ Monitor::Monitor(QWidget *parent, ConsultasDb *consul, bool debug_c, bool debug_
         versionVentiladorEsperada = "4.1.0";
         versionSenPresionEsperada = "3.3.0";
         versionTecladoEsperada = "1.0";
-        versionPi = "3.7.17E";
+        versionPi = "3.8.1";
 
         mainwindow = parent;
         this->consul = consul;
@@ -936,6 +936,12 @@ Monitor::Monitor(QWidget *parent, ConsultasDb *consul, bool debug_c, bool debug_
         serVent->set_ready(true);
         serPresion->set_ready(true);
 
+        //buffer
+        Actualiza_buffer_fio2 = false;
+        dict_buffer_signos = new QMap<int, QString>;
+        hay_datos_buffer_standby = false;
+        primera_vez_buffer = true;
+
 
 
     } catch (std::exception &e) {
@@ -943,6 +949,191 @@ Monitor::Monitor(QWidget *parent, ConsultasDb *consul, bool debug_c, bool debug_
     }
     catch(...){
         qWarning("ERROR AL CREAR CLASE MONITOR");
+    }
+}
+
+void Monitor::Agregar_buffer_signo(int signo, QString valores){
+    try {
+        dict_buffer_signos->insert(signo, valores);
+    }  catch (std::exception &e) {
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+    }
+}
+
+void Monitor::mostrar_buffer_signos(){
+    try {
+        QMap<int, QString>::iterator iter;
+        for(iter = dict_buffer_signos->begin(); iter != dict_buffer_signos->end(); ++iter){
+            int indice = iter.key();
+            QString valores = iter.value();
+            QStringList valores_separados = valores.split(",");
+            if(valores_separados.size() == 3){
+                //ver cual es el signo
+                if(indice == 0){
+                    //PIP
+                    signoPIP->setValorProg(valores_separados.at(0),valores_separados.at(1),valores_separados.at(2));
+                }
+                else if(indice == 1){
+                   //PEEP
+                    signoPEEP->setValorProg(valores_separados.at(0),valores_separados.at(1),valores_separados.at(2));
+                }
+                else if(indice == 2){
+                    //oxigeno
+                    signoPLATEU->setValorProg(valores_separados.at(0),valores_separados.at(1),valores_separados.at(2));
+                }
+                else if(indice == 3){
+                    //TI
+                    signoTiempoI->setValorProg(valores_separados.at(0),valores_separados.at(1),valores_separados.at(2));
+                }
+                else if(indice == 4){
+                    //TE
+                    signoTiempoE->setValorProg(valores_separados.at(0),valores_separados.at(1),valores_separados.at(2));
+                }
+                else if(indice == 5){
+                    //Vm
+                    signoVm->setValorProg(valores_separados.at(0),valores_separados.at(1),valores_separados.at(2));
+                }
+                else if(indice == 6){
+                    //Fp
+                    widgetFlujo->setValorProg(valores_separados.at(0),valores_separados.at(1),valores_separados.at(2));
+                }
+                else if(indice == 7){
+                    //TI:TE
+                    widgetTiTe->setValorProg(valores_separados.at(0),valores_separados.at(1),valores_separados.at(2));
+                }
+                else if(indice == 8){
+                    //FR
+                    widgetFR->setValorProg(valores_separados.at(0),valores_separados.at(1),valores_separados.at(2));
+                }
+                else if(indice == 9){
+                    //Vol E
+                    widgetVole->setValorProg(valores_separados.at(0),valores_separados.at(1),valores_separados.at(2));
+                }
+                else if(indice == 10){
+                    //Vol I
+                    widgetVoli->setValorProg(valores_separados.at(0),valores_separados.at(1),valores_separados.at(2));
+                }
+                else if(indice == 11){
+                    //Pm
+                    widgetPresPrin->setValorProg(valores_separados.at(0),valores_separados.at(1),valores_separados.at(2));
+                }
+            }
+
+        }
+        //limpiar map
+        dict_buffer_signos->clear();
+    }  catch (std::exception &e) {
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+    }
+}
+
+void Monitor::colorear_buffer_signos(QString color){
+    try {
+        //PIP
+        signoPIP->label_val_inf->setStyleSheet("color: " + color + ";");
+        signoPIP->label_val_prog->setStyleSheet("color: " + color + ";");
+        signoPIP->label_val_sup->setStyleSheet("color: " + color + ";");
+        //PEEP
+        signoPEEP->label_val_inf->setStyleSheet("color: " + color + ";");
+        signoPEEP->label_val_prog->setStyleSheet("color: " + color + ";");
+        signoPEEP->label_val_sup->setStyleSheet("color: " + color + ";");
+        //oxigeno
+        signoPLATEU->label_val_inf->setStyleSheet("color: " + color + ";");
+        signoPLATEU->label_val_prog->setStyleSheet("color: " + color + ";");
+        signoPLATEU->label_val_sup->setStyleSheet("color: " + color + ";");
+        //TI
+        signoTiempoI->label_val_inf->setStyleSheet("color: " + color + ";");
+        signoTiempoI->label_val_prog->setStyleSheet("color: " + color + ";");
+        signoTiempoI->label_val_sup->setStyleSheet("color: " + color + ";");
+        //TE
+        signoTiempoE->label_val_inf->setStyleSheet("color: " + color + ";");
+        signoTiempoE->label_val_prog->setStyleSheet("color: " + color + ";");
+        signoTiempoE->label_val_sup->setStyleSheet("color: " + color + ";");
+        //Vm
+        signoVm->label_val_inf->setStyleSheet("color: " + color + ";");
+        signoVm->label_val_prog->setStyleSheet("color: " + color + ";");
+        signoVm->label_val_sup->setStyleSheet("color: " + color + ";");
+        //Fp
+        widgetFlujo->label_val_inf->setStyleSheet("color: " + color + ";");
+        widgetFlujo->label_val_prog->setStyleSheet("color: " + color + ";");
+        widgetFlujo->label_val_sup->setStyleSheet("color: " + color + ";");
+        //TI:TE
+        widgetTiTe->label_val_inf->setStyleSheet("color: " + color + ";");
+        widgetFlujo->label_val_prog->setStyleSheet("color: " + color + ";");
+        widgetFlujo->label_val_sup->setStyleSheet("color: " + color + ";");
+        //FR
+        widgetFR->label_val_inf->setStyleSheet("color: " + color + ";");
+        widgetFR->label_val_prog->setStyleSheet("color: " + color + ";");
+        widgetFR->label_val_sup->setStyleSheet("color: " + color + ";");
+        //Vol E
+        widgetVole->label_val_inf->setStyleSheet("color: " + color + ";");
+        widgetVole->label_val_prog->setStyleSheet("color: " + color + ";");
+        widgetVole->label_val_sup->setStyleSheet("color: " + color + ";");
+        //Vol I
+        widgetVoli->label_val_inf->setStyleSheet("color: " + color + ";");
+        widgetVoli->label_val_prog->setStyleSheet("color: " + color + ";");
+        widgetVoli->label_val_sup->setStyleSheet("color: " + color + ";");
+        //Pm
+        widgetPresPrin->label_val_inf->setStyleSheet("color: " + color + ";");
+        widgetPresPrin->label_val_prog->setStyleSheet("color: " + color + ";");
+        widgetPresPrin->label_val_sup->setStyleSheet("color: " + color + ";");
+    }  catch (std::exception &e) {
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+    }
+}
+
+void Monitor::colorear_default_buffer_signos(){
+    try {
+        //PIP
+        signoPIP->label_val_inf->setStyleSheet("color: red;");
+        signoPIP->label_val_prog->setStyleSheet("color: white;");
+        signoPIP->label_val_sup->setStyleSheet("color: red;");
+        //PEEP
+        signoPEEP->label_val_inf->setStyleSheet("color: red;");
+        signoPEEP->label_val_prog->setStyleSheet("color: white;");
+        signoPEEP->label_val_sup->setStyleSheet("color: red;");
+        //oxigeno
+        signoPLATEU->label_val_inf->setStyleSheet("color: red;");
+        signoPLATEU->label_val_prog->setStyleSheet("color: white;");
+        signoPLATEU->label_val_sup->setStyleSheet("color: red;");
+        //TI
+        signoTiempoI->label_val_inf->setStyleSheet("color: red;");
+        signoTiempoI->label_val_prog->setStyleSheet("color: white;");
+        signoTiempoI->label_val_sup->setStyleSheet("color: red;");
+        //TE
+        signoTiempoE->label_val_inf->setStyleSheet("color: red;");
+        signoTiempoE->label_val_prog->setStyleSheet("color: white;");
+        signoTiempoE->label_val_sup->setStyleSheet("color: red;");
+        //Vm
+        signoVm->label_val_inf->setStyleSheet("color: red;");
+        signoVm->label_val_prog->setStyleSheet("color: white;");
+        signoVm->label_val_sup->setStyleSheet("color: red;");
+        //Fp
+        widgetFlujo->label_val_inf->setStyleSheet("color: red;");
+        widgetFlujo->label_val_prog->setStyleSheet("color: white;");
+        widgetFlujo->label_val_sup->setStyleSheet("color: red;");
+        //TI:TE
+        widgetTiTe->label_val_inf->setStyleSheet("color: red;");
+        widgetTiTe->label_val_prog->setStyleSheet("color: white;");
+        widgetTiTe->label_val_sup->setStyleSheet("color: red;");
+        //FR
+        widgetFR->label_val_inf->setStyleSheet("color: red;");
+        widgetFR->label_val_prog->setStyleSheet("color: white;");
+        widgetFR->label_val_sup->setStyleSheet("color: red;");
+        //Vol E
+        widgetVole->label_val_inf->setStyleSheet("color: red;");
+        widgetVole->label_val_prog->setStyleSheet("color: white;");
+        widgetVole->label_val_sup->setStyleSheet("color: red;");
+        //Vol I
+        widgetVoli->label_val_inf->setStyleSheet("color: red;");
+        widgetVoli->label_val_prog->setStyleSheet("color: white;");
+        widgetVoli->label_val_sup->setStyleSheet("color: red;");
+        //Pm
+        widgetPresPrin->label_val_inf->setStyleSheet("color: red;");
+        widgetPresPrin->label_val_prog->setStyleSheet("color: white;");
+        widgetPresPrin->label_val_sup->setStyleSheet("color: red;");
+    }  catch (std::exception &e) {
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
 }
 
@@ -2422,7 +2613,7 @@ void Monitor::actualizarParametros(){
     try {
         label_debug->setText("");
         actualizarAlarmas();
-        llenarConfiguracionPCMV();
+        llenarConfiguracionPCMV(); //aqui se ponen los valores en los widgets
         llenarConfiguracionVCMV();
         llenarConfiguracionPSIMV();
         llenarConfiguracionVSIMV();
@@ -2437,13 +2628,23 @@ void Monitor::actualizarParametros(){
         int fr_int = fr.toInt();
         tiempo_respuesta_ventilador = static_cast<int>((120/fr_int)*1000);
         elementoSeleccionado();
-        if(huboCambioTramaSenPresion || huboCambioTrama){
+        if(huboCambioTramaSenPresion || huboCambioTrama || huboCambioTramaSenPresionW){
             if(estadoVentilador){
                 label_debug->setText("Presione ACTUALIZAR");
             }
             else{
                 label_debug->setText("Presione INICIAR");
             }
+            if(primera_vez_buffer){
+                primera_vez_buffer = false;
+                mostrar_buffer_signos();
+            }
+            else{
+                //poner los signos de color amarillos
+                colorear_buffer_signos("yellow");
+                hay_datos_buffer_standby = true;
+            }
+
         }
         QString temp = consul->leer_altura();
         QStringList tt = temp.split(",");
@@ -2459,6 +2660,12 @@ void Monitor::actualizarParametros(){
         }
         else{
             qDebug() << "[ERROR] actualizarParametros";
+        }
+
+        //por ser la priemra vez
+        if(primera_vez_buffer){
+            primera_vez_buffer = false;
+            mostrar_buffer_signos();
         }
     }  catch (std::exception &e) {
         qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
@@ -2556,13 +2763,21 @@ void Monitor::llenarConfiguracionPCMV(){
         if(modo[2] == "0"){
             float temp = parts_default.at(1).toFloat() + parts_default.at(3).toFloat();
             signoPEEP->label_title->setText("PEEP");
-            signoPIP->setValorProg("", QString::number(temp), alarma_pres_max);
+            /*signoPIP->setValorProg("", QString::number(temp), alarma_pres_max);
             signoPEEP->setValorProg(alarma_pres_min, parts_default.at(3), "");
             widgetFR->setValorProg(alarma_fr_min, parts_default.at(4), alarma_fr_max);
             signoTiempoI->setValorProg("", QString::number(parts_default.at(5).toFloat(),'f',1), "");
             signoPLATEU->setValorProg("", parts_default.at(7), "");
             signoVm->setValorProg(QString::number(alarma_volmin_min.toFloat(),'f',1),"-",QString::number(alarma_volmin_max.toFloat(),'f',1));
-            widgetVoli->setValorProg(alarma_vol_min, "-", alarma_vol_max);
+            widgetVoli->setValorProg(alarma_vol_min, "-", alarma_vol_max);*/
+            Agregar_buffer_signo(0, " ," + QString::number(temp) + "," + alarma_pres_max);
+            Agregar_buffer_signo(1, alarma_pres_min + "," + parts_default.at(3) + ", ");
+            Agregar_buffer_signo(8, alarma_fr_min + "," + parts_default.at(4) + "," + alarma_fr_max);
+            Agregar_buffer_signo(3, " ," + QString::number(parts_default.at(5).toFloat(),'f',1) + ", ");
+            Agregar_buffer_signo(2, " ," + parts_default.at(7) +  ", ");
+            Agregar_buffer_signo(5, QString::number(alarma_volmin_min.toFloat(),'f',1) + ",-," + QString::number(alarma_volmin_max.toFloat(),'f',1));
+            Agregar_buffer_signo(10, alarma_vol_min + ",-," + alarma_vol_max);
+
         }
     }  catch (std::exception &e) {
         qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
@@ -2584,13 +2799,21 @@ void Monitor::llenarConfiguracionVCMV(){
         QString modo = consul->leer_modo();
         if(modo[2] == "1"){
             signoPEEP->label_title->setText("PEEP");
-            widgetVoli->setValorProg(alarma_vol_min, parts_default.at(1), alarma_vol_max);
+            /*widgetVoli->setValorProg(alarma_vol_min, parts_default.at(1), alarma_vol_max);
             signoPEEP->setValorProg(alarma_pres_min, parts_default.at(2), "");
             widgetFR->setValorProg(alarma_fr_min, parts_default.at(3), alarma_fr_max);
             widgetFlujo->setValorProg("", parts_default.at(4), "");
             signoPLATEU->setValorProg("", parts_default.at(7), "");
             signoVm->setValorProg(QString::number(alarma_volmin_min.toFloat(),'f',1),"-",QString::number(alarma_volmin_max.toFloat(),'f',1));
-            signoPIP->setValorProg("", "-", alarma_pres_max);
+            signoPIP->setValorProg("", "-", alarma_pres_max);*/
+            Agregar_buffer_signo(10, alarma_vol_min +"," + parts_default.at(1) + "," + alarma_vol_max);
+            Agregar_buffer_signo(1, alarma_pres_min + "," + parts_default.at(2) + ", ");
+            Agregar_buffer_signo(8, alarma_fr_min + "," + parts_default.at(3) + "," + alarma_fr_max);
+            Agregar_buffer_signo(6, " ," + parts_default.at(4) + ", ");
+            Agregar_buffer_signo(2, " ," + parts_default.at(7) + ", ");
+            Agregar_buffer_signo(5, QString::number(alarma_volmin_min.toFloat(),'f',1) + ",-," + QString::number(alarma_volmin_max.toFloat(),'f',1));
+            Agregar_buffer_signo(0, " ,-," + alarma_pres_max);
+
         }
     }  catch (std::exception &e) {
         qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
@@ -2613,13 +2836,20 @@ void Monitor::llenarConfiguracionPSIMV(){
         if(modo[2] == "2"){
             float temp = parts_default.at(1).toFloat() + parts_default.at(3).toFloat();
             signoPEEP->label_title->setText("PEEP");
-            signoPIP->setValorProg("", QString::number(temp), alarma_pres_max);
+            /*signoPIP->setValorProg("", QString::number(temp), alarma_pres_max);
             signoPEEP->setValorProg(alarma_pres_min, parts_default.at(3), "");
             widgetFR->setValorProg(alarma_fr_min, parts_default.at(4), alarma_fr_max);
             signoTiempoI->setValorProg("", QString::number(parts_default.at(5).toFloat(),'f',1), "");
             signoPLATEU->setValorProg("", parts_default.at(7), "");
             signoVm->setValorProg(QString::number(alarma_volmin_min.toFloat(),'f',1),"-",QString::number(alarma_volmin_max.toFloat(),'f',1));
-            widgetVoli->setValorProg(alarma_vol_min, "-", alarma_vol_max);
+            widgetVoli->setValorProg(alarma_vol_min, "-", alarma_vol_max);*/
+            Agregar_buffer_signo(0, " ,"+ QString::number(temp) + "," + alarma_pres_max);
+            Agregar_buffer_signo(1, alarma_pres_min + "," + parts_default.at(3) + ", ");
+            Agregar_buffer_signo(8, alarma_fr_min + "," + parts_default.at(4) + "," + alarma_fr_max);
+            Agregar_buffer_signo(3, " ," + QString::number(parts_default.at(5).toFloat(),'f',1) + ", ");
+            Agregar_buffer_signo(2, " ," + parts_default.at(7) + ", ");
+            Agregar_buffer_signo(5, QString::number(alarma_volmin_min.toFloat(),'f',1) +",-," + QString::number(alarma_volmin_max.toFloat(),'f',1));
+            Agregar_buffer_signo(10, alarma_vol_min + ",-," + alarma_vol_max);
         }
     }  catch (std::exception &e) {
         qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
@@ -2641,13 +2871,20 @@ void Monitor::llenarConfiguracionVSIMV(){
         QString modo = consul->leer_modo();
         if(modo[2] == "3"){
             signoPEEP->label_title->setText("PEEP");
-            widgetVoli->setValorProg(alarma_vol_min, parts_default.at(1), alarma_vol_max);
+            /*widgetVoli->setValorProg(alarma_vol_min, parts_default.at(1), alarma_vol_max);
             signoPEEP->setValorProg(alarma_pres_min, parts_default.at(3), "");
             widgetFR->setValorProg(alarma_fr_min, parts_default.at(4), alarma_fr_max);
             widgetFlujo->setValorProg("", parts_default.at(5), "");
             signoPLATEU->setValorProg("", parts_default.at(10), "");
             signoVm->setValorProg(QString::number(alarma_volmin_min.toFloat(),'f',1),"-",QString::number(alarma_volmin_max.toFloat(),'f',1));
-            signoPIP->setValorProg("", "-", alarma_pres_max);
+            signoPIP->setValorProg("", "-", alarma_pres_max);*/
+            Agregar_buffer_signo(10, alarma_vol_min + "," + parts_default.at(1) + "," + alarma_vol_max);
+            Agregar_buffer_signo(1, alarma_pres_min +"," + parts_default.at(3) + ", ");
+            Agregar_buffer_signo(8, alarma_fr_min + "," + parts_default.at(4) +"," + alarma_fr_max);
+            Agregar_buffer_signo(6, " ," + parts_default.at(5) + ", ");
+            Agregar_buffer_signo(2, " ," + parts_default.at(10) + ", ");
+            Agregar_buffer_signo(5, QString::number(alarma_volmin_min.toFloat(),'f',1) + ",-," + QString::number(alarma_volmin_max.toFloat(),'f',1));
+            Agregar_buffer_signo(0, " ,-," + alarma_pres_max);
         }
     }  catch (std::exception &e) {
         qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
@@ -2669,7 +2906,7 @@ void Monitor::llenarConfiguracionPCPAP(){
         QString modo = consul->leer_modo();
         if(modo[2] == "4"){
             signoPEEP->label_title->setText("CPAP");
-            widgetVoli->setValorProg(alarma_vol_min, "-", alarma_vol_max);
+            /*widgetVoli->setValorProg(alarma_vol_min, "-", alarma_vol_max);
             signoPEEP->setValorProg(alarma_pres_min, parts_default.at(1), "");
             widgetFR->setValorProg(alarma_fr_min, parts_default.at(8), alarma_fr_max);
             widgetFlujo->setValorProg("", "", "");
@@ -2677,7 +2914,16 @@ void Monitor::llenarConfiguracionPCPAP(){
             signoVm->setValorProg(QString::number(alarma_volmin_min.toFloat(),'f',1),"-",QString::number(alarma_volmin_max.toFloat(),'f',1));
             float temp = parts_default.at(1).toFloat() + parts_default.at(9).toFloat();
             signoPIP->setValorProg("", QString::number(temp), alarma_pres_max);
-            signoTiempoI->setValorProg("", QString::number(parts_default.at(10).toFloat(),'f',1), "");
+            signoTiempoI->setValorProg("", QString::number(parts_default.at(10).toFloat(),'f',1), "");*/
+            Agregar_buffer_signo(10, alarma_vol_min + ",-," + alarma_vol_max);
+            Agregar_buffer_signo(1, alarma_pres_min + "," + parts_default.at(1) + ", ");
+            Agregar_buffer_signo(8, alarma_fr_min + "," + parts_default.at(8) + "," + alarma_fr_max);
+            Agregar_buffer_signo(6, " , , ");
+            Agregar_buffer_signo(2, " ," + parts_default.at(3) + ", ");
+            Agregar_buffer_signo(5, QString::number(alarma_volmin_min.toFloat(),'f',1) + ",-," + QString::number(alarma_volmin_max.toFloat(),'f',1));
+            float temp = parts_default.at(1).toFloat() + parts_default.at(9).toFloat();
+            Agregar_buffer_signo(0, " ," + QString::number(temp) + "," + alarma_pres_max);
+            Agregar_buffer_signo(3, " ," + QString::number(parts_default.at(10).toFloat(),'f',1) + ", ");
         }
     }  catch (std::exception &e) {
         qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
@@ -2699,13 +2945,20 @@ void Monitor::llenarConfiguracionVCPAP(){
         QString modo = consul->leer_modo();
         if(modo[2] == "5"){
             signoPEEP->label_title->setText("CPAP");
-            widgetVoli->setValorProg(alarma_vol_min, parts_default.at(9), alarma_vol_max);
+            /*widgetVoli->setValorProg(alarma_vol_min, parts_default.at(9), alarma_vol_max);
             signoPEEP->setValorProg(alarma_pres_min, parts_default.at(1), "");
             widgetFR->setValorProg(alarma_fr_min, parts_default.at(8), alarma_fr_max);
             widgetFlujo->setValorProg("", parts_default.at(10), "");
             signoPLATEU->setValorProg("", parts_default.at(3), "");
             signoVm->setValorProg(QString::number(alarma_volmin_min.toFloat(),'f',1),"-",QString::number(alarma_volmin_max.toFloat(),'f',1));
-            signoPIP->setValorProg("", parts_default.at(2), alarma_pres_max);
+            signoPIP->setValorProg("", parts_default.at(2), alarma_pres_max);*/
+            Agregar_buffer_signo(10, alarma_vol_min + "," + parts_default.at(9) + "," + alarma_vol_max);
+            Agregar_buffer_signo(1, alarma_pres_min + "," + parts_default.at(1) + ", ");
+            Agregar_buffer_signo(8, alarma_fr_min + "," + parts_default.at(8) + "," + alarma_fr_max);
+            Agregar_buffer_signo(6, " ," + parts_default.at(10) + ", ");
+            Agregar_buffer_signo(2, " ," + parts_default.at(3) + ", ");
+            Agregar_buffer_signo(5, QString::number(alarma_volmin_min.toFloat(),'f',1) + ",-," + QString::number(alarma_volmin_max.toFloat(),'f',1));
+            Agregar_buffer_signo(0, " ," + parts_default.at(2) + alarma_pres_max);
         }
     }  catch (std::exception &e) {
         qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
@@ -2805,9 +3058,9 @@ void Monitor::obtener_trama_config(){
                 consul->agregar_evento("VENTILADOR", obtener_modo(), "CAMBIO DE " + ultimoModo.mid(6) + " A: " + nuevoModo.mid(6));
                 ultimoModo = nuevoModo;
             }
-            else{
+            /*else{
                 huboCambioModo = false;
-            }
+            }*/
         }
         obtener_configuracion_PCMV();
         obtener_configuracion_VCMV();
@@ -3663,6 +3916,13 @@ void Monitor::receVent(QString trama){
                                 graficaPresion->limpiar_promediador();
                                 graficaVolumen->limpiar_promediador();
                                 graficaFlujo->limpiar_promediador();
+                                //AQUI SE VA A MANDAR A CARGAR LOS VALORES A LOS WIDGETS DE SIGNOS ---JERU---
+                                if(hay_datos_buffer_standby){
+                                    hay_datos_buffer_standby = false;
+                                    colorear_default_buffer_signos();
+                                    Actualiza_buffer_fio2 = true;
+                                    mostrar_buffer_signos();
+                                }
                             }
                         }
                     }
@@ -7408,7 +7668,10 @@ void Monitor::revisar_entra_gases(){
             }
         }
         ///////
-        fio2_final = tramaVentilador.mid(29,3).toFloat(); //saber el valor de fio2 para alarmas
+        if(Actualiza_buffer_fio2){
+            Actualiza_buffer_fio2 = false;
+            fio2_final = tramaVentilador.mid(29,3).toFloat(); //saber el valor de fio2 para alarmas
+        }
         if(listo_medir_fio2 && estadoVentilador){
             float fio2 = tramaVentilador.mid(29,3).toFloat();
             fio2_final = fio2;

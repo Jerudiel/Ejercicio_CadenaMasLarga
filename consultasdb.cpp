@@ -495,7 +495,7 @@ bool ConsultasDb::guardar_config_ultima_alarm(QString pre_max, QString pre_min, 
             QString update_query = "UPDATE public.\"Config_Ultima_Alarm\" SET pre_max = "+pre_max+" , pre_min = "+pre_min +" , volm_max = " +
                                     volm_max +" , volm_min = "+ volm_min+ " , fre_max = " +fre_max+ " , fre_min = "+
                                     fre_min+ " , vole_max = "+ vole_max + " , vole_min = "+vole_min+ " , edo_apre = "+
-                                    edo_apre+ " , edo_avolm = "+edo_avolm+ " , edo_afre = "+ edo_avolm + " , edo_afre = "+
+                                    edo_apre+ " , edo_avolm = "+edo_avolm+ " , edo_afre = "+
                                     edo_afre+ " , edo_avole = "+edo_avole+ " , t_apnea = "+t_apnea+ " WHERE id = "+id_config_ultima;
             //qDebug() << "guardar_config_ultima_alarm-update_query: " + update_query;
             QString resultados = consulta(update_query);

@@ -11,6 +11,7 @@
 #include <QString>
 #include <QPushButton>
 #include <QSizePolicy>
+#include <QTimer>
 
 #include "utilidades/alarmaqw.h"
 #include "utilidades/temperatura.h"
@@ -99,10 +100,14 @@ public:
     void activaGuardar(bool estado);
     void activaReset(bool estado);
     void retranslateUi();
+
+    QTimer *timerLimpiarInfo;
+    void mostrarMensaje(QString mensaje);
     //void asignaPadre(MainWindow *mainwindow);
 public slots:
     void resetValoresDefault();
     void guardaCambios();
+    void limpiar();
 
 signals:
 
