@@ -318,6 +318,11 @@ Monitor::Monitor(QWidget *parent, ConsultasDb *consul, bool debug_c, bool debug_
         principalLayout->setStretch(1,2);
         contadorErrorConVent = 0;
 
+        //
+        alarmaControl = new AlarmaAudLed(infoAlarmas);
+        alarmaControl->setIconoFre(widgetFR->label_icon);
+        alarmaControl->setIconoVol(widgetVoli->label_icon);
+
         //qDebug() << "Se va a crear serVent!";
 
         serVent = new Ventilador(debug_c);
@@ -358,9 +363,7 @@ Monitor::Monitor(QWidget *parent, ConsultasDb *consul, bool debug_c, bool debug_
 
         //qDebug() << "Se va a crear AlarmaAudLed!";
 
-        alarmaControl = new AlarmaAudLed(infoAlarmas);
-        alarmaControl->setIconoFre(widgetFR->label_icon);
-        alarmaControl->setIconoVol(widgetVoli->label_icon);
+
 
         estadoAlarmaPresion = false;
         estadoAlarmaVol = false;

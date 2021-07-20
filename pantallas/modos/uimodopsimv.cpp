@@ -9,7 +9,7 @@ UiModoPSIMV::UiModoPSIMV() : QWidget()
         psimv_pinsp = new WidgetParametro(this, "Pinsp", "cmH2O", 150.0, 0, "1", 0, 0, 0, false);
         psimv_pinsp->setObjectName("psimv_pinsp");
         psimv_pinsp->setGeometry(QRect(10, 0, 150, 140));
-        psimv_pinsp->set_lim_inf(10);
+        psimv_pinsp->set_lim_inf(5);
 
         psimv_psoporte = new WidgetParametro(this, "PSoporte", "cmH2O", 20.0, 0, "1", 0, 1, 0, false);
         psimv_psoporte->setObjectName("psimv_psoporte");
@@ -100,8 +100,8 @@ UiModoPSIMV::UiModoPSIMV() : QWidget()
 
         elemento_seleccionado = 0;
         max_peep_mas_pip = 70; //180;
-        min_te_min = 0.4;
-        min_ti = 0.4;
+        min_te_min = 0.1; //0.4
+        min_ti = 0.1; //0.4
         perilla_global = 1;
 
         retranslateUi();
