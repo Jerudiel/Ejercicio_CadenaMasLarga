@@ -102,6 +102,7 @@ QString ConsultasDb::consulta(QString query){
         //3.1 revisar que no haya error, en caso de que si, hacer rollback
         if(consul.lastError().type() != QSqlError::NoError || !resultado){
             qDebug() << "[DB] consulta Error: " << consul.lastError(); //.text();
+            qDebug() << "[DB] query error: " << query;
             baseDatos.rollback();
             return "";
         }
@@ -142,6 +143,7 @@ void ConsultasDb::vaciar_tabla(QString query){
             if (consul.lastError().type() != QSqlError::NoError || !resultado)
             {
                 qDebug() << "[DB] vaciar_tabla Error: " << consul.lastError(); //.text();
+                qDebug() << "[DB] vaciar_tabla query: " << query;
                 baseDatos.rollback();
             }
             baseDatos.commit();
@@ -162,6 +164,7 @@ bool ConsultasDb::inserta_tabla(QString query){
             if (consul.lastError().type() != QSqlError::NoError || !resultado)
             {
                 qDebug() << "[DB] inserta_tabla Error: " << consul.lastError(); //.text();
+                qDebug() << "[DB] inserta_tabla query: " << query;
                 baseDatos.rollback();
             }
             baseDatos.commit();
@@ -273,7 +276,7 @@ bool ConsultasDb::guardar_config_ultima_PCMV(QString pinsp, QString ipap, QStrin
             }
         }
         else{
-            QString query_insert = "INSERT INTO public.\"Config_Ultima_PCMV \"(pinsp, ipap, peep, fr, tinsp, tincr, oxigeno,"
+            QString query_insert = "INSERT INTO public.\"Config_Ultima_PCMV\"(pinsp, ipap, peep, fr, tinsp, tincr, oxigeno,"
                                    " mod_trigger, trigger_flujo, trigger_presion) VALUES(" + pinsp + "," + ipap + "," +
                                    peep + "," + fr + "," + tinsp + "," + tincr + "," + oxigeno + "," + mod_trigger + "," +
                                    trigger_flujo + "," + trigger_presion + ")";
