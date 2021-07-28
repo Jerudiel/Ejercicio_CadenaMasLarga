@@ -20,7 +20,7 @@ Monitor::Monitor(QWidget *parent, ConsultasDb *consul, bool debug_c, bool debug_
         versionVentiladorEsperada = "4.1.0";
         versionSenPresionEsperada = "3.3.0";
         versionTecladoEsperada = "1.0";
-        versionPi = "3.8.1";
+        versionPi = "3.8.5";
 
         mainwindow = parent;
         this->consul = consul;
@@ -46,6 +46,9 @@ Monitor::Monitor(QWidget *parent, ConsultasDb *consul, bool debug_c, bool debug_
         air_psi_final = 0;
         o2_psi_final = 0;
         fio2_final = 0;
+        fio2 = 0;
+
+        carga_primera_vez_fio2 = true;
 
         ultimo_valor_alarma_aire = "";
         valor_alarma_aire = "";
@@ -945,6 +948,11 @@ Monitor::Monitor(QWidget *parent, ConsultasDb *consul, bool debug_c, bool debug_
         hay_datos_buffer_standby = false;
         primera_vez_buffer = true;
 
+        //contadores alarmas gases
+        contador_alarma_aire = 0;
+        contador_p_aire = 0;
+        contador_p_oxi = 0;
+        desactivar_alarma_aire = false;
 
 
     } catch (std::exception &e) {
@@ -4567,7 +4575,7 @@ void Monitor::desactivarAlarmaComunicacionSensores(int tipo){
             if(buscar_en_lista("C. SEN 1") && diccionario_alarma->value("C. SEN 1") == 1){
                 actualizar_en_lista("C. SEN 1", 0);
                 qDebug() << "[ALARMA] Elimina error en comunicación de la tarjeta de sensores, no ve a tarjeta control";
-                if(estadoAlarmaComunicacion && ! buscar_en_lista("C. SEN 1")){
+                if(estadoAlarmaComunicacion && ! buscar_en_lista("C. SEN 2")){
                     estadoAlarmaComunicacion = false;
                     alarmaControl->detenAlarma(alarmaControl->COMUNICACION);
                 }
@@ -4577,7 +4585,7 @@ void Monitor::desactivarAlarmaComunicacionSensores(int tipo){
             if(buscar_en_lista("C. SEN 2") && diccionario_alarma->value("C. SEN 2") == 1){
                 actualizar_en_lista("C. SEN 2", 0);
                 qDebug() << "[ALARMA] Elimina error en comunicación de la tarjeta de sensores, no ve a RPI";
-                if(estadoAlarmaComunicacion && ! buscar_en_lista("C. SEN 2")){
+                if(estadoAlarmaComunicacion && ! buscar_en_lista("C. SEN 1")){
                     estadoAlarmaComunicacion = false;
                     alarmaControl->detenAlarma(alarmaControl->COMUNICACION);
                 }
@@ -5987,30 +5995,63 @@ void Monitor::revisarConexionVentilador(){
             if((fio2_final <= 95 && air_psi_final < min_entrada_aire) || (o2_psi_final < min_entrada_oxi)){
                 trama_temp += "1";
                 if(primera_alarma_aire){
+                    primera_alarma_aire = false;
                     valor_alarma_aire = "1";
                     ultimo_valor_alarma_aire = "1";
                 }
                 else{
                     valor_alarma_aire = "1";
+                    desactivar_alarma_aire = true;
+                    contador_alarma_aire = 0;
                 }
             }
             else{
-                trama_temp += "0";
+                //aquí poner un contador para que apartir a las 3 entradas continuas, se pueda apagar la alarma
+
                 if(primera_alarma_aire){
+                    primera_alarma_aire = false;
                     valor_alarma_aire = "0";
                     ultimo_valor_alarma_aire = "0";
+                    trama_temp += "0";
                 }
                 else{
                     valor_alarma_aire = "0";
-                    if(valor_alarma_aire != ultimo_valor_alarma_aire){
+                    //checar si la bandera está activa, si es así, aplica el contador, sino solo se envia el "0"
+                    if(desactivar_alarma_aire){
+                        if(contador_alarma_aire < 2){
+                            contador_alarma_aire++;
+                            trama_temp += "1";
+                        }
+                        else{
+                            desactivar_alarma_aire = false;
+                            trama_temp += "0";
+                        }
+                    }
+                    else{
+                        trama_temp += "0";
+                    }
+                    /*if(valor_alarma_aire != ultimo_valor_alarma_aire){
+                        qDebug() << "[ALARMA AIRE] Remandar trama M";
+                        //cambiar el valor de fio2 a fio2-1
+                        //fio2_final = tramaVentilador.mid(29,3).toFloat(); //saber el valor de fio2 para alarmas
+                        int temp_fio2 = tramaVentilador.mid(29,3).toInt();
+                        QString temp_s_fio2;
+                        if(temp_fio2 > 21){
+                            temp_fio2--;
+                            //
+                            temp_s_fio2 = "0" + QString::number(temp_fio2);
+                        }
+                        QString temp = tramaVentilador.mid(0,29) + temp_s_fio2 + tramaVentilador.mid(33);
+                        tramaVentilador = temp;
                         //mandar de nuevo la trama M
                         iniciar_ventilador();
-                    }
+                   }*/
                 }
             }
             ultimo_valor_alarma_aire = valor_alarma_aire;
             //
             trama_temp += "\n";
+            qDebug() << "[PING]  Trama P: " << trama_temp;
             serVent->envia_trama_config(trama_temp);
         }
         timerConVentilador->start(7000);
@@ -7531,6 +7572,7 @@ void Monitor::revisar_entra_gases(){
                     }
                 }
             }
+            contador_p_aire = 0;
         }
         else if(aire_of > max_entrada_aire){
             if(! buscar_en_lista("P. Aire ALTO")){
@@ -7562,25 +7604,31 @@ void Monitor::revisar_entra_gases(){
                     }
                 }
             }
+            contador_p_aire = 0;
         }
         else{
-            if(buscar_en_lista("P. Aire BAJO")){
-                if(diccionario_alarma->value("P. Aire BAJO") == 1){
-                    actualizar_en_lista("P. Aire BAJO", 0);
-                    consul->agregar_evento("ALARMA", obtener_modo(), "Presión baja aire DESACTIVADO");
-                    if(estadoAlarmaGases && !(estadoAlarmaSonoraGases())){
-                        estadoAlarmaGases = false;
-                        alarmaControl->detenAlarma(alarmaControl->GASES);
+            if(contador_p_aire < 2){
+                contador_p_aire++;
+            }
+            else{
+                if(buscar_en_lista("P. Aire BAJO")){
+                    if(diccionario_alarma->value("P. Aire BAJO") == 1){
+                        actualizar_en_lista("P. Aire BAJO", 0);
+                        consul->agregar_evento("ALARMA", obtener_modo(), "Presión baja aire DESACTIVADO");
+                        if(estadoAlarmaGases && !(estadoAlarmaSonoraGases())){
+                            estadoAlarmaGases = false;
+                            alarmaControl->detenAlarma(alarmaControl->GASES);
+                        }
                     }
                 }
-            }
-            if(buscar_en_lista("P. Aire ALTO")){
-                if(diccionario_alarma->value("P. Aire ALTO") == 1){
-                    actualizar_en_lista("P. Aire ALTO", 0);
-                    consul->agregar_evento("ALARMA", obtener_modo(), "Presión alta aire DESACTIVADO");
-                    if(estadoAlarmaGases && !(estadoAlarmaSonoraGases())){
-                        estadoAlarmaGases = false;
-                        alarmaControl->detenAlarma(alarmaControl->GASES);
+                if(buscar_en_lista("P. Aire ALTO")){
+                    if(diccionario_alarma->value("P. Aire ALTO") == 1){
+                        actualizar_en_lista("P. Aire ALTO", 0);
+                        consul->agregar_evento("ALARMA", obtener_modo(), "Presión alta aire DESACTIVADO");
+                        if(estadoAlarmaGases && !(estadoAlarmaSonoraGases())){
+                            estadoAlarmaGases = false;
+                            alarmaControl->detenAlarma(alarmaControl->GASES);
+                        }
                     }
                 }
             }
@@ -7616,6 +7664,7 @@ void Monitor::revisar_entra_gases(){
                     }
                 }
             }
+            contador_p_oxi = 0;
         }
         else if(oxigeno_of > max_entrada_oxi){
             if(! buscar_en_lista("P. O2 ALTO")){
@@ -7647,25 +7696,31 @@ void Monitor::revisar_entra_gases(){
                     }
                 }
             }
+            contador_p_oxi = 0;
         }
         else{
-            if(buscar_en_lista("P. O2 BAJO")){
-                if(diccionario_alarma->value("P. O2 BAJO") == 1){
-                    actualizar_en_lista("P. O2 BAJO", 0);
-                    consul->agregar_evento("ALARMA", obtener_modo(), "Presión baja oxigeno DESACTIVADO");
-                    if(estadoAlarmaGases && !(estadoAlarmaSonoraGases())){
-                        estadoAlarmaGases = false;
-                        alarmaControl->detenAlarma(alarmaControl->GASES);
+            if(contador_p_oxi < 2){
+                contador_p_oxi++;
+            }
+            else{
+                if(buscar_en_lista("P. O2 BAJO")){
+                    if(diccionario_alarma->value("P. O2 BAJO") == 1){
+                        actualizar_en_lista("P. O2 BAJO", 0);
+                        consul->agregar_evento("ALARMA", obtener_modo(), "Presión baja oxigeno DESACTIVADO");
+                        if(estadoAlarmaGases && !(estadoAlarmaSonoraGases())){
+                            estadoAlarmaGases = false;
+                            alarmaControl->detenAlarma(alarmaControl->GASES);
+                        }
                     }
                 }
-            }
-            if(buscar_en_lista("P. O2 ALTO")){
-                if(diccionario_alarma->value("P. O2 ALTO") == 1){
-                    actualizar_en_lista("P. O2 ALTO", 0);
-                    consul->agregar_evento("ALARMA", obtener_modo(), "Presión alta oxigeno DESACTIVADO");
-                    if(estadoAlarmaGases && !(estadoAlarmaSonoraGases())){
-                        estadoAlarmaGases = false;
-                        alarmaControl->detenAlarma(alarmaControl->GASES);
+                if(buscar_en_lista("P. O2 ALTO")){
+                    if(diccionario_alarma->value("P. O2 ALTO") == 1){
+                        actualizar_en_lista("P. O2 ALTO", 0);
+                        consul->agregar_evento("ALARMA", obtener_modo(), "Presión alta oxigeno DESACTIVADO");
+                        if(estadoAlarmaGases && !(estadoAlarmaSonoraGases())){
+                            estadoAlarmaGases = false;
+                            alarmaControl->detenAlarma(alarmaControl->GASES);
+                        }
                     }
                 }
             }
@@ -7673,14 +7728,26 @@ void Monitor::revisar_entra_gases(){
         ///////
         if(Actualiza_buffer_fio2){
             Actualiza_buffer_fio2 = false;
+            qDebug() << "[ALARMA FIO2] actualiza valor fuera";
             fio2_final = tramaVentilador.mid(29,3).toFloat(); //saber el valor de fio2 para alarmas
+            carga_primera_vez_fio2 = true;
         }
         if(listo_medir_fio2 && estadoVentilador){
-            float fio2 = tramaVentilador.mid(29,3).toFloat();
-            fio2_final = fio2;
+            if(carga_primera_vez_fio2){ //Actualiza_buffer_fio2 ||
+                qDebug() << "[ALARMA FIO2] actualiza valor dentro";
+                //qDebug() << "[ALARMA FIO2] Actualiza_buffer_fio2: " << Actualiza_buffer_fio2;
+                //qDebug() << "[ALARMA FIO2] carga_primera_vez_fio2: " << carga_primera_vez_fio2;
+                carga_primera_vez_fio2 = false;
+                //Actualiza_buffer_fio2 = false;
+                fio2 = tramaVentilador.mid(29,3).toFloat();
+                fio2_final = fio2;
+            }
+
             if(nivel_oxi < (fio2 -5)){
                 if(! buscar_en_lista("FIO2 BAJO")){
                     agregar_en_lista("FIO2 BAJO", 1);
+                    signoPLATEU->bar->setPalette(*paleAlta);
+                    signoPLATEU->label_title->setStyleSheet("color: red;");
                     consul->agregar_evento("ALARMA", obtener_modo(), "FIO2 ACTIVADO - " + QString::number(nivel_oxi,'f',1) + ":" + QString::number(fio2 - 5));
                     if(! estadoAlarmaGases){
                         estadoAlarmaGases = true;
@@ -7689,6 +7756,8 @@ void Monitor::revisar_entra_gases(){
                 }
                 else{
                     if(diccionario_alarma->value("FIO2 BAJO") == 0){
+                        signoPLATEU->bar->setPalette(*paleAlta);
+                        signoPLATEU->label_title->setStyleSheet("color: red;");
                         actualizar_en_lista("FIO2 BAJO", 1);
                          consul->agregar_evento("ALARMA", obtener_modo(), "FIO2 ACTIVADO - " + QString::number(nivel_oxi,'f',1) + ":" + QString::number(fio2 - 5));
                         if(! estadoAlarmaGases){
@@ -7711,8 +7780,10 @@ void Monitor::revisar_entra_gases(){
             }
             else if(nivel_oxi > (fio2 + 5)){
                 if(! buscar_en_lista("FIO2 ALTO")){
+                    signoPLATEU->bar->setPalette(*paleAlta);
+                    signoPLATEU->label_title->setStyleSheet("color: red;");
                     agregar_en_lista("FIO2 ALTO", 1);
-                    consul->agregar_evento("ALARMA", obtener_modo(), "FIO2 ACTIVADO - " + QString::number(nivel_oxi,'f',1) + ":" + QString::number(fio2 - 5));
+                    consul->agregar_evento("ALARMA", obtener_modo(), "FIO2 ACTIVADO - " + QString::number(nivel_oxi,'f',1) + ":" + QString::number(fio2 + 5));
                     if(! estadoAlarmaGases){
                         estadoAlarmaGases = true;
                         alarmaControl->iniciaAlarma(alarmaControl->GASES);
@@ -7720,8 +7791,10 @@ void Monitor::revisar_entra_gases(){
                 }
                 else{
                     if(diccionario_alarma->value("FIO2 ALTO") == 0){
+                        signoPLATEU->bar->setPalette(*paleAlta);
+                        signoPLATEU->label_title->setStyleSheet("color: red;");
                         actualizar_en_lista("FIO2 ALTO", 1);
-                        consul->agregar_evento("ALARMA", obtener_modo(), "FIO2 ACTIVADO - " + QString::number(nivel_oxi,'f',1) + ":" + QString::number(fio2 - 5));
+                        consul->agregar_evento("ALARMA", obtener_modo(), "FIO2 ACTIVADO - " + QString::number(nivel_oxi,'f',1) + ":" + QString::number(fio2 + 5));
                         if(! estadoAlarmaGases){
                             estadoAlarmaGases = true;
                             alarmaControl->iniciaAlarma(alarmaControl->GASES);
@@ -7741,6 +7814,8 @@ void Monitor::revisar_entra_gases(){
                 }
             }
             else{
+                signoPLATEU->bar->setPalette(*paleNormal);
+                signoPLATEU->label_title->setStyleSheet("color: white;");
                 if(buscar_en_lista("FIO2 ALTO")){
                     if(diccionario_alarma->value("FIO2 ALTO") == 1){
                         actualizar_en_lista("FIO2 ALTO", 0);

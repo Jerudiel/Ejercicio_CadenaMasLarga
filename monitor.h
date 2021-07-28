@@ -677,10 +677,18 @@ public:
     int air_psi_final;
     int o2_psi_final;
     int fio2_final;
+    int fio2;
+
+    bool carga_primera_vez_fio2;
 
     QString ultimo_valor_alarma_aire;
     QString valor_alarma_aire;
     bool primera_alarma_aire;
+    int contador_alarma_aire;
+    bool desactivar_alarma_aire;
+
+    int contador_p_aire;
+    int contador_p_oxi;
 
     QString s_air_psi_final;
     QString s_o2_psi_final;

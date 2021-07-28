@@ -166,7 +166,7 @@ void AlarmaAudLed::durationChanged(qint64 duracion){
     try {
         //qDebug() << "duracion cargada: " + QString::number(duracion);
         if(audio_corriendo){
-            //qDebug() << "duracion cargada: manda a reproducir!";
+            //qDebug() << "[AlarmaAudLed ]duracion cargada: manda a reproducir: " << duracion_sonido;
             duracion_sonido = duracion;
             //qDebug() << "[AlarmaAudLed] durationChanged: " << reproductorMulti->isAudioAvailable();
             reproductorMulti->play();
@@ -192,7 +192,7 @@ void AlarmaAudLed::positionChanged(qint64 posicion){
             if(audio_corriendo && ! enPausa && ! cambioAudio){
                 //qDebug() << "cargando para volver a reproducir";
                 reproductorMulti->setMedia(wave_actual);
-                //qDebug() << "[AlarmaAudLed] positionChanged: " <<reproductorMulti->isAvailable();
+                //qDebug() << "[AlarmaAudLed] positionChanged: " << wave_actual;
             }
 
             //reproductorMulti->play();
@@ -328,7 +328,7 @@ void AlarmaAudLed::cambiaEstadoAlarma(int alarma, bool estado){
 
 void AlarmaAudLed::iniciaAlarma(int tipo){
     try {
-        //qDebug() << "iniciaAalrma function int tipo: " + QString::number(tipo);
+        qDebug() << "[AlarmaAudLed] iniciaAalrma function int tipo: " + QString::number(tipo);
         if(tipo == PRESION){
             edoAlarPresion = true;
             state_alarm_pre = true;
@@ -403,7 +403,7 @@ void AlarmaAudLed::iniciaAlarma(int tipo){
                 wave_actual = wave_inoperante;
                 reproductorMulti->setMedia(wave_inoperante);
                 //reproductorMulti->play(); 
-                qDebug() << "[AlarmaAudLed] reproducir alarma inoperante";
+                qDebug() << "[AlarmaAudLed] reproducir alarma inoperante - audio_corriendo false";
             }
             else if(prioAltaAct){
                 //reproductor->setSource(wave_alta);
@@ -414,7 +414,7 @@ void AlarmaAudLed::iniciaAlarma(int tipo){
                 wave_actual = wave_alta;
                 reproductorMulti->setMedia(wave_alta);
                 //reproductorMulti->play();
-                qDebug() << "[AlarmaAudLed] reproducir alarma alta";
+                qDebug() << "[AlarmaAudLed] reproducir alarma alta - audio_corriendo false";
             }
             else{
                 //reproductor->setSource(wave_media);
@@ -425,7 +425,7 @@ void AlarmaAudLed::iniciaAlarma(int tipo){
                 wave_actual = wave_media;
                 reproductorMulti->setMedia(wave_media);
                 //reproductorMulti->play();
-                qDebug() << "[AlarmaAudLed] reproducir alarma media";
+                qDebug() << "[AlarmaAudLed] reproducir alarma media - audio_corriendo false";
             }
             //reproductor->play();
             //reproductorMulti->play();
@@ -450,7 +450,7 @@ void AlarmaAudLed::iniciaAlarma(int tipo){
                 //reproductor->play();
                 //reproductorMulti->play();
                 cambioAudio = false;
-                qDebug() << "[AlarmaAudLed] reproducir alarma inoperante";
+                qDebug() << "[AlarmaAudLed] reproducir alarma inoperante - audio_corriendo true";
             }
             else if(!prioAltaAnt && prioAltaAct){
                 prioAltaAnt = true;
@@ -467,7 +467,7 @@ void AlarmaAudLed::iniciaAlarma(int tipo){
                 //reproductor->play();
                 //reproductorMulti->play();
                 cambioAudio = false;
-                qDebug() << "[AlarmaAudLed] reproducir alarma alta";
+                qDebug() << "[AlarmaAudLed] reproducir alarma alta- audio_corriendo true";
             }
             else{
                 if(!prioAltaAct){
@@ -484,7 +484,7 @@ void AlarmaAudLed::iniciaAlarma(int tipo){
                     //reproductor->play();
                     //reproductorMulti->play();
                     cambioAudio = false;
-                    qDebug() << "[AlarmaAudLed] reproducir alarma media";
+                    qDebug() << "[AlarmaAudLed] reproducir alarma media- audio_corriendo true";
                 }
             }
         }

@@ -614,130 +614,145 @@ void MainWindow::set_watch(QString trama){
             //obtener fechas del sistema
             QProcess process;
             process.start("date");
-            process.waitForFinished(-1);
-            QString stdput_process = process.readAllStandardOutput();
-            QString stderror_process = process.readAllStandardError();
-            qDebug() << "[RELOJ] fecha date: " + stdput_process;
+            if(process.waitForFinished(3500)){
+                QString stdput_process = process.readAllStandardOutput();
+                QString stderror_process = process.readAllStandardError();
+                qDebug() << "[RELOJ] fecha date: " + stdput_process;
 
-            if(stderror_process.size() == 0 ){
-                QStringList pparts = stdput_process.split(' ');
-                if(pparts.size() >= 6){
-                    QString fecha_date = pparts.at(1) + " " + pparts.at(2) + " " + pparts.at(5).mid(0,4); // MMMM dd yyyy
-                    QString hora_date = pparts.at(3); //hh:mm:ss
-                    //qDebug() << "[RELOJ] fecha date2: " + fecha_date + " " + hora_date;
-                    dateCurrent = QDateTime::currentDateTime();//Utc //"MM/dd/yy hh:mm:ss" //QDateTime::fromString(fecha_date + " "+ hora_date, "MMM dd yyyy hh:mm:ss");
-                    dateCurrent.setTimeSpec(Qt::UTC);
-                    QString ttt = dateCurrent.toString("d MMM yyyy hh:mm:ss");
-                    //qDebug() << "[RELOJ] fecha dateCurrent-2: " + ttt;
-                    //qDebug() << "Convierte date";
-                    date_ok = true;
-                }
-                else{
-                    qDebug() << "[RELOJ] Error date 2: " + stderror_process;
-                    reloj->set_color_label("red");
-                }
-            }
-            else{
-                qDebug() << "[RELOJ] Error date: " + stderror_process;
-                reloj->set_color_label("red");
-            }
-            //antes de esto, preguntar si está conectado por i2c
-            QProcess find_i2c;
-            find_i2c.start("i2cdetect -y 1");
-            find_i2c.waitForFinished(-1);
-            QString stdout_process_i2cfind = find_i2c.readAllStandardOutput();
-            QString stderror_process_i2cfind = find_i2c.readAllStandardError();
-            if(stderror_process_i2cfind.size() > 0){
-                //error en el comando
-                qDebug() << "[RELOJ] Error buscar i2c: " << stderror_process_i2cfind;
-                reloj->set_color_label("red");
-            }
-            else{
-                //acepta comando, ver salida
-                //qDebug() << "[RELOJ] Salida i2c: " << stdout_process_i2cfind;
-                if(stdout_process_i2cfind.contains("UU")){
-                    qDebug() << "[RELOJ] RTC conectado";
-                    //obtener fecha del RTc
-                    QProcess process_rtc;
-                    process_rtc.start("sudo hwclock -r");
-                    process_rtc.waitForFinished(-1);
-                    QString stdput_process_rtc = process_rtc.readAllStandardOutput();
-                    QString stderror_process_rtc = process_rtc.readAllStandardError();
-                    qDebug() << "[RELOJ] fecha date rtc: " + stdput_process_rtc;
-                    if(stderror_process_rtc.size() == 0){
-                        QStringList ppparts = stdput_process_rtc.split(' ');
-                        if(ppparts.size() >= 2){
-                            QString fecha_rtc = ppparts.at(0);
-                            QString hora_rtc = ppparts.at(1).split('.').at(0);
-                            dateRTC = QDateTime::fromString(fecha_rtc + " "+ hora_rtc, "yyyy-MM-dd hh:mm:ss");
-                            dateRTC.setTimeSpec(Qt::UTC);
-                            QString tttt = dateRTC.toString("d MMM yyyy hh:mm:ss");
-                            //qDebug() << "[RELOJ] fecha dateRTC-2: " + tttt;
-                            //qDebug() << "Convierte date RTC";
-                            rtc_ok = true;
-                        }
-                        else{
-                            qDebug() << "[RELOJ] Error fecha rtc 2: " + stderror_process_rtc;
-                            reloj->set_color_label("red");
-                        }
+                if(stderror_process.size() == 0 ){
+                    QStringList pparts = stdput_process.split(' ');
+                    if(pparts.size() >= 6){
+                        QString fecha_date = pparts.at(1) + " " + pparts.at(2) + " " + pparts.at(5).mid(0,4); // MMMM dd yyyy
+                        QString hora_date = pparts.at(3); //hh:mm:ss
+                        //qDebug() << "[RELOJ] fecha date2: " + fecha_date + " " + hora_date;
+                        dateCurrent = QDateTime::currentDateTime();//Utc //"MM/dd/yy hh:mm:ss" //QDateTime::fromString(fecha_date + " "+ hora_date, "MMM dd yyyy hh:mm:ss");
+                        dateCurrent.setTimeSpec(Qt::UTC);
+                        QString ttt = dateCurrent.toString("d MMM yyyy hh:mm:ss");
+                        //qDebug() << "[RELOJ] fecha dateCurrent-2: " + ttt;
+                        //qDebug() << "Convierte date";
+                        date_ok = true;
                     }
                     else{
-                        qDebug() << "[RELOJ] Error fecha rtc: " + stderror_process_rtc;
+                        qDebug() << "[RELOJ] Error date 2: " + stderror_process;
                         reloj->set_color_label("red");
                     }
                 }
                 else{
-                    qDebug() << "[RELOJ] RTC desconectado";
+                    qDebug() << "[RELOJ] Error date: " + stderror_process;
                     reloj->set_color_label("red");
                 }
-            }
-
-            //hacer las comparciones
-            if(rtc_ok && date_ok){
-                // last_event > date
-                //qDebug() << "[RELOJ] valor: " + QString::number(dateCurrent.msecsTo(dateRTC));
-
-                //debug
-                //qDebug() << "[RELOJ] lastevent to current" << dateLastEvent.msecsTo(dateCurrent);
-                //qDebug() << "[RELOJ] dateCurrent to dateRTC" << dateCurrent.msecsTo(dateRTC);
-                //qDebug() << "[RELOJ] lastevent to dateRTC" << dateLastEvent.msecsTo(dateRTC) ;
-                //dateLastEvent.msecsTo(dateRTC)
-
-                if(dateLastEvent.msecsTo(dateCurrent) > 0){
-                    //La hora es probable que esté correcta, ahora hay que preguntar por la del RTC respecto a current
-                    if(dateCurrent.msecsTo(dateRTC) > 0){
-                        //actualizar la current con la dle RTC
-                        //el comando es: date --set="2 OCT 2006 18:00:00"
-                        QString temp = dateRTC.toString("d MMM yyyy hh:mm:ss");
-                        qDebug() << "[RELOJ] Hora 1-> " + temp;
-                        set_date(temp);
+                //antes de esto, preguntar si está conectado por i2c
+                QProcess find_i2c;
+                find_i2c.start("i2cdetect -y 1");
+                if(find_i2c.waitForFinished(3500)){
+                    QString stdout_process_i2cfind = find_i2c.readAllStandardOutput();
+                    QString stderror_process_i2cfind = find_i2c.readAllStandardError();
+                    if(stderror_process_i2cfind.size() > 0){
+                        //error en el comando
+                        qDebug() << "[RELOJ] Error buscar i2c: " << stderror_process_i2cfind;
+                        reloj->set_color_label("red");
                     }
                     else{
-                        qDebug() << "[RELOJ] Hora correcta";
+                        //acepta comando, ver salida
+                        //qDebug() << "[RELOJ] Salida i2c: " << stdout_process_i2cfind;
+                        if(stdout_process_i2cfind.contains("UU")){
+                            qDebug() << "[RELOJ] RTC conectado";
+                            //obtener fecha del RTc
+                            QProcess process_rtc;
+                            process_rtc.start("sudo hwclock -r");
+                            if(process_rtc.waitForFinished(3500)){
+                                QString stdput_process_rtc = process_rtc.readAllStandardOutput();
+                                QString stderror_process_rtc = process_rtc.readAllStandardError();
+                                qDebug() << "[RELOJ] fecha date rtc: " + stdput_process_rtc;
+                                if(stderror_process_rtc.size() == 0){
+                                    QStringList ppparts = stdput_process_rtc.split(' ');
+                                    if(ppparts.size() >= 2){
+                                        QString fecha_rtc = ppparts.at(0);
+                                        QString hora_rtc = ppparts.at(1).split('.').at(0);
+                                        dateRTC = QDateTime::fromString(fecha_rtc + " "+ hora_rtc, "yyyy-MM-dd hh:mm:ss");
+                                        dateRTC.setTimeSpec(Qt::UTC);
+                                        QString tttt = dateRTC.toString("d MMM yyyy hh:mm:ss");
+                                        //qDebug() << "[RELOJ] fecha dateRTC-2: " + tttt;
+                                        //qDebug() << "Convierte date RTC";
+                                        rtc_ok = true;
+                                    }
+                                    else{
+                                        qDebug() << "[RELOJ] Error fecha rtc 2: " + stderror_process_rtc;
+                                        reloj->set_color_label("red");
+                                    }
+                                }
+                                else{
+                                    qDebug() << "[RELOJ] Error fecha rtc: " + stderror_process_rtc;
+                                    reloj->set_color_label("red");
+                                }
+                            }
+                            else{
+                                qDebug() << "[RELOJ] command hwclock ERROR";
+                                reloj->set_color_label("red");
+                            }
+                        }
+                        else{
+                            qDebug() << "[RELOJ] RTC desconectado";
+                            reloj->set_color_label("red");
+                        }
                     }
                 }
                 else{
-                    //No es correcta la hora del ventilador
-                    //preguntar por la del RTC respecto al ultimo evento
-                    if(dateLastEvent.msecsTo(dateRTC) > 0){
-                        //el RTC es probable que esté bien, entonces poner esa hora al sistema
-                        QString temp = dateRTC.toString("d MMM yyyy hh:mm:ss");
-                        qDebug() << "[RELOJ] Hora 2-> " + temp;
-                        set_date(temp);
+                    qDebug() << "[RELOJ] command i2cdetect ERROR";
+                    reloj->set_color_label("red");
+                }
+
+
+                //hacer las comparciones
+                if(rtc_ok && date_ok){
+                    // last_event > date
+                    //qDebug() << "[RELOJ] valor: " + QString::number(dateCurrent.msecsTo(dateRTC));
+
+                    //debug
+                    //qDebug() << "[RELOJ] lastevent to current" << dateLastEvent.msecsTo(dateCurrent);
+                    //qDebug() << "[RELOJ] dateCurrent to dateRTC" << dateCurrent.msecsTo(dateRTC);
+                    //qDebug() << "[RELOJ] lastevent to dateRTC" << dateLastEvent.msecsTo(dateRTC) ;
+                    //dateLastEvent.msecsTo(dateRTC)
+
+                    if(dateLastEvent.msecsTo(dateCurrent) > 0){
+                        //La hora es probable que esté correcta, ahora hay que preguntar por la del RTC respecto a current
+                        if(dateCurrent.msecsTo(dateRTC) > 0){
+                            //actualizar la current con la dle RTC
+                            //el comando es: date --set="2 OCT 2006 18:00:00"
+                            QString temp = dateRTC.toString("d MMM yyyy hh:mm:ss");
+                            qDebug() << "[RELOJ] Hora 1-> " + temp;
+                            set_date(temp);
+                        }
+                        else{
+                            qDebug() << "[RELOJ] Hora correcta";
+                        }
                     }
                     else{
-                        //tambien esta mal, corregir hora, activar amarillo
-                        reloj->set_color_label("yellow");
-                        qDebug() << "[RELOJ] Advertencia";
+                        //No es correcta la hora del ventilador
+                        //preguntar por la del RTC respecto al ultimo evento
+                        if(dateLastEvent.msecsTo(dateRTC) > 0){
+                            //el RTC es probable que esté bien, entonces poner esa hora al sistema
+                            QString temp = dateRTC.toString("d MMM yyyy hh:mm:ss");
+                            qDebug() << "[RELOJ] Hora 2-> " + temp;
+                            set_date(temp);
+                        }
+                        else{
+                            //tambien esta mal, corregir hora, activar amarillo
+                            reloj->set_color_label("yellow");
+                            qDebug() << "[RELOJ] Advertencia";
+                        }
                     }
+                }
+                else{
+                    //error, poner en rojo
+                    reloj->set_color_label("red");
+                    qDebug() << "[RELOJ] Error";
                 }
             }
             else{
-                //error, poner en rojo
+                qDebug() << "[RELOJ] command date ERROR ";
                 reloj->set_color_label("red");
-                qDebug() << "[RELOJ] Error";
             }
-
         }
 
     }  catch (std::exception &e) {
