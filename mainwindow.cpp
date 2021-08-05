@@ -46,6 +46,7 @@ MainWindow::MainWindow(ServerWS *server, QWidget *parent, bool debug_t, bool deb
             //connect(monitor, SIGNAL(get_umbral_keyboard(QString)), this, SLOT(get_umbral_keyboard_command(QString)));
             connect(monitor, SIGNAL(send_frame(QString)), this, SLOT(send_frame_keyboard(QString)));
             connect(monitor, SIGNAL(set_watch(QString)), this, SLOT(set_watch(QString)));
+            connect(monitor, SIGNAL(activarBloqueoPrimeraVez()), this, SLOT(mandaActivarBloqueoPrimeraVez()));
 
             //qDebug() << "pantalla monitor a contenedor principal";
             contenedorPrincipal->addWidget(monitor);
@@ -104,6 +105,11 @@ MainWindow::MainWindow(ServerWS *server, QWidget *parent, bool debug_t, bool deb
 MainWindow::~MainWindow()
 {
 
+}
+
+void MainWindow::mandaActivarBloqueoPrimeraVez(){
+    qDebug() << "[FIO2] ActivarBloqueoPrimeraVez";
+    configuracion->activarBloqueoPrimeraVez();
 }
 
 void MainWindow::revisarConexionTeclado(){

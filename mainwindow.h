@@ -78,6 +78,7 @@ public slots:
     void send_frame_keyboard(QString trama);
     void set_watch(QString date);
     void get_last_event();
+    void mandaActivarBloqueoPrimeraVez();
 
 };
 #endif // MAINWINDOW_H

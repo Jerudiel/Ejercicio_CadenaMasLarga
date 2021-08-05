@@ -792,6 +792,7 @@ signals:
     void get_umbral_keyboard(QString frame);
     void send_frame(QString frame);
     void set_watch(QString date);
+    void activarBloqueoPrimeraVez();
 };
 
 #endif // MONITOR_H

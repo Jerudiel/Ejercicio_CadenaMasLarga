@@ -88,6 +88,7 @@ UiConfiguracion::UiConfiguracion(Monitor * monitor, QWidget *parent) : QWidget(p
 
         informacionLayout->addLayout(BotonesLayout);
 
+        //ver si se quita esto
         label_info_alarma =  new QLabel(horizontalLayoutWidget);
         fuente->setPointSize(12);
         label_info_alarma->setFont(*fuente);
@@ -96,11 +97,36 @@ UiConfiguracion::UiConfiguracion(Monitor * monitor, QWidget *parent) : QWidget(p
         label_info_alarma->setObjectName("label_info_alarma");
         informacionLayout->addWidget(label_info_alarma);
 
+        //AQUI van los valores de los gases
+        infoGases = new QVBoxLayout;
+        infoGases->setObjectName("infoGases");
+
+        lbl_info_aire = new QLabel(horizontalLayoutWidget);
+        fuente->setBold(true);
+        fuente->setPointSize(12);
+        lbl_info_aire->setFont(*fuente);
+        //lbl_info_aire->setAlignment(Qt::AlignLeft);
+        lbl_info_aire->setStyleSheet("color: rgb(255, 255, 255);");
+        lbl_info_aire->setObjectName("lbl_info_aire");
+        lbl_info_aire->setText("aire: 95 psi");
+        infoGases->addWidget(lbl_info_aire);
+
+        lbl_info_oxi = new QLabel(horizontalLayoutWidget);
+        fuente->setBold(true);
+        fuente->setPointSize(12);
+        lbl_info_oxi->setFont(*fuente);
+        lbl_info_oxi->setStyleSheet("color: rgb(255, 255, 255);");
+        lbl_info_oxi->setObjectName("lbl_info_oxi");
+        lbl_info_oxi->setText("oxi : 45 psi");
+        infoGases->addWidget(lbl_info_oxi);
+
+        informacionLayout->addLayout(infoGases);
+
         informacionLayout->setStretch(0, 3);
         informacionLayout->setStretch(1, 3);
-        informacionLayout->setStretch(2, 3);
-        informacionLayout->setStretch(3, 1);
-        informacionLayout->setStretch(4, 1);
+        informacionLayout->setStretch(2, 1);
+        informacionLayout->setStretch(3, 2);
+        //informacionLayout->setStretch(4, 2);
         contenidoLayout->addLayout(informacionLayout);
 
         graficaLayout = new QHBoxLayout;
@@ -152,10 +178,53 @@ UiConfiguracion::UiConfiguracion(Monitor * monitor, QWidget *parent) : QWidget(p
         llenarConfiguracion();
         elementoSeleccionado();
         monitor->modoVentilador = "MODO: PCMV";
+
+        //primera vez
+        primera_vez_guardado = true;
+        primera_vez_bloqueado = false;
+        timerPrimeraVez = new QTimer;
+        timerPrimeraVez->setSingleShot(true);
+        connect(timerPrimeraVez, SIGNAL(timeout()), this, SLOT(timerTerminaPrimeraVez()));
+
+        //info gases
+        timerInfoGases = new QTimer;
+        timerInfoGases->setInterval(5000);
+        connect(timerInfoGases, SIGNAL(timeout()), this, SLOT(actualizaInfoGases()));
+        timerInfoGases->start(5000);
+
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
 
     }
+}
+
+void UiConfiguracion::actualizaInfoGases(){
+    float aire_of = 0;
+    float oxigeno_of = 0;
+    if(monitor->tipo_sensor_presion){
+        float beta = exp(-1.18e-4 * monitor->altura_prog);
+        float p_h = 14.7 * beta;
+        aire_of = monitor->entrada_aire - p_h;
+        oxigeno_of = monitor->entrada_oxigeno - p_h;
+    }
+    else{
+        aire_of = monitor->entrada_aire;
+        oxigeno_of = monitor->entrada_oxigeno;
+    }
+    lbl_info_aire->setText("  aire  : " + QString::number(aire_of,'f',2) + " psi");
+    lbl_info_oxi->setText( "oxigeno : " + QString::number(oxigeno_of,'f',2) + " psi");
+}
+
+void UiConfiguracion::activarBloqueoPrimeraVez(){
+    if(primera_vez_guardado){
+        primera_vez_guardado = false;
+        primera_vez_bloqueado = true;
+        timerPrimeraVez->start(60000);
+    }
+}
+
+void UiConfiguracion::timerTerminaPrimeraVez(){
+    primera_vez_bloqueado = false;
 }
 
 void UiConfiguracion::retranslateUi(){
@@ -368,7 +437,30 @@ void UiConfiguracion::teclaOkModo(){
                 configModo->modoPCMV->cambiaTipoTrigger();
             }
             else if(configModo->modoPCMV->get_elemento_seleccionado() == 7){
-                guardarConfigPCMV();
+                if(primera_vez_guardado){
+                    //revisar si esta activo el ventilador
+                    if(monitor->estadoVentilador){
+                        primera_vez_guardado = false;
+                        primera_vez_bloqueado = true;
+                        timerPrimeraVez->start(60000);
+                        guardarConfigPCMV();
+                        //qDebug() << "[PRUEBA OCUPADO] primera_vez_guardado";
+                    }
+                    else{
+                        guardarConfigPCMV();
+                        return;
+                    }
+
+                }
+
+                if(!primera_vez_bloqueado){
+                    guardarConfigPCMV();
+                    //qDebug() << "[PRUEBA OCUPADO] !primera_vez_guardado";
+                }
+                else{
+                    configModo->modoPCMV->mostrar_mensaje("Ocupado");
+                    //qDebug() << "[PRUEBA OCUPADO] ocupado";
+                }
             }
         }
         else if(configModo->conte_modo->currentWidget() == configModo->modoVCMV){
@@ -377,7 +469,19 @@ void UiConfiguracion::teclaOkModo(){
                 configModo->modoVCMV->cambiaTipoTrigger();
             }
             else if(configModo->modoVCMV->get_elemento_seleccionado() == 8){
-                guardarConfigVCMV();
+                if(primera_vez_guardado){
+                    primera_vez_guardado = false;
+                    primera_vez_bloqueado = true;
+                    timerPrimeraVez->start(60000);
+                    guardarConfigVCMV();
+                }
+
+                if(!primera_vez_bloqueado){
+                    guardarConfigVCMV();
+                }
+                else{
+                    configModo->modoVCMV->mostrar_mensaje("Ocupado");
+                }
             }
         }
         else if(configModo->conte_modo->currentWidget() == configModo->modoPSIMV){
@@ -386,7 +490,19 @@ void UiConfiguracion::teclaOkModo(){
                 configModo->modoPSIMV->cambiaTipoTrigger();
             }
             else if(configModo->modoPSIMV->get_elemento_seleccionado() == 8){
-                guardarConfigPSIMV();
+                if(primera_vez_guardado){
+                    primera_vez_guardado = false;
+                    primera_vez_bloqueado = true;
+                    timerPrimeraVez->start(60000);
+                    guardarConfigPSIMV();
+                }
+
+                if(!primera_vez_bloqueado){
+                    guardarConfigPSIMV();
+                }
+                else{
+                    configModo->modoPSIMV->mostrar_mensaje("Ocupado");
+                }
             }
         }
         else if(configModo->conte_modo->currentWidget() == configModo->modoVSIMV){
@@ -395,7 +511,19 @@ void UiConfiguracion::teclaOkModo(){
                 configModo->modoVSIMV->cambiaTipoTrigger();
             }
             else if(configModo->modoVSIMV->get_elemento_seleccionado() == 9){
-                guardarConfigVSIMV();
+                if(primera_vez_guardado){
+                    primera_vez_guardado = false;
+                    primera_vez_bloqueado = true;
+                    timerPrimeraVez->start(60000);
+                    guardarConfigVSIMV();
+                }
+
+                if(!primera_vez_bloqueado){
+                    guardarConfigVSIMV();
+                }
+                else{
+                    configModo->modoVSIMV->mostrar_mensaje("Ocupado");
+                }
             }
         }
         else if(configModo->conte_modo->currentWidget() == configModo->modoPCPAP){
@@ -404,7 +532,19 @@ void UiConfiguracion::teclaOkModo(){
                 configModo->modoPCPAP->cambiaTipoTrigger();
             }
             else if(configModo->modoPCPAP->get_elemento_seleccionado() == 9){
-                guardarConfigPCPAP();
+                if(primera_vez_guardado){
+                    primera_vez_guardado = false;
+                    primera_vez_bloqueado = true;
+                    timerPrimeraVez->start(60000);
+                    guardarConfigPCPAP();
+                }
+
+                if(!primera_vez_bloqueado){
+                    guardarConfigPCPAP();
+                }
+                else{
+                    configModo->modoPCPAP->mostrar_mensaje("Ocupado");
+                }
             }
         }
         else {
@@ -413,7 +553,19 @@ void UiConfiguracion::teclaOkModo(){
                 configModo->modoVCPAP->cambiaTipoTrigger();
             }
             else if(configModo->modoVCPAP->get_elemento_seleccionado() == 9){
-                guardarConfigVCPAP();
+                if(primera_vez_guardado){
+                    primera_vez_guardado = false;
+                    primera_vez_bloqueado = true;
+                    timerPrimeraVez->start(60000);
+                    guardarConfigVCPAP();
+                }
+
+                if(!primera_vez_bloqueado){
+                    guardarConfigVCPAP();
+                }
+                else{
+                    configModo->modoVCPAP->mostrar_mensaje("Ocupado");
+                }
             }
         }
     }  catch (std::exception &e) {

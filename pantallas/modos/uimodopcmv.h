@@ -47,6 +47,10 @@ public:
 
     QTimer *timerMensaje;
 
+    /*bool primera_vez_guardado;
+    bool bloqueado_primera_vez;
+    QTimer *timerPrimeraVez;*/
+
     void retranslateUi();
     virtual void paintEvent(QPaintEvent *event);
     int get_elemento_seleccionado();
@@ -75,6 +79,7 @@ public:
     void mostrar_mensaje(QString mensaje);
 public slots:
     void outTimer();
+    //svoid outTimerPrimeraVez();
 
 signals:
 

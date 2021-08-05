@@ -20,7 +20,7 @@ Monitor::Monitor(QWidget *parent, ConsultasDb *consul, bool debug_c, bool debug_
         versionVentiladorEsperada = "4.1.0";
         versionSenPresionEsperada = "3.3.0";
         versionTecladoEsperada = "1.0";
-        versionPi = "3.8.5";
+        versionPi = "3.8.8";
 
         mainwindow = parent;
         this->consul = consul;
@@ -1416,14 +1416,30 @@ void Monitor::limpiarInfoAltura(){
 void Monitor::cambiarAltura(QString tecla){
     try {
         if(tecla == "men"){
-            int temp = configPI->le_altura->text().toInt();
-            temp += altura_perilla;
-            configPI->le_altura->setText(QString::number(temp));
+            if(sentido_giro){
+                int temp = configPI->le_altura->text().toInt();
+                temp += altura_perilla;
+                configPI->le_altura->setText(QString::number(temp));
+            }
+            else{
+                int temp = configPI->le_altura->text().toInt();
+                temp -= altura_perilla;
+                configPI->le_altura->setText(QString::number(temp));
+            }
+
         }
         else if(tecla == "mas"){
-            int temp = configPI->le_altura->text().toInt();
-            temp -= altura_perilla;
-            configPI->le_altura->setText(QString::number(temp));
+            if(sentido_giro){
+                int temp = configPI->le_altura->text().toInt();
+                temp -= altura_perilla;
+                configPI->le_altura->setText(QString::number(temp));
+            }
+            else{
+                int temp = configPI->le_altura->text().toInt();
+                temp += altura_perilla;
+                configPI->le_altura->setText(QString::number(temp));
+            }
+
         }
         else if(tecla == "mod"){
             if(altura_perilla == 1){
@@ -1439,7 +1455,6 @@ void Monitor::cambiarAltura(QString tecla){
         }
     }  catch (std::exception &e) {
         qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
-
     }
 }
 
@@ -2492,6 +2507,8 @@ void Monitor::revisarTerminaConfigurar(){
                         }
                         else{
                             label_debug->setText("Vent ON");
+                            //aqui debería activar el timer para medir fios?
+                            listo_medir_fio2 = true;
                         }
                         //
                         //pruebas
@@ -6051,7 +6068,7 @@ void Monitor::revisarConexionVentilador(){
             ultimo_valor_alarma_aire = valor_alarma_aire;
             //
             trama_temp += "\n";
-            qDebug() << "[PING]  Trama P: " << trama_temp;
+            //qDebug() << "[PING]  Trama P: " << trama_temp;
             serVent->envia_trama_config(trama_temp);
         }
         timerConVentilador->start(7000);
@@ -6250,6 +6267,9 @@ QString Monitor::obtener_modo_vent(){
 
 void Monitor::iniciar_ventilador(){
     try {
+        //bloqueo
+        emit activarBloqueoPrimeraVez();
+        //
         qDebug() << "[CONTROL] Envia trama principal ventilador";
         desactivar_s = true;
         if(! banderaConexionVentilador){

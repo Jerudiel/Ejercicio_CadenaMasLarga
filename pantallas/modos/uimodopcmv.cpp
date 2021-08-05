@@ -109,11 +109,23 @@ UiModoPCMV::UiModoPCMV() : QWidget()
         timerMensaje = new QTimer;
         timerMensaje->setSingleShot(true);
         connect(timerMensaje, SIGNAL(timeout()), this, SLOT(outTimer()));
+
+        //primera vez guardando
+        /*primera_vez_guardado = true;
+        bloqueado_primera_vez = false;
+        timerPrimeraVez = new QTimer;
+        timerPrimeraVez->setSingleShot(true);
+        connect(timerPrimeraVez, SIGNAL(timeout()), this, SLOT(outTimerPrimeraVez()));*/
+
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
 
     }
 }
+
+/*void UiModoPCMV::outTimerPrimeraVez(){
+    bloqueado_primera_vez = false;
+}*/
 
 void UiModoPCMV::retranslateUi(){
     try {

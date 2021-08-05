@@ -44,6 +44,11 @@ public:
     QSizePolicy * sizePolicy;
     QPushButton * btn_eventos;
     QLabel * label_info_alarma;
+
+    QVBoxLayout *infoGases;
+    QLabel *lbl_info_aire;
+    QLabel *lbl_info_oxi;
+
     QHBoxLayout * graficaLayout;
     QTabWidget * tabWidget;
     QWidget * tab_config;
@@ -57,6 +62,10 @@ public:
 
     bool mostrando_eventos;
     int elementSel;
+
+    bool primera_vez_guardado;
+    bool primera_vez_bloqueado;
+    QTimer *timerPrimeraVez;
 
     void retranslateUi();
     virtual void paintEvent(QPaintEvent *event);
@@ -105,10 +114,17 @@ public:
     void llenarConfiguracionPCPAP();
     void llenarConfiguracionVCPAP();
 
+    void activarBloqueoPrimeraVez();
+
+    //timer gases
+    QTimer *timerInfoGases;
+
 public slots:
     void reiniciaValoresModo();
     void abrir_pantalla_eventos();
     void cambioTab(int i);
+    void timerTerminaPrimeraVez();
+    void actualizaInfoGases();
 signals:
 
 };
