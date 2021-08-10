@@ -23,7 +23,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(ServerWS *servidor = nullptr, QWidget *parent = nullptr, bool debug_t = false, bool debug_c = false, bool debug_s = false);
+    MainWindow(ServerWS *servidor = nullptr, QWidget *parent = nullptr, bool debug_t = false, bool debug_c = false, bool debug_s = false, bool control_gases = false);
     ~MainWindow();
     ServerWS *server;
     QStackedWidget * contenedorPrincipal;

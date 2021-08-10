@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 
-MainWindow::MainWindow(ServerWS *server, QWidget *parent, bool debug_t, bool debug_c, bool debug_s)
+MainWindow::MainWindow(ServerWS *server, QWidget *parent, bool debug_t, bool debug_c, bool debug_s, bool control_gases)
     : QMainWindow(parent)
 {
     try {
@@ -37,7 +37,7 @@ MainWindow::MainWindow(ServerWS *server, QWidget *parent, bool debug_t, bool deb
 
             //aquí agregar las pantallas
             //qDebug() << "Se crea pantalla monitor";
-            monitor = new Monitor(this, consul, debug_c, debug_s);
+            monitor = new Monitor(this, consul, debug_c, debug_s, control_gases);
 
             //connect(monitor, SIGNAL(calTeclado(QString)), this, SLOT(calibrarTeclado(QString)));
 
@@ -121,7 +121,7 @@ void MainWindow::revisarConexionTeclado(){
         }
         else{
             if(tecladoComandoRecibido){
-                if(tecladoComandoRecibido < 3){
+                if(contadorTeclado < 3){
                     contadorTeclado ++;
                     serTeclado->escribir("listo\n");
                     qDebug() << "Vuelve a mandar solicitud a teclado";
@@ -314,6 +314,9 @@ void MainWindow::recteclado(QString trama){
                         monitor->tecla_info(trama);
                         //qDebug() << "teclado------8";
                     }
+                    else if(monitor->ventanaInoperanteAbierta){
+                        monitor->tecla_inoperante(trama);
+                    }
                     /*else{
                         qDebug() << "teclado------9";
                     }*/
@@ -431,7 +434,13 @@ void MainWindow::recteclado(QString trama){
 void MainWindow::teclado(QString trama){
     try {
         if(trama == "con"){
-            abrePantallaConfiguracion();
+            //aqui preguntar primero si está configruaqdno las tarjetas
+            if(!monitor->configurandoVentilador){
+                abrePantallaConfiguracion();
+            }
+            else{
+                qDebug() << "[teclado mon] configurando con";
+            }
         }
         else if(trama == "inidet"){
             if(monitor->estadoVentilador){
@@ -439,12 +448,37 @@ void MainWindow::teclado(QString trama){
                 monitor->mostrar_confirmacion("¿Está seguro de parar el ventilador?");
             }
             else{
-                monitor->espera_parar = true;
-                monitor->mostrar_confirmacion("¿Está seguro de iniciar el ventilador?");
+                if(!monitor->ventiladorInoperante && !monitor->bloqueo_gases){
+                    monitor->espera_iniciar = true;
+                    monitor->mostrar_confirmacion("¿Está seguro de iniciar el ventilador?");
+                }
+                else{
+                    if(monitor->ventiladorInoperante){
+                        if(monitor->ventanaInoperante->isHidden()){
+                            monitor->ventanaInoperante->mostrar("FALLA EN TARJETA \n \n No es posible iniciar o actualizar \n el ventilador.");
+                            monitor->ventanaInoperanteAbierta = true;
+                            monitor->ventanaAbierta = true;
+                        }
+                    }
+                    //aqui poner alarma gases bajos?
+                    else if(monitor->bloqueo_gases){
+                        if(monitor->ventanaInoperante->isHidden()){
+                            monitor->ventanaInoperante->mostrar("FALLA EN NETRADA DE GASES \n \n REVISE EL SUMINISTRO DE GASES");
+                            monitor->ventanaInoperanteAbierta = true;
+                            monitor->ventanaAbierta = true;
+                        }
+                    }
+                }
             }
         }
         else if(trama == "ala"){
-            abrePantallaAlarmas();
+            //aqui tambien, preguntar si se esta configurando las tarjetas
+            if(!monitor->configurandoVentilador){
+                abrePantallaAlarmas();
+            }
+            else{
+                qDebug() << "[teclado mon] configurando ala";
+            }
         }
         else{
             monitor->teclado(trama);

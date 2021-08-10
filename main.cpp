@@ -78,6 +78,7 @@ int main(int argc, char *argv[])
     bool debug_s = false;
     bool debug_t = false;
     bool debug_c = false;
+    bool control_gases = true;
 
     QStringList args = a.arguments();
     if(args.count() >= 2){
@@ -99,12 +100,16 @@ int main(int argc, char *argv[])
                 //activar debug teclado
                 debug_t = true;
             }
+            else if(args.at(j).contains("-g")){
+                //activar debug teclado
+                control_gases = true;
+            }
         }
     }
 
     ServerWS *server = new ServerWS(9090, true);
 
-    MainWindow w(server, nullptr, debug_t, debug_c, debug_s);
+    MainWindow w(server, nullptr, debug_t, debug_c, debug_s, control_gases);
     w.show();
 
     //res

@@ -13,18 +13,21 @@
 #include "signos/widgetsigno3.h"
 #include "utilidades/widgetsignobar.h"
 
-Monitor::Monitor(QWidget *parent, ConsultasDb *consul, bool debug_c, bool debug_s) : QWidget(parent)
+Monitor::Monitor(QWidget *parent, ConsultasDb *consul, bool debug_c, bool debug_s, bool control_gases) : QWidget(parent)
 {
     try {
         cargaMonitorListo = false;
         versionVentiladorEsperada = "4.1.0";
         versionSenPresionEsperada = "3.3.0";
         versionTecladoEsperada = "1.0";
-        versionPi = "3.8.8";
+        versionPi = "3.8.10";
+
+        this->control_gases = control_gases;
 
         mainwindow = parent;
         this->consul = consul;
         setStyleSheet("background-color: rgb(0, 0, 0);");
+
         //fuente
         fuente = new QFont;
         fuente->setBold(true);
@@ -205,8 +208,6 @@ Monitor::Monitor(QWidget *parent, ConsultasDb *consul, bool debug_c, bool debug_
         graphiclayout->addWidget(graficaVolumen, 1,1);
         graficaFlujo = new WidgetGrafica(this, "graficaFlujo", "FLUJO", -150, 150, Qt::yellow, 50);
         graphiclayout->addWidget(graficaFlujo, 2,1);
-
-
 
         graficaPV = nullptr;
         graficaVF = nullptr;
@@ -582,6 +583,7 @@ Monitor::Monitor(QWidget *parent, ConsultasDb *consul, bool debug_c, bool debug_
         dict_color_muestra_alarma->insert("C. SEN 2", "red");
         dict_color_muestra_alarma->insert("C. CTRL 1", "red");
         dict_color_muestra_alarma->insert("C. CTRL 2", "red");
+        dict_color_muestra_alarma->insert("Dif. gases", "yellow");
 
         min_grafica_presion = 0;
         max_grafica_presion = 35;
@@ -634,6 +636,13 @@ Monitor::Monitor(QWidget *parent, ConsultasDb *consul, bool debug_c, bool debug_
         connect(timerVentanaInfo, SIGNAL(timeout()), this, SLOT(ocultarVentanaInfo()));
 
         //qDebug() << "Termina de VentanaMenu";
+
+        //ventana inoperante
+        ventanaInoperante = new VentanaInoperante(this, 500, 300, "VENTILADOR INOPERANTE");
+        ventanaInoperante->move(0,0);
+        ventanaInoperante->resize(mainwindow->width(), mainwindow->height());
+        ventanaInoperante->hide();
+        ventanaInoperanteAbierta = false;
 
         contador_apagar = 0;
 
@@ -954,12 +963,41 @@ Monitor::Monitor(QWidget *parent, ConsultasDb *consul, bool debug_c, bool debug_
         contador_p_oxi = 0;
         desactivar_alarma_aire = false;
 
+        //pingmuerto
+        timerPingMuerto = new QTimer;
+        timerPingMuerto->setSingleShot(true);
+        connect(timerPingMuerto, SIGNAL(timeout()), this, SLOT(revisarPingMuerto()));
+        pingSensoresVivo = false;
+        pingControlVivo = false;
+
 
     } catch (std::exception &e) {
         qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
     catch(...){
         qWarning("ERROR AL CREAR CLASE MONITOR");
+    }
+}
+
+void Monitor::revisarPingMuerto(){
+    if(!pingSensoresVivo || !pingControlVivo){
+        //mandar a activar ventilador inoperante
+        if(ventanaInoperante->isHidden()){
+            ventanaInoperante->mostrar("FALLA EN TARJETA \n \n No es posible iniciar o actualizar \n el ventilador.");
+            ventanaInoperanteAbierta = true;
+            ventanaAbierta = true;
+            ventiladorInoperante = true;
+        }
+    }
+}
+
+void Monitor::tecla_inoperante(QString tecla){
+    if(tecla == "ok"){
+        if(!ventanaInoperante->isHidden()){
+            ventanaInoperante->hide();
+            ventanaInoperanteAbierta = false;
+            ventanaAbierta = false;
+        }
     }
 }
 
@@ -1680,6 +1718,14 @@ void Monitor::revisarErroresWDT(){
             if(minutos < 60){
                 qDebug() << "[ALARMA] Agregar alarma inoperante por fallo constante en sensores WDT";
                 ino_wdt_alarm = true;
+                //poner bandera y mostrar mensaje
+                if(ventanaInoperante->isHidden()){
+                    ventanaInoperante->mostrar("FALLA EN TARJETA \n \n No es posible iniciar o actualizar \n el ventilador.");
+                    ventanaInoperanteAbierta = true;
+                    ventanaAbierta = true;
+                    ventiladorInoperante = true;
+                }
+                //
                 if(! buscar_en_lista("SENSORES")){
                     agregar_en_lista("SENSORES", 1);
                     qDebug() << "[ALARMA] SENSORES";
@@ -1817,6 +1863,10 @@ void Monitor::ventilador_detenido(){
             label_debug->setText("Standby");
             consul->agregar_evento("VENTILADOR", obtener_modo(), "DETIENE LA VENTILACION");
             timerVentiladorDetenido->stop();
+            //mandar a activar pingmuerto
+            timerPingMuerto->start(22000);
+            pingControlVivo = false;
+            pingSensoresVivo = false;
         }
         /*else{
             qDebug() << "entra a ventilador_detenido, valor a0: " + QString::number(recibe_a0) + " estadoVentilador: " + QString::number(estadoVentilador);
@@ -1864,7 +1914,7 @@ void Monitor::espera_si_confirmacion(){
             espera_parar = false;
         }
         else if(espera_iniciar){
-            espera_parar = false;
+            espera_iniciar = false;
             if(!ino_wdt_alarm){
                 controlVentilador();
             }
@@ -2305,7 +2355,6 @@ void Monitor::siguiente_pruebas(){
                 ventanaAbierta = false;
                 consul->agregar_evento("INICIO", obtener_modo(), "ENTRA A VENTILACION SIN PASAR PRUEBAS INICIALES");
             }
-
         }
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
@@ -3771,6 +3820,7 @@ void Monitor::receVent(QString trama){
                         }
                         qDebug() << "[TRAMAS] segundo intento comando M - llega desde S";
                     }
+                    pingControlVivo = true;
                 }
                 else if(trama[0] == "C" && trama.size() == 25){
                     if(trama == tramaOffsets.mid(0,25)){
@@ -3902,6 +3952,10 @@ void Monitor::receVent(QString trama){
                                     label_debug->setText("Standby");
                                     consul->agregar_evento("VENTILADOR", obtener_modo(), "DETIENE LA VENTILACION F");
                                     tpresionModo = 0;
+                                    //mandar a activar pingmuerto
+                                    timerPingMuerto->start(22000);
+                                    pingControlVivo = false;
+                                    pingSensoresVivo = false;
                                 }
                                 else{
                                    label_debug->setText("Deteniendo...");
@@ -3951,6 +4005,11 @@ void Monitor::receVent(QString trama){
                                     Actualiza_buffer_fio2 = true;
                                     mostrar_buffer_signos();
                                 }
+                                //activar pinmuerto
+                                //mandar a activar pingmuerto
+                                timerPingMuerto->start(22000);
+                                pingControlVivo = false;
+                                pingSensoresVivo = false;
                             }
                         }
                     }
@@ -4264,14 +4323,22 @@ void Monitor::muestraAvisoConfig(QString mensajes){
 
 void Monitor::muestraAviso(QString mensajes){
     try {
-        ventiladorInoperante = true;
+        if(ventanaInoperante->isHidden()){
+            ventanaInoperante->mostrar("FALLA EN TARJETA \n \n No es posible iniciar o actualizar \n el ventilador.");
+            ventanaInoperanteAbierta = true;
+            ventanaAbierta = true;
+            ventiladorInoperante = true;
+            alarmaControl->iniciaAlarma(alarmaControl->INOPERANTE);
+        }
+
+        /*ventiladorInoperante = true;
         vAviso = new VentanaAviso(this, 500, 300);
         QStringList *tt = new QStringList{"ERROR DE LA TARJETA DE SENSORES", "", "", "", mensajes};
         vAviso->textoMostrar(tt);
         vAviso->move(0,0);
         vAviso->resize(mainwindow->width(), mainwindow->height());
         vAviso->show();
-        alarmaControl->iniciaAlarma(alarmaControl->INOPERANTE);
+        alarmaControl->iniciaAlarma(alarmaControl->INOPERANTE);*/
     }  catch (std::exception &e) {
         qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
@@ -4279,7 +4346,14 @@ void Monitor::muestraAviso(QString mensajes){
 
 void Monitor::muestraAvisoPresion(QString mensajes){
     try {
-        if(vAvisoV == nullptr){
+        if(ventanaInoperante->isHidden()){
+            ventanaInoperante->mostrar("FALLA EN TARJETA \n \n No es posible iniciar o actualizar \n el ventilador.");
+            ventanaInoperanteAbierta = true;
+            ventanaAbierta = true;
+            ventiladorInoperante = true;
+            alarmaControl->iniciaAlarma(alarmaControl->INOPERANTE);
+        }
+        /*if(vAvisoV == nullptr){
             ventiladorInoperante = true;
             vAviso = new VentanaAviso(this, 500, 300);
             QStringList *tt = new QStringList{"ERROR DE LA TARJETA DE SENSORES", "", "", "", mensajes};
@@ -4288,7 +4362,7 @@ void Monitor::muestraAvisoPresion(QString mensajes){
             vAviso->resize(mainwindow->width(), mainwindow->height());
             vAviso->show();
             alarmaControl->iniciaAlarma(alarmaControl->INOPERANTE);
-        }
+        }*/
     }  catch (std::exception &e) {
         qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
@@ -4296,7 +4370,14 @@ void Monitor::muestraAvisoPresion(QString mensajes){
 
 void Monitor::muestraAvisoVentilador(QString mensajes){
     try {
-        if(vAvisoV == nullptr){
+        if(ventanaInoperante->isHidden()){
+            ventanaInoperante->mostrar("FALLA EN TARJETA \n \n No es posible iniciar o actualizar \n el ventilador.");
+            ventanaInoperanteAbierta = true;
+            ventanaAbierta = true;
+            ventiladorInoperante = true;
+            alarmaControl->iniciaAlarma(alarmaControl->INOPERANTE);
+        }
+        /*if(vAvisoV == nullptr){
             ventiladorInoperante = true;
             vAvisoV = new VentanaAviso(this, 500, 300);
             QStringList *tt = new QStringList{"ERROR DE LA TARJETA DE CONTROL", "", "", "", mensajes};
@@ -4305,7 +4386,7 @@ void Monitor::muestraAvisoVentilador(QString mensajes){
             vAvisoV->resize(mainwindow->width(), mainwindow->height());
             vAvisoV->show();
             alarmaControl->iniciaAlarma(alarmaControl->INOPERANTE);
-        }
+        }*/
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
@@ -4313,6 +4394,7 @@ void Monitor::muestraAvisoVentilador(QString mensajes){
 
 void Monitor::cierraAvisoVentilador(){
     try {
+        qDebug() << "[Cerrar] AvisoVentilador";
         if(vAvisoV != nullptr){
            vAvisoV->close();
         }
@@ -4323,6 +4405,7 @@ void Monitor::cierraAvisoVentilador(){
 
 void Monitor::cierraAvisoPresion(){
     try {
+        qDebug() << "[Cerrar] AvisoPresion";
         if(vAviso != nullptr){
            vAviso->close();
         }
@@ -4488,13 +4571,23 @@ void Monitor::validaCincoSeg(){
                 if(timerCont5S == 3){
                     timerActivo5S = false;
                     timerCont5S = 0;
-                    if(vAviso == nullptr){
+                    /*if(vAviso == nullptr){
                         muestraAviso("NO RESPONDE A LA SOLICITUD DE DATOS");
                         consul->agregar_evento("COMUNICACION",obtener_modo(), "ERROR NO RESPONDE SENSORES");
                         qDebug() << "[PING] solicitud de datos -- muestra aviso valida5s";
+                    }*/
+                    if(ventanaInoperante->isHidden()){
+                        ventanaInoperante->mostrar("FALLA EN TARJETA \n \n No es posible iniciar o actualizar \n el ventilador.");
+                        ventanaInoperanteAbierta = true;
+                        ventanaAbierta = true;
+                        ventiladorInoperante = true;
+                        consul->agregar_evento("COMUNICACION",obtener_modo(), "ERROR NO RESPONDE SENSORES");
+                        qDebug() << "[PING] solicitud de datos -- muestra aviso valida5s";
+                        alarmaControl->iniciaAlarma(alarmaControl->INOPERANTE);
                     }
+
                 }
-                else{
+                else if (timerCont5S < 3){
                     if(vrecibidaSenpresion){
                         serPresion->escribir("P");
                     }
@@ -4844,14 +4937,53 @@ void Monitor::recePresion(QString trama){
                         if(trama[1] == "1"){
                             error_sensores_sensor_presion = true;
                             qDebug() << "[ERROR] Error-SV sensor de presion";
+                            //cual sea si hay error, mandar a inoperante
+                            if(timerTerminaConfigurar->isActive()){
+                                //detener timer, poner inoperante y mandar a cerrar pantalla de config
+                                timerTerminaConfigurar->stop();
+                                vAvisoC->close();
+                                if(ventanaInoperante->isHidden()){
+                                    ventanaInoperante->mostrar("FALLA EN TARJETA \n \n No es posible iniciar o actualizar \n el ventilador.");
+                                    ventanaInoperanteAbierta = true;
+                                    ventanaAbierta = true;
+                                    ventiladorInoperante = true;
+                                    inicializacion = true;
+                                }
+                            }
                         }
                         else if(trama[1] == "2"){
                             error_sensores_sensor_inhalacion = true;
                             qDebug() << "[ERROR] Error-SV sensor de inhalación";
+                            //cual sea si hay error, mandar a inoperante
+                            if(timerTerminaConfigurar->isActive()){
+                                //detener timer, poner inoperante y mandar a cerrar pantalla de config
+                                timerTerminaConfigurar->stop();
+                                vAvisoC->close();
+                                if(ventanaInoperante->isHidden()){
+                                    ventanaInoperante->mostrar("FALLA EN TARJETA \n \n No es posible iniciar o actualizar \n el ventilador.");
+                                    ventanaInoperanteAbierta = true;
+                                    ventanaAbierta = true;
+                                    ventiladorInoperante = true;
+                                    inicializacion = true;
+                                }
+                            }
                         }
                         else if(trama[1] == "3"){
                             error_sensores_sensor_exhalacion = true;
                             qDebug() << "[ERROR] Error-SV sensor de exhalación";
+                            //cual sea si hay error, mandar a inoperante
+                            if(timerTerminaConfigurar->isActive()){
+                                //detener timer, poner inoperante y mandar a cerrar pantalla de config
+                                timerTerminaConfigurar->stop();
+                                vAvisoC->close();
+                                if(ventanaInoperante->isHidden()){
+                                    ventanaInoperante->mostrar("FALLA EN TARJETA \n \n No es posible iniciar o actualizar \n el ventilador.");
+                                    ventanaInoperanteAbierta = true;
+                                    ventanaAbierta = true;
+                                    ventiladorInoperante = true;
+                                    inicializacion = true;
+                                }
+                            }
                         }
                     }
                     else{
@@ -5019,6 +5151,8 @@ void Monitor::recePresion(QString trama){
                             ulimo_estadoAlarmasSensores = estadoAlarmasSensores;
                         }
                     }
+
+
                 }
                 else if(trama[0] == "H"){
                     serPresion->escribir("H");
@@ -5040,6 +5174,7 @@ void Monitor::recePresion(QString trama){
                         //threading.Thread(target=self.revisar_alarmas_senpresion, args=(tipo_alarma, estado_alarma,)).start()
 
                     }
+                    pingSensoresVivo = true;
 
                 }
                 else if(trama[0] == "A"){
@@ -5993,11 +6128,19 @@ void Monitor::revisarConexionVentilador(){
         }
         else{
             if(contadorErrorConVent == 3){
-                if(vAvisoV == nullptr){
+                /*if(vAvisoV == nullptr){
                     muestraAvisoVentilador("NO RESPONDE");
+                }*/
+                //qDebug() << "Aqui debería abrir pantalla inoperante";
+                contadorErrorConVent++;
+                if(ventanaInoperante->isHidden()){
+                    ventanaInoperante->mostrar("FALLA EN TARJETA \n \n No es posible iniciar o actualizar \n el ventilador.");
+                    ventanaInoperanteAbierta = true;
+                    ventanaAbierta = true;
+                    ventiladorInoperante = true;
                 }
             }
-            else{
+            else if(contadorErrorConVent < 3){
                 if(! configurandoVentilador){
                     contadorErrorConVent++;
                 }
@@ -6463,8 +6606,26 @@ void Monitor::teclado(QString tecla){
 void Monitor::teclaOk(){
     try {
         if(elementSel == 0){
-            espera_actualizar = true;
-            mostrar_confirmacion("¿Está seguro de actualizar el ventilador?");
+            if(!ventiladorInoperante && !bloqueo_gases){
+                espera_actualizar = true;
+                mostrar_confirmacion("¿Está seguro de actualizar el ventilador?");
+            }
+            else{
+                if(ventiladorInoperante){
+                    if(ventanaInoperante->isHidden()){
+                        ventanaInoperante->mostrar("FALLA EN TARJETA \n \n No es posible iniciar o actualizar \n el ventilador.");
+                        ventanaInoperanteAbierta = true;
+                        ventanaAbierta = true;
+                    }
+                }
+                else if(bloqueo_gases){
+                    if(ventanaInoperante->isHidden()){
+                        ventanaInoperante->mostrar("FALLA EN ENTRADA DE GASES \n \n REVISE EL SUMINISTRO DE GASES");
+                        ventanaInoperanteAbierta = true;
+                        ventanaAbierta = true;
+                    }
+                }
+            }
         }
         else if(elementSel == 1){
             abrir_menu_graficas();
@@ -6472,23 +6633,41 @@ void Monitor::teclaOk(){
             elementoSeleccionado();
         }
         else if(elementSel == 2){
-            qDebug() << "[PRUEBAS] abrir test";
-            numero_prueba = 0;
-            pruebas_iniciales = false;
-            presion_tope = 25;
-            presion_pruebas = 0;
-            presion_inicial_pruebas = 0;
-            presion_inicial_salida = 0;
-            contador_pruebas_iniciales = 0;
-            contador_valvulas = 0;
-            estado_trama_valvulas = "1";
-            esperando_presion_tope = false;
-            esperando_presion_salida = false;
-            fin_prueba_presion_serpresion = false;
-            fin_prueba_presion_serventilador = false;
-            buscar_q_tope = false;
-            pruebas_terminadas = false;
-            abrir_pruebas();
+            if(!ventiladorInoperante && !bloqueo_gases){
+                qDebug() << "[PRUEBAS] abrir test";
+                numero_prueba = 0;
+                pruebas_iniciales = false;
+                presion_tope = 25;
+                presion_pruebas = 0;
+                presion_inicial_pruebas = 0;
+                presion_inicial_salida = 0;
+                contador_pruebas_iniciales = 0;
+                contador_valvulas = 0;
+                estado_trama_valvulas = "1";
+                esperando_presion_tope = false;
+                esperando_presion_salida = false;
+                fin_prueba_presion_serpresion = false;
+                fin_prueba_presion_serventilador = false;
+                buscar_q_tope = false;
+                pruebas_terminadas = false;
+                abrir_pruebas();
+            }
+            else{
+                if(ventiladorInoperante){
+                    if(ventanaInoperante->isHidden()){
+                        ventanaInoperante->mostrar("FALLA EN TARJETA \n \n No es posible iniciar o actualizar \n el ventilador.");
+                        ventanaInoperanteAbierta = true;
+                        ventanaAbierta = true;
+                    }
+                }
+                else if(bloqueo_gases){
+                    if(ventanaInoperante->isHidden()){
+                        ventanaInoperante->mostrar("FALLA EN ENTRADA DE GASES \n \n REVISE EL SUMINISTRO DE GASES");
+                        ventanaInoperanteAbierta = true;
+                        ventanaAbierta = true;
+                    }
+                }
+            }
 
         }
         else if(elementSel == 7){
@@ -7542,6 +7721,9 @@ bool Monitor::estadoAlarmaSonoraGases(){
 void Monitor::revisar_entra_gases(){
     try {
         //self.entrada_aire, self.entrada_oxigeno, self.nivel_oxigeno,
+        bool aire_ok = false;
+        bool oxi_ok = false;
+
         int aire = entrada_aire;
         int oxigeno = entrada_oxigeno;
         int nivel_oxi = nivel_oxigeno.toInt();
@@ -7627,6 +7809,7 @@ void Monitor::revisar_entra_gases(){
             contador_p_aire = 0;
         }
         else{
+            aire_ok = true;
             if(contador_p_aire < 2){
                 contador_p_aire++;
             }
@@ -7719,6 +7902,7 @@ void Monitor::revisar_entra_gases(){
             contador_p_oxi = 0;
         }
         else{
+            oxi_ok = true;
             if(contador_p_oxi < 2){
                 contador_p_oxi++;
             }
@@ -7746,6 +7930,75 @@ void Monitor::revisar_entra_gases(){
             }
         }
         ///////
+
+        //aquí checar si la diferecnia entre gases es mayo a 5, entonces activar alarma, primero ver que estén arriba del mínimo
+        //dict_color_muestra_alarma->insert("Dif. gases", "yellow");
+        if(control_gases){
+            //qDebug() << "[GASES] entra a control de gases";
+            if(oxi_ok && aire_ok){
+                //revisar la diferencia
+                float diferencia = abs(aire_of - oxigeno_of);
+                if(diferencia > 5){
+                    //activar alarma
+                    if(! buscar_en_lista("Dif. gases")){
+                        agregar_en_lista("Dif. gases", 1);
+                        consul->agregar_evento("ALARMA", obtener_modo(), "Diferencia entre gases es mayor a 5, es: " + QString::number(diferencia,'f',1));
+                        if(! estadoAlarmaGases){
+                            estadoAlarmaGases = true;
+                            alarmaControl->iniciaAlarma(alarmaControl->GASES);
+                        }
+                    }
+                    else{
+                        if(diccionario_alarma->value("Dif. gases") == 0){
+                            actualizar_en_lista("Dif. gases", 1);
+                            consul->agregar_evento("ALARMA", obtener_modo(), "Diferencia entre gases es mayor a 5, es: " + QString::number(diferencia,'f',1));
+                            if(! estadoAlarmaGases){
+                                estadoAlarmaGases = true;
+                                alarmaControl->iniciaAlarma(alarmaControl->GASES);
+                            }
+                        }
+                    }
+                }
+                else{
+                    //si está activada, desactivarla
+                    if(buscar_en_lista("Dif. gases")){
+                        if(diccionario_alarma->value("Dif. gases") == 1){
+                            actualizar_en_lista("Dif. gases", 0);
+                            consul->agregar_evento("ALARMA", obtener_modo(), "Diferencia entre gases DESACTIVADO");
+                            if(estadoAlarmaGases && !(estadoAlarmaSonoraGases())){
+                                estadoAlarmaGases = false;
+                                alarmaControl->detenAlarma(alarmaControl->GASES);
+                            }
+                        }
+                    }
+                }
+            }
+
+            //qDebug() << "[GASES] entra a control de gases 2";
+            //checar si las alarmas mínimas están activadas, si es asi, activar bandera bloqueo para no poder iniciar o actualizar, solo detener
+            if(buscar_en_lista("P. O2 BAJO") && buscar_en_lista("P. Aire BAJO")){
+                //qDebug() << "[GASES] entra a control de gases 3";
+                //qDebug() << "[GASES] entra a control de gases PO2: " << diccionario_alarma->value("P. O2 BAJO");
+                //qDebug() << "[GASES] entra a control de gases PAire: " << diccionario_alarma->value("P. Aire BAJO");
+                if(diccionario_alarma->value("P. O2 BAJO") == 1 && diccionario_alarma->value("P. Aire BAJO") == 1){
+                    //activar bloqueo
+                    bloqueo_gases = true;
+                    qDebug() << "[GASES] bloqueo de gases por entrada mínima.";
+                }
+                else if(diccionario_alarma->value("P. O2 BAJO") == 0 && diccionario_alarma->value("P. Aire BAJO") == 0){
+                    //desactivar bloqueo
+                    bloqueo_gases = false;
+                    qDebug() << "[GASES] desbloqueo de gases por entrada mínima.";
+                }
+            }
+            else{
+                //desactivar bloqueo
+                bloqueo_gases = false;
+                qDebug() << "[GASES] desbloqueo de gases por entrada mínima.";
+            }
+        }
+
+
         if(Actualiza_buffer_fio2){
             Actualiza_buffer_fio2 = false;
             qDebug() << "[ALARMA FIO2] actualiza valor fuera";

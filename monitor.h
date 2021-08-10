@@ -41,12 +41,13 @@
 #include "utilidades/ventanainsfuga.h"
 #include "utilidades/ventanainsoxi.h"
 #include "utilidades/ventanaconfigpi.h"
+#include "utilidades/ventanainoperante.h"
 
 class Monitor : public QWidget
 {
     Q_OBJECT
 public:
-    explicit Monitor(QWidget *parent = nullptr, ConsultasDb *consul = nullptr, bool debug_c = false, bool debug_s = false);
+    explicit Monitor(QWidget *parent = nullptr, ConsultasDb *consul = nullptr, bool debug_c = false, bool debug_s = false, bool control_gases = false);
 
     QWidget * mainwindow;
     QFont * fuente;
@@ -299,6 +300,9 @@ public:
     VentanaCalibrar *calibrar;
 
     VentanaConfigPI *configPI;
+
+    VentanaInoperante *ventanaInoperante;
+    bool ventanaInoperanteAbierta;
 
     VentanaInfo *ventanaInfo;
     QTimer *timerVentanaInfo;
@@ -710,6 +714,18 @@ public:
     void colorear_default_buffer_signos();
     bool primera_vez_buffer;
 
+    //ventana inoperante
+    void tecla_inoperante(QString tecla);
+
+    //timer por si no responde
+    QTimer *timerPingMuerto;
+    bool pingSensoresVivo;
+    bool pingControlVivo;
+
+    //bandera control_gases
+    bool control_gases;
+    bool bloqueo_gases;
+
 public slots:
     void revisarErrorWDT();
 
@@ -785,6 +801,8 @@ public slots:
     void limpiarMensajeVentanaPruebas();
 
     void ocultarVentanaInfo();
+
+    void revisarPingMuerto();
 signals:
     void calTeclado(QString trama);
     void get_mode_keyboard_frame(QString frame);
