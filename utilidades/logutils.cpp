@@ -57,7 +57,7 @@ namespace LOGUTILS
 
     QFileInfoList list = dir.entryInfoList();
     foreach(QFileInfo f, list){
-        if(f.birthTime().date().daysTo(today) > 7){
+        if(f.birthTime().date().daysTo(today) > 14){
             QString filepath = f.absoluteFilePath();
             QDir deletefile;
             deletefile.setPath(filepath);

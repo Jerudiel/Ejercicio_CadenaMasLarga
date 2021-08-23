@@ -78,7 +78,7 @@ int main(int argc, char *argv[])
     bool debug_s = false;
     bool debug_t = false;
     bool debug_c = false;
-    bool control_gases = true;
+    bool control_gases = false;
 
     QStringList args = a.arguments();
     if(args.count() >= 2){

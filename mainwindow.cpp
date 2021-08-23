@@ -463,7 +463,7 @@ void MainWindow::teclado(QString trama){
                     //aqui poner alarma gases bajos?
                     else if(monitor->bloqueo_gases){
                         if(monitor->ventanaInoperante->isHidden()){
-                            monitor->ventanaInoperante->mostrar("FALLA EN NETRADA DE GASES \n \n REVISE EL SUMINISTRO DE GASES");
+                            monitor->ventanaInoperante->mostrar("FALLA EN ENTRADA DE GASES \n \n REVISE EL SUMINISTRO DE GASES");
                             monitor->ventanaInoperanteAbierta = true;
                             monitor->ventanaAbierta = true;
                         }

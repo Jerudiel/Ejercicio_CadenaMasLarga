@@ -403,7 +403,7 @@ void AlarmaAudLed::iniciaAlarma(int tipo){
                 wave_actual = wave_inoperante;
                 reproductorMulti->setMedia(wave_inoperante);
                 //reproductorMulti->play(); 
-                qDebug() << "[AlarmaAudLed] reproducir alarma inoperante - audio_corriendo false";
+                //qDebug() << "[AlarmaAudLed] reproducir alarma inoperante - audio_corriendo false";
             }
             else if(prioAltaAct){
                 //reproductor->setSource(wave_alta);
@@ -414,7 +414,7 @@ void AlarmaAudLed::iniciaAlarma(int tipo){
                 wave_actual = wave_alta;
                 reproductorMulti->setMedia(wave_alta);
                 //reproductorMulti->play();
-                qDebug() << "[AlarmaAudLed] reproducir alarma alta - audio_corriendo false";
+                //qDebug() << "[AlarmaAudLed] reproducir alarma alta - audio_corriendo false";
             }
             else{
                 //reproductor->setSource(wave_media);
@@ -425,7 +425,7 @@ void AlarmaAudLed::iniciaAlarma(int tipo){
                 wave_actual = wave_media;
                 reproductorMulti->setMedia(wave_media);
                 //reproductorMulti->play();
-                qDebug() << "[AlarmaAudLed] reproducir alarma media - audio_corriendo false";
+                //qDebug() << "[AlarmaAudLed] reproducir alarma media - audio_corriendo false";
             }
             //reproductor->play();
             //reproductorMulti->play();
@@ -450,7 +450,7 @@ void AlarmaAudLed::iniciaAlarma(int tipo){
                 //reproductor->play();
                 //reproductorMulti->play();
                 cambioAudio = false;
-                qDebug() << "[AlarmaAudLed] reproducir alarma inoperante - audio_corriendo true";
+                //qDebug() << "[AlarmaAudLed] reproducir alarma inoperante - audio_corriendo true";
             }
             else if(!prioAltaAnt && prioAltaAct){
                 prioAltaAnt = true;
@@ -467,7 +467,7 @@ void AlarmaAudLed::iniciaAlarma(int tipo){
                 //reproductor->play();
                 //reproductorMulti->play();
                 cambioAudio = false;
-                qDebug() << "[AlarmaAudLed] reproducir alarma alta- audio_corriendo true";
+                //qDebug() << "[AlarmaAudLed] reproducir alarma alta- audio_corriendo true";
             }
             else{
                 if(!prioAltaAct){
@@ -484,7 +484,7 @@ void AlarmaAudLed::iniciaAlarma(int tipo){
                     //reproductor->play();
                     //reproductorMulti->play();
                     cambioAudio = false;
-                    qDebug() << "[AlarmaAudLed] reproducir alarma media- audio_corriendo true";
+                    //qDebug() << "[AlarmaAudLed] reproducir alarma media- audio_corriendo true";
                 }
             }
         }
@@ -580,11 +580,11 @@ void AlarmaAudLed::detenAlarma(int tipo){
                 reproductor->stop();
             }*/
             reproductorMulti->stop();
-            qDebug() << "[AlarmaAudLed] manda a detener, no hay alarmas";
+            //qDebug() << "[AlarmaAudLed] manda a detener, no hay alarmas";
         }
         else{
             if(! prioAltaAct){
-                qDebug() << "[AlarmaAudLed] Despues de detener, reanuda con wave_media";
+                //qDebug() << "[AlarmaAudLed] Despues de detener, reanuda con wave_media";
                 cambioAudio = true;
                 //reproductor->stop();
                 reproductorMulti->stop();
@@ -599,9 +599,9 @@ void AlarmaAudLed::detenAlarma(int tipo){
                 //reproductorMulti->play();
                 cambioAudio = false;
             }
-            else{
+            /*else{
                 qDebug() << "[AlarmaAudLed] Despues de detener, se mantiene wave_alta reproduciendo";
-            }
+            }*/
         }
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );

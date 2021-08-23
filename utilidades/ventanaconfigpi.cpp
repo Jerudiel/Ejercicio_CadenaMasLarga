@@ -49,7 +49,7 @@ VentanaConfigPI::VentanaConfigPI(QWidget *parent, int width, int height, QString
         label_altura->setFont(*fuente);
         label_altura->setStyleSheet("color: black; background-color: #D5D8DC;");
         label_altura->setAlignment(Qt::AlignLeft);
-        label_altura->setText("Altura: ");
+        label_altura->setText("Altitud: ");
         label_altura->setObjectName("label_altura");
 
         le_altura = new QLineEdit(this);

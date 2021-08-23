@@ -726,6 +726,13 @@ public:
     bool control_gases;
     bool bloqueo_gases;
 
+    int contador_act_dif_gases;
+    int contador_desact_dif_gases;
+
+    //timer reiniciar ping
+    QTimer *timerReiniciarPing;
+
+
 public slots:
     void revisarErrorWDT();
 
@@ -803,6 +810,8 @@ public slots:
     void ocultarVentanaInfo();
 
     void revisarPingMuerto();
+
+    void revivirPing();
 signals:
     void calTeclado(QString trama);
     void get_mode_keyboard_frame(QString frame);

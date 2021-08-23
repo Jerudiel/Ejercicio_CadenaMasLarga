@@ -20,7 +20,7 @@ Monitor::Monitor(QWidget *parent, ConsultasDb *consul, bool debug_c, bool debug_
         versionVentiladorEsperada = "4.1.0";
         versionSenPresionEsperada = "3.3.0";
         versionTecladoEsperada = "1.0";
-        versionPi = "3.8.10";
+        versionPi = "3.8.17";
 
         this->control_gases = control_gases;
 
@@ -970,6 +970,15 @@ Monitor::Monitor(QWidget *parent, ConsultasDb *consul, bool debug_c, bool debug_
         pingSensoresVivo = false;
         pingControlVivo = false;
 
+        //revivir ping
+        timerReiniciarPing = new QTimer;
+        timerReiniciarPing->setSingleShot(true);
+        connect(timerReiniciarPing, SIGNAL(timeout()), this, SLOT(revivirPing()));
+
+        //diferencia de gases
+        contador_act_dif_gases = 0;
+        contador_desact_dif_gases = 0;
+
 
     } catch (std::exception &e) {
         qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
@@ -979,14 +988,30 @@ Monitor::Monitor(QWidget *parent, ConsultasDb *consul, bool debug_c, bool debug_
     }
 }
 
+void Monitor::revivirPing(){
+    qDebug() << "[PING] revivirPing";
+    if(!timerConVentilador->isActive()){
+        qDebug() << "[PING] Activa timer tarjeta control";
+        timerConVentilador->start(7000);
+    }
+    if(! timerTPresion5S->isActive()){
+        qDebug() << "[PING] Activa timer tarjeta sensores";
+        configurandoSenPresion = false;
+        timerTPresion5S->start(5000);
+    }
+}
+
 void Monitor::revisarPingMuerto(){
+    qDebug() << "[PING] revisarPingMuerto";
     if(!pingSensoresVivo || !pingControlVivo){
         //mandar a activar ventilador inoperante
+        qDebug() << "[PING] revisarPingMuerto: muerto, pingSensoresVivo: " << pingSensoresVivo << " ,pingControlVivo: " << pingControlVivo;
         if(ventanaInoperante->isHidden()){
             ventanaInoperante->mostrar("FALLA EN TARJETA \n \n No es posible iniciar o actualizar \n el ventilador.");
             ventanaInoperanteAbierta = true;
             ventanaAbierta = true;
             ventiladorInoperante = true;
+            qDebug() << "[INOPERANTE] PING MUERTO";
         }
     }
 }
@@ -1864,7 +1889,8 @@ void Monitor::ventilador_detenido(){
             consul->agregar_evento("VENTILADOR", obtener_modo(), "DETIENE LA VENTILACION");
             timerVentiladorDetenido->stop();
             //mandar a activar pingmuerto
-            timerPingMuerto->start(22000);
+            timerPingMuerto->start(30000);
+            timerReiniciarPing->start(1500);
             pingControlVivo = false;
             pingSensoresVivo = false;
         }
@@ -3488,6 +3514,7 @@ void Monitor::receVent(QString trama){
         if(trama != ""){
             if(trama.size() > 0){
                 if(trama[0] == "P" && trama.size() == 21){
+                    pingControlVivo = true;
                     if(! banderaConexionVentilador){
                         banderaConexionVentilador = true;
                     }
@@ -3953,7 +3980,8 @@ void Monitor::receVent(QString trama){
                                     consul->agregar_evento("VENTILADOR", obtener_modo(), "DETIENE LA VENTILACION F");
                                     tpresionModo = 0;
                                     //mandar a activar pingmuerto
-                                    timerPingMuerto->start(22000);
+                                    timerPingMuerto->start(30000);
+                                    timerReiniciarPing->start(1500);
                                     pingControlVivo = false;
                                     pingSensoresVivo = false;
                                 }
@@ -4007,7 +4035,8 @@ void Monitor::receVent(QString trama){
                                 }
                                 //activar pinmuerto
                                 //mandar a activar pingmuerto
-                                timerPingMuerto->start(22000);
+                                timerPingMuerto->start(30000);
+                                timerReiniciarPing->start(1500);
                                 pingControlVivo = false;
                                 pingSensoresVivo = false;
                             }
@@ -4329,6 +4358,7 @@ void Monitor::muestraAviso(QString mensajes){
             ventanaAbierta = true;
             ventiladorInoperante = true;
             alarmaControl->iniciaAlarma(alarmaControl->INOPERANTE);
+            qDebug() << "[INOPERANTE] muestraAviso";
         }
 
         /*ventiladorInoperante = true;
@@ -4351,6 +4381,7 @@ void Monitor::muestraAvisoPresion(QString mensajes){
             ventanaInoperanteAbierta = true;
             ventanaAbierta = true;
             ventiladorInoperante = true;
+            qDebug() << "[INOPERANTE] muestraAvisoPresion";
             alarmaControl->iniciaAlarma(alarmaControl->INOPERANTE);
         }
         /*if(vAvisoV == nullptr){
@@ -4375,6 +4406,7 @@ void Monitor::muestraAvisoVentilador(QString mensajes){
             ventanaInoperanteAbierta = true;
             ventanaAbierta = true;
             ventiladorInoperante = true;
+            qDebug() << "[INOPERANTE] muestraAvisoVentilador";
             alarmaControl->iniciaAlarma(alarmaControl->INOPERANTE);
         }
         /*if(vAvisoV == nullptr){
@@ -4711,6 +4743,7 @@ void Monitor::recePresion(QString trama){
         //QString trama = serPresion->leer();
         if(trama != ""){
             if(trama.size() > 0){
+                pingSensoresVivo = true;
                 if(trama[0] == "C"){
                     if(trama == "C1"){
                         qDebug() << "[CONFIGURACION] configuracion C lista";
@@ -4933,6 +4966,7 @@ void Monitor::recePresion(QString trama){
                     }
                 }
                 else if(trama[0] == "E"){
+                    pingSensoresVivo = true;
                     if(trama.size() == 2){
                         if(trama[1] == "1"){
                             error_sensores_sensor_presion = true;
@@ -6138,6 +6172,7 @@ void Monitor::revisarConexionVentilador(){
                     ventanaInoperanteAbierta = true;
                     ventanaAbierta = true;
                     ventiladorInoperante = true;
+                    qDebug() << "[INOPERANTE] conexion ventilador";
                 }
             }
             else if(contadorErrorConVent < 3){
@@ -6519,6 +6554,9 @@ void Monitor::reiniciar_alarmas(){
                                                     "border-bottom-right-radius: 3Px; "
                                                     "border-bottom-left-radius: 3Px;");
             contornoColorAlarma(widgetFR, "white");
+
+            signoPLATEU->bar->setPalette(*paleNormal);
+            signoPLATEU->label_title->setStyleSheet("color: white;");
 
             alarmaControl->reiniciarAlarmas();
 
@@ -7939,62 +7977,85 @@ void Monitor::revisar_entra_gases(){
                 //revisar la diferencia
                 float diferencia = abs(aire_of - oxigeno_of);
                 if(diferencia > 5){
-                    //activar alarma
-                    if(! buscar_en_lista("Dif. gases")){
-                        agregar_en_lista("Dif. gases", 1);
-                        consul->agregar_evento("ALARMA", obtener_modo(), "Diferencia entre gases es mayor a 5, es: " + QString::number(diferencia,'f',1));
-                        if(! estadoAlarmaGases){
-                            estadoAlarmaGases = true;
-                            alarmaControl->iniciaAlarma(alarmaControl->GASES);
-                        }
+                    contador_desact_dif_gases = 0;
+                    if(contador_act_dif_gases < 3){
+                        contador_act_dif_gases++;
                     }
                     else{
-                        if(diccionario_alarma->value("Dif. gases") == 0){
-                            actualizar_en_lista("Dif. gases", 1);
-                            consul->agregar_evento("ALARMA", obtener_modo(), "Diferencia entre gases es mayor a 5, es: " + QString::number(diferencia,'f',1));
+                        //activar alarma
+                        if(! buscar_en_lista("Dif. gases")){
+                            agregar_en_lista("Dif. gases", 1);
+                            consul->agregar_evento("ALARMA", obtener_modo(), "Diferencia entre gases es mayor a 5  es: " + QString::number(diferencia,'f',1));
                             if(! estadoAlarmaGases){
                                 estadoAlarmaGases = true;
                                 alarmaControl->iniciaAlarma(alarmaControl->GASES);
                             }
                         }
-                    }
-                }
-                else{
-                    //si está activada, desactivarla
-                    if(buscar_en_lista("Dif. gases")){
-                        if(diccionario_alarma->value("Dif. gases") == 1){
-                            actualizar_en_lista("Dif. gases", 0);
-                            consul->agregar_evento("ALARMA", obtener_modo(), "Diferencia entre gases DESACTIVADO");
-                            if(estadoAlarmaGases && !(estadoAlarmaSonoraGases())){
-                                estadoAlarmaGases = false;
-                                alarmaControl->detenAlarma(alarmaControl->GASES);
+                        else{
+                            if(diccionario_alarma->value("Dif. gases") == 0){
+                                actualizar_en_lista("Dif. gases", 1);
+                                consul->agregar_evento("ALARMA", obtener_modo(), "Diferencia entre gases es mayor a 5 es : " + QString::number(diferencia,'f',1));
+                                if(! estadoAlarmaGases){
+                                    estadoAlarmaGases = true;
+                                    alarmaControl->iniciaAlarma(alarmaControl->GASES);
+                                }
                             }
                         }
                     }
+                }
+                else{
+                    contador_act_dif_gases = 0;
+                    if(contador_desact_dif_gases < 3){
+                        contador_desact_dif_gases++;
+                    }
+                    else{
+                        //si está activada, desactivarla
+                        if(buscar_en_lista("Dif. gases")){
+                            if(diccionario_alarma->value("Dif. gases") == 1){
+                                actualizar_en_lista("Dif. gases", 0);
+                                consul->agregar_evento("ALARMA", obtener_modo(), "Diferencia entre gases DESACTIVADO es : " + QString::number(diferencia,'f',1));
+                                if(estadoAlarmaGases && !(estadoAlarmaSonoraGases())){
+                                    estadoAlarmaGases = false;
+                                    alarmaControl->detenAlarma(alarmaControl->GASES);
+                                }
+                            }
+                        }
+                   }
                 }
             }
 
             //qDebug() << "[GASES] entra a control de gases 2";
             //checar si las alarmas mínimas están activadas, si es asi, activar bandera bloqueo para no poder iniciar o actualizar, solo detener
-            if(buscar_en_lista("P. O2 BAJO") && buscar_en_lista("P. Aire BAJO")){
+            if(buscar_en_lista("P. O2 BAJO") || buscar_en_lista("P. Aire BAJO")){
                 //qDebug() << "[GASES] entra a control de gases 3";
                 //qDebug() << "[GASES] entra a control de gases PO2: " << diccionario_alarma->value("P. O2 BAJO");
                 //qDebug() << "[GASES] entra a control de gases PAire: " << diccionario_alarma->value("P. Aire BAJO");
-                if(diccionario_alarma->value("P. O2 BAJO") == 1 && diccionario_alarma->value("P. Aire BAJO") == 1){
+                if((diccionario_alarma->value("P. O2 BAJO") == 1 && fio2_final != 21) || diccionario_alarma->value("P. Aire BAJO") == 1){
                     //activar bloqueo
-                    bloqueo_gases = true;
-                    qDebug() << "[GASES] bloqueo de gases por entrada mínima.";
+                    if(!bloqueo_gases){
+                        consul->agregar_evento("ALARMA", obtener_modo(), "Bloqueo de inicio por suministro de gases");
+                        bloqueo_gases = true;
+                        qDebug() << "[GASES] bloqueo de gases por entrada mínima.";
+                    }
+
                 }
                 else if(diccionario_alarma->value("P. O2 BAJO") == 0 && diccionario_alarma->value("P. Aire BAJO") == 0){
                     //desactivar bloqueo
-                    bloqueo_gases = false;
-                    qDebug() << "[GASES] desbloqueo de gases por entrada mínima.";
+                    if(bloqueo_gases){
+                        bloqueo_gases = false;
+                        qDebug() << "[GASES] desbloqueo de gases por entrada mínima.";
+                        consul->agregar_evento("ALARMA", obtener_modo(), "Desbloqueo de inicio por suministro de gases");
+                    }
+
                 }
             }
             else{
                 //desactivar bloqueo
-                bloqueo_gases = false;
-                qDebug() << "[GASES] desbloqueo de gases por entrada mínima.";
+                if(bloqueo_gases){
+                    bloqueo_gases = false;
+                    qDebug() << "[GASES] desbloqueo de gases por entrada mínima.";
+                    consul->agregar_evento("ALARMA", obtener_modo(), "Desbloqueo de inicio por suministro de gases");
+                }
             }
         }
 
@@ -8002,7 +8063,7 @@ void Monitor::revisar_entra_gases(){
         if(Actualiza_buffer_fio2){
             Actualiza_buffer_fio2 = false;
             qDebug() << "[ALARMA FIO2] actualiza valor fuera";
-            fio2_final = tramaVentilador.mid(29,3).toFloat(); //saber el valor de fio2 para alarmas
+            fio2_final = tramaVentilador.mid(29,3).toInt(); //saber el valor de fio2 para alarmas
             carga_primera_vez_fio2 = true;
         }
         if(listo_medir_fio2 && estadoVentilador){
@@ -8012,7 +8073,7 @@ void Monitor::revisar_entra_gases(){
                 //qDebug() << "[ALARMA FIO2] carga_primera_vez_fio2: " << carga_primera_vez_fio2;
                 carga_primera_vez_fio2 = false;
                 //Actualiza_buffer_fio2 = false;
-                fio2 = tramaVentilador.mid(29,3).toFloat();
+                fio2 = tramaVentilador.mid(29,3).toInt();
                 fio2_final = fio2;
             }
 
