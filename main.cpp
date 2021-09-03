@@ -78,7 +78,7 @@ int main(int argc, char *argv[])
     bool debug_s = false;
     bool debug_t = false;
     bool debug_c = false;
-    bool control_gases = false;
+    bool control_gases = true;
 
     QStringList args = a.arguments();
     if(args.count() >= 2){
@@ -102,7 +102,7 @@ int main(int argc, char *argv[])
             }
             else if(args.at(j).contains("-g")){
                 //activar debug teclado
-                control_gases = true;
+                control_gases = false;
             }
         }
     }

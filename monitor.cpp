@@ -20,7 +20,7 @@ Monitor::Monitor(QWidget *parent, ConsultasDb *consul, bool debug_c, bool debug_
         versionVentiladorEsperada = "4.1.0";
         versionSenPresionEsperada = "3.3.0";
         versionTecladoEsperada = "1.0";
-        versionPi = "3.8.17";
+        versionPi = "3.8.18";
 
         this->control_gases = control_gases;
 
@@ -1891,6 +1891,7 @@ void Monitor::ventilador_detenido(){
             //mandar a activar pingmuerto
             timerPingMuerto->start(30000);
             timerReiniciarPing->start(1500);
+            timerREG->start(400);
             pingControlVivo = false;
             pingSensoresVivo = false;
         }
@@ -3982,6 +3983,7 @@ void Monitor::receVent(QString trama){
                                     //mandar a activar pingmuerto
                                     timerPingMuerto->start(30000);
                                     timerReiniciarPing->start(1500);
+                                    timerREG->start(400);
                                     pingControlVivo = false;
                                     pingSensoresVivo = false;
                                 }
@@ -4037,6 +4039,7 @@ void Monitor::receVent(QString trama){
                                 //mandar a activar pingmuerto
                                 timerPingMuerto->start(30000);
                                 timerReiniciarPing->start(1500);
+                                timerREG->start(400);
                                 pingControlVivo = false;
                                 pingSensoresVivo = false;
                             }
@@ -8030,30 +8033,39 @@ void Monitor::revisar_entra_gases(){
                 //qDebug() << "[GASES] entra a control de gases 3";
                 //qDebug() << "[GASES] entra a control de gases PO2: " << diccionario_alarma->value("P. O2 BAJO");
                 //qDebug() << "[GASES] entra a control de gases PAire: " << diccionario_alarma->value("P. Aire BAJO");
-                if((diccionario_alarma->value("P. O2 BAJO") == 1 && fio2_final != 21) || diccionario_alarma->value("P. Aire BAJO") == 1){
+                if((diccionario_alarma->value("P. O2 BAJO") == 1 && tramaVentilador.mid(29,3).toInt() != 21) || diccionario_alarma->value("P. Aire BAJO") == 1){
                     //activar bloqueo
                     if(!bloqueo_gases){
                         consul->agregar_evento("ALARMA", obtener_modo(), "Bloqueo de inicio por suministro de gases");
                         bloqueo_gases = true;
-                        qDebug() << "[GASES] bloqueo de gases por entrada mínima.";
+                        qDebug() << "[GASES] bloqueo de gases por entrada mínima 1. fio2 es: " << tramaVentilador.mid(29,3);
                     }
 
                 }
+                else if(diccionario_alarma->value("P. O2 BAJO") == 1 && tramaVentilador.mid(29,3).toInt() == 21 && diccionario_alarma->value("P. Aire BAJO") == 0){
+                    //desactivar bloqueo
+                    if(bloqueo_gases){
+                        bloqueo_gases = false;
+                        qDebug() << "[GASES] desbloqueo de gases por entrada mínima 2. fio2 es: " << tramaVentilador.mid(29,3);
+                        consul->agregar_evento("ALARMA", obtener_modo(), "Desbloqueo de inicio por suministro de gases");
+                    }
+
+               }
                 else if(diccionario_alarma->value("P. O2 BAJO") == 0 && diccionario_alarma->value("P. Aire BAJO") == 0){
                     //desactivar bloqueo
                     if(bloqueo_gases){
                         bloqueo_gases = false;
-                        qDebug() << "[GASES] desbloqueo de gases por entrada mínima.";
+                        qDebug() << "[GASES] desbloqueo de gases por entrada mínima 3. fio2 es: " << tramaVentilador.mid(29,3);
                         consul->agregar_evento("ALARMA", obtener_modo(), "Desbloqueo de inicio por suministro de gases");
                     }
 
-                }
+               }
             }
             else{
                 //desactivar bloqueo
                 if(bloqueo_gases){
                     bloqueo_gases = false;
-                    qDebug() << "[GASES] desbloqueo de gases por entrada mínima.";
+                    qDebug() << "[GASES] desbloqueo de gases por entrada mínima 4. fio2 es: " << tramaVentilador.mid(29,3);
                     consul->agregar_evento("ALARMA", obtener_modo(), "Desbloqueo de inicio por suministro de gases");
                 }
             }
