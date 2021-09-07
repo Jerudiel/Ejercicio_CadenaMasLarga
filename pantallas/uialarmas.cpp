@@ -382,7 +382,7 @@ void UiAlarmas::guardaCambios(){
          if(resultado){
              //estadoMensajes->setText("CAMBIOS GUARDADOS");
              mostrarMensaje("CAMBIOS GUARDADOS");
-             monitor->consul->agregar_evento("Alarmas", monitor->obtener_modo(), "Se guardaron cambios en alarmas");
+             monitor->consul->agregar_evento("Alarmas", monitor->obtener_modo(), "Se guardaron cambios en alarmas", monitor->obtener_parametros());
          }
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );

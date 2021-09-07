@@ -919,7 +919,8 @@ bool ConsultasDb::guarda_cali_presion(QString presion){
 QStringList ConsultasDb::obtener_eventos(){
     try {
         if(baseDatos.isOpen()){
-            QString quer = "SELECT tipo, modo, descripcion, fecha, hora FROM public.\"eventos\" ORDER BY fecha DESC, hora DESC";
+            //aqui falta poner límite de antiguedad y de tipo
+            QString quer = "SELECT tipo, modo, descripcion, params, fecha, hora FROM public.\"eventos\" ORDER BY fecha DESC, hora DESC";
             baseDatos.transaction();
             QSqlQuery consul;
             consul.prepare(quer);
@@ -1024,10 +1025,10 @@ bool ConsultasDb::borrar_evento(QString id){
     }
 }
 
-bool ConsultasDb::agregar_evento(QString tipo, QString modo, QString descripcion){
+bool ConsultasDb::agregar_evento(QString tipo, QString modo, QString descripcion, QString params){
     try {
-        QString query_insert = "INSERT INTO public.\"eventos\"(tipo, modo, descripcion, fecha, hora) VALUES ('"+ tipo +"' , '" + modo +"' , '" +
-                                descripcion +"' ,date(CURRENT_DATE),CAST(CURRENT_TIME(0) as time))";
+        QString query_insert = "INSERT INTO public.\"eventos\"(tipo, modo, descripcion, params, fecha, hora) VALUES ('"+ tipo +"' , '" + modo +"' , '" +
+                                descripcion + "' , '" + params +"' ,date(CURRENT_DATE),CAST(CURRENT_TIME(0) as time))";
         return inserta_tabla(query_insert);
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );

@@ -22,16 +22,18 @@ UiEventos::UiEventos(QWidget *parent, Monitor *monitor) : QWidget(parent)
                                  "QHeaderView::section:vertical { border-left: 1px solid #fffff8;}");
         tableView->setObjectName("tableView");
         tableView->setRowCount(15);
-        tableView->setColumnCount(5);
-        tableView->setHorizontalHeaderLabels({"TIPO", "MODO ", "DESCRIPCION", "FECHA", "HORA"});
+        tableView->setColumnCount(6);
+        tableView->setHorizontalHeaderLabels({"TIPO", "MODO ", "DESCRIPCION", "PARAMS", "FECHA", "HORA"});
 
         QHeaderView *header = tableView->horizontalHeader();
         header->setDefaultSectionSize(235);
 
+        header->setSectionResizeMode(0, QHeaderView::ResizeToContents);
         header->setSectionResizeMode(1, QHeaderView::ResizeToContents);
         header->setSectionResizeMode(2, QHeaderView::Stretch);
         header->setSectionResizeMode(3, QHeaderView::ResizeToContents);
         header->setSectionResizeMode(4, QHeaderView::ResizeToContents);
+        header->setSectionResizeMode(5, QHeaderView::ResizeToContents);
 
         numero_eventos = 0;
         numero_scrolls = 0;
@@ -116,7 +118,7 @@ void UiEventos::cargar_datos(){
     try {
          QStringList eventos = monitor->consul->obtener_eventos();
          tableView->setRowCount(0);
-         tableView->setHorizontalHeaderLabels({"TIPO", "MODO ", "DESCRIPCION", "FECHA", "HORA"});
+         tableView->setHorizontalHeaderLabels({"TIPO", "MODO ", "DESCRIPCION", "PARAMS", "FECHA", "HORA"});
 
          //int total = eventos.size() -1;
 
@@ -137,6 +139,16 @@ void UiEventos::cargar_datos(){
                  QString dato;
                  if(column_number == row_data.size() -1 ){
                      dato = row_data.at(column_number).split(".").at(0);
+                 }
+                 else if(column_number == row_data.size() -3){
+                     if(monitor->modoSel == 0 || monitor->modoSel == 2 || monitor->modoSel == 3){
+                         QStringList temp = row_data.at(column_number).split(";");
+                         dato = temp.at(0) + " ; "+ temp.at(2);
+                     }
+                     else{
+                         QStringList temp = row_data.at(column_number).split(";");
+                         dato = temp.at(0) + " ; "+ temp.at(1);
+                     }
                  }
                  else{
                      dato = row_data.at(column_number);

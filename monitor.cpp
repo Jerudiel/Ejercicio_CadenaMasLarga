@@ -20,7 +20,7 @@ Monitor::Monitor(QWidget *parent, ConsultasDb *consul, bool debug_c, bool debug_
         versionVentiladorEsperada = "4.1.0";
         versionSenPresionEsperada = "3.3.0";
         versionTecladoEsperada = "1.0";
-        versionPi = "3.8.18";
+        versionPi = "3.8.19";
 
         this->control_gases = control_gases;
 
@@ -1759,7 +1759,7 @@ void Monitor::revisarErroresWDT(){
                         alarmaControl->iniciaAlarma(alarmaControl->INOPERANTE);
                     }
                     label_debug->setText("E WDT INO");
-                    consul->agregar_evento("COMUNICACION", obtener_modo(), "ERROR SENSORES WDT INO");
+                    consul->agregar_evento("COMUNICACION", obtener_modo(), "ERROR SENSORES WDT INO", obtener_parametros());
                 }
                 else {
                     if(diccionario_alarma->value("SENSORES") == 0){
@@ -1799,7 +1799,7 @@ void Monitor::revisarErrorWDT(){
         }
         else{
             label_debug->setText("Error WDT");
-            consul->agregar_evento("COMUNICACION", obtener_modo(), "ERROR SENSORES WDT");
+            consul->agregar_evento("COMUNICACION", obtener_modo(), "ERROR SENSORES WDT", obtener_parametros());
             if(modoSel == 0 || modoSel == 2 || modoSel == 4){
                 if(! buscar_en_lista("SENSORES")){
                     agregar_en_lista("SENSORES", 1);
@@ -1886,7 +1886,7 @@ void Monitor::ventilador_detenido(){
         if(recibe_a0 && ! estadoVentilador){
             //qDebug() << "entra a ventilador_detenido, valor a0: " + QString::number(recibe_a0) + " estadoVentilador: " + QString::number(estadoVentilador);
             label_debug->setText("Standby");
-            consul->agregar_evento("VENTILADOR", obtener_modo(), "DETIENE LA VENTILACION");
+            consul->agregar_evento("VENTILADOR", obtener_modo(), "DETIENE LA VENTILACION", obtener_parametros());
             timerVentiladorDetenido->stop();
             //mandar a activar pingmuerto
             timerPingMuerto->start(30000);
@@ -2307,7 +2307,7 @@ void Monitor::iniciar_pruebas(){
                 if(sensores_estado){
                     pruebas->label_info->setText("Iniciando prueba de presión-válvulas");
                     qDebug() << "[PRUEBAS] Iniciando pruebas de presión";
-                    consul->agregar_evento("PRUEBAS", obtener_modo(),"INICIAN PRUEBAS PRESION-VALVULAS");
+                    consul->agregar_evento("PRUEBAS", obtener_modo(),"INICIAN PRUEBAS PRESION-VALVULAS", obtener_parametros());
                     if(! banderaConexionVentilador){
                         while(!banderaConexionVentilador && contadorBanderaConxVent < 25){
                             QThread::msleep(200);
@@ -2341,7 +2341,7 @@ void Monitor::iniciar_pruebas(){
                     timerConVentilador->stop();
                 }
                 QThread::sleep(1);
-                consul->agregar_evento("PRUEBAS", obtener_modo(),"INICIAN PRUEBAS OXIGENO");
+                consul->agregar_evento("PRUEBAS", obtener_modo(),"INICIAN PRUEBAS OXIGENO", obtener_parametros());
                 pruebas->label_info->setText("Leyendo sensor de oxígeno");
                 serVent->envia_trama_config("O0\n");
                 contador_timerOxigeno = 0;
@@ -2380,7 +2380,7 @@ void Monitor::siguiente_pruebas(){
                 pruebas->btn_siguiente->setText("Siguiente");
                 pruebas->close();
                 ventanaAbierta = false;
-                consul->agregar_evento("INICIO", obtener_modo(), "ENTRA A VENTILACION SIN PASAR PRUEBAS INICIALES");
+                consul->agregar_evento("INICIO", obtener_modo(), "ENTRA A VENTILACION SIN PASAR PRUEBAS INICIALES", obtener_parametros());
             }
         }
     }  catch (std::exception &e) {
@@ -2419,7 +2419,7 @@ void Monitor::prueba_presion(){
             pruebas->label_valvulas_estado->setStyleSheet("color: red; background-color: #D5D8DC;");
             pruebas->label_presion_estado->setText("Error");
             pruebas->label_presion_estado->setStyleSheet("color: red; background-color: #D5D8DC;");
-            consul->agregar_evento("PRUEBAS", obtener_modo(),"ERROR PRESION FUGA");
+            consul->agregar_evento("PRUEBAS", obtener_modo(),"ERROR PRESION FUGA", obtener_parametros());
         }
 
     }  catch (std::exception &e) {
@@ -2486,7 +2486,7 @@ void Monitor::respuesta_oxigeno(){
             pruebas->label_info->setText("No se recibió respuesta");
             pruebas->label_oxigeno_estado->setText("Error");
             pruebas->label_oxigeno_estado->setStyleSheet("color: red; background-color: #D5D8DC;");
-            consul->agregar_evento("PRUEBAS", obtener_modo(), "NO RESPUESTA OXIGENO");
+            consul->agregar_evento("PRUEBAS", obtener_modo(), "NO RESPUESTA OXIGENO", obtener_parametros());
             serPresion->escribir("G0\n");
         }
 
@@ -2499,7 +2499,7 @@ void Monitor::abrir_calibracion(){
     try {
         menu->close();
         ventanaAbierta = false;
-        consul->agregar_evento("INICIO", obtener_modo(),"ENTRA A VENTILACION SIN PRUEBAS INICIALES");
+        consul->agregar_evento("INICIO", obtener_modo(),"ENTRA A VENTILACION SIN PRUEBAS INICIALES", obtener_parametros());
     }  catch (std::exception &e) {
         qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
@@ -3159,7 +3159,7 @@ void Monitor::obtener_trama_config(){
                 else{
                     label_debug->setText("Presione INICIAR");
                 }
-                consul->agregar_evento("VENTILADOR", obtener_modo(), "CAMBIO DE " + ultimoModo.mid(6) + " A: " + nuevoModo.mid(6));
+                consul->agregar_evento("VENTILADOR", obtener_modo(), "CAMBIO DE " + ultimoModo.mid(6) + " A: " + nuevoModo.mid(6), obtener_parametros());
                 ultimoModo = nuevoModo;
             }
             /*else{
@@ -3388,7 +3388,7 @@ void Monitor::activarAlarmaComunicacionControl1(){
     try {
         if(!buscar_en_lista("C. CTRL 1")){
             agregar_en_lista("C. CTRL 1", 1);
-            consul->agregar_evento("COMUNICACION", obtener_modo(), "C. CTRL 1");
+            consul->agregar_evento("COMUNICACION", obtener_modo(), "C. CTRL 1", obtener_parametros());
             qDebug() << "[ALARMAS] Agrega error en comunicación de la tarjeta de control, no ve a la de sensores";
             if(! estadoAlarmaComunicacion){
                 estadoAlarmaComunicacion = true;
@@ -3398,7 +3398,7 @@ void Monitor::activarAlarmaComunicacionControl1(){
         else{
             //ya esta en la lista
             actualizar_en_lista("C. CTRL 1", 1);
-            consul->agregar_evento("COMUNICACION", obtener_modo(), "C. CTRL 1");
+            consul->agregar_evento("COMUNICACION", obtener_modo(), "C. CTRL 1", obtener_parametros());
             qDebug() << "[ALARMAS] Agrega error en comunicación de la tarjeta de control, no ve a la de sensores";
             if(! estadoAlarmaComunicacion){
                 estadoAlarmaComunicacion = true;
@@ -3429,7 +3429,7 @@ void Monitor::activarAlarmaComunicacionControl2(){
     try {
         if(!buscar_en_lista("C. CTRL 2")){
             agregar_en_lista("C. CTRL 2", 1);
-            consul->agregar_evento("COMUNICACION", obtener_modo(), "C. CTRL 2");
+            consul->agregar_evento("COMUNICACION", obtener_modo(), "C. CTRL 2", obtener_parametros());
             qDebug() << "[ALARMAS] Agrega error en comunicación de la tarjeta de control, no ve a RPI";
             if(! estadoAlarmaComunicacion){
                 estadoAlarmaComunicacion = true;
@@ -3439,7 +3439,7 @@ void Monitor::activarAlarmaComunicacionControl2(){
         else{
             //ya esta en la lista
             actualizar_en_lista("C. CTRL 2", 1);
-            consul->agregar_evento("COMUNICACION", obtener_modo(), "C. CTRL 2");
+            consul->agregar_evento("COMUNICACION", obtener_modo(), "C. CTRL 2", obtener_parametros());
             qDebug() << "[ALARMAS] Agrega error en comunicación de la tarjeta de control, no ve a RPI";
             if(! estadoAlarmaComunicacion){
                 estadoAlarmaComunicacion = true;
@@ -3574,7 +3574,7 @@ void Monitor::receVent(QString trama){
                     sensor_presion_c = trama.mid(15,3).toInt();
                     int estado_sensor_presion_i2c = trama.mid(18,1).toInt();
                     if(estado_sensor_presion_i2c == 1){
-                        consul->agregar_evento("SENSORES", obtener_modo(), "SENSOR PRESION CONTROL");
+                        consul->agregar_evento("SENSORES", obtener_modo(), "SENSOR PRESION CONTROL", obtener_parametros());
                         muestraAvisoVentilador("SENSOR PRESIÓN");
                     }
                     signoPLATEU->bar->setValue(nivel_oxigeno.toFloat());
@@ -3584,12 +3584,12 @@ void Monitor::receVent(QString trama){
                         if(modo_nobreak == "0"){
                             float temp_nivel = nivel_batt.toFloat()*20;
                             widgetAlarms->bateria(temp_nivel,0);
-                            consul->agregar_evento("ALIMENTACION", obtener_modo(), "MODO BATERIA");
+                            consul->agregar_evento("ALIMENTACION", obtener_modo(), "MODO BATERIA", obtener_parametros());
                         }
                         else{
                             float temp_nivel = nivel_batt.toFloat()*20;
                             widgetAlarms->bateria(temp_nivel,1);
-                            consul->agregar_evento("ALIMENTACION", obtener_modo(), "MODO AC");
+                            consul->agregar_evento("ALIMENTACION", obtener_modo(), "MODO AC", obtener_parametros());
                         }
                     }
                     else{
@@ -3597,7 +3597,7 @@ void Monitor::receVent(QString trama){
                             if(modo_nobreak == "0"){
                                 if(!buscar_en_lista("Modo bat.")){
                                     agregar_en_lista("Modo bat.", 1);
-                                    consul->agregar_evento("ALIMENTACION", obtener_modo(), "MODO BATERIA");
+                                    consul->agregar_evento("ALIMENTACION", obtener_modo(), "MODO BATERIA", obtener_parametros());
                                     qDebug() << "[ALARMAS] Agrega Modo bat.";
                                     if(! estadoAlarmaAlimentacion){
                                         estadoAlarmaAlimentacion = true;
@@ -3607,7 +3607,7 @@ void Monitor::receVent(QString trama){
                                 else{
                                     //ya esta en la lista
                                     actualizar_en_lista("Modo bat.", 1);
-                                    consul->agregar_evento("ALIMENTACION", obtener_modo(), "MODO BATERIA");
+                                    consul->agregar_evento("ALIMENTACION", obtener_modo(), "MODO BATERIA", obtener_parametros());
                                     qDebug() << "[ALARMAS] Activa Modo bat.";
                                     if(! estadoAlarmaAlimentacion){
                                         estadoAlarmaAlimentacion = true;
@@ -3626,7 +3626,7 @@ void Monitor::receVent(QString trama){
                                     //consul->agregar_evento("ALIMENTACION", obtener_modo(), "BATERIA BAJA");
                                     if(! buscar_en_lista("Bat. baja")){
                                         agregar_en_lista("Bat. baja", 1);
-                                        consul->agregar_evento("ALARMA", obtener_modo(), "BATERIA BAJA");
+                                        consul->agregar_evento("ALARMA", obtener_modo(), "BATERIA BAJA", obtener_parametros());
                                         qDebug() << "[ALARMAS] Agrega Bat. baja";
                                         if(! estadoAlarmaBateria){
                                             estadoAlarmaBateria = true;
@@ -3635,7 +3635,7 @@ void Monitor::receVent(QString trama){
                                     }
                                     else{
                                         actualizar_en_lista("Bat. baja", 1);
-                                        consul->agregar_evento("ALARMA", obtener_modo(), "BATERIA BAJA");
+                                        consul->agregar_evento("ALARMA", obtener_modo(), "BATERIA BAJA", obtener_parametros());
                                         qDebug() << "[ALARMAS] Activa Bat. baja";
                                         if(! estadoAlarmaBateria){
                                             estadoAlarmaBateria = true;
@@ -3646,7 +3646,7 @@ void Monitor::receVent(QString trama){
                                 else if(20 < temp_nivel && temp_nivel <= 40){
                                     if(! buscar_en_lista("Bat. media")){
                                         agregar_en_lista("Bat. media", 1);
-                                        consul->agregar_evento("ALARMA", obtener_modo(), "BATERIA MEDIA");
+                                        consul->agregar_evento("ALARMA", obtener_modo(), "BATERIA MEDIA", obtener_parametros());
                                         qDebug() << "[ALARMAS] Agrega Bat. media";
                                         if(! estadoAlarmaBateria){
                                             estadoAlarmaBateria = true;
@@ -3655,7 +3655,7 @@ void Monitor::receVent(QString trama){
                                     }
                                     else{
                                         actualizar_en_lista("Bat. media", 1);
-                                        consul->agregar_evento("ALARMA", obtener_modo(), "BATERIA MEDIA");
+                                        consul->agregar_evento("ALARMA", obtener_modo(), "BATERIA MEDIA", obtener_parametros());
                                         qDebug() << "[ALARMAS] Activa Bat. media";
                                         if(! estadoAlarmaBateria){
                                             estadoAlarmaBateria = true;
@@ -3683,7 +3683,7 @@ void Monitor::receVent(QString trama){
                                 }
                                 float temp_nivel = nivel_batt.toFloat() * 20;
                                 widgetAlarms->bateria(temp_nivel, 1);
-                                consul->agregar_evento("ALIMENTACION", obtener_modo(), "MODO AC");
+                                consul->agregar_evento("ALIMENTACION", obtener_modo(), "MODO AC", obtener_parametros());
                                 /*if(buscar_en_lista("Bateria")){
                                     actualizar_en_lista("Bateria", 0);
                                     qDebug() << "___Elimina Bateria";
@@ -3696,7 +3696,7 @@ void Monitor::receVent(QString trama){
                                     //consul->agregar_evento("ALIMENTACION", obtener_modo(), "BATERIA BAJA");
                                     if(! buscar_en_lista("Bat. baja")){
                                         agregar_en_lista("Bat. baja", 1);
-                                        consul->agregar_evento("ALARMA", obtener_modo(), "BATERIA BAJA");
+                                        consul->agregar_evento("ALARMA", obtener_modo(), "BATERIA BAJA", obtener_parametros());
                                         qDebug() << "[ALARMAS] Agrega Bat. baja";
                                         if(! estadoAlarmaBateria){
                                             estadoAlarmaBateria = true;
@@ -3705,7 +3705,7 @@ void Monitor::receVent(QString trama){
                                     }
                                     else{
                                         actualizar_en_lista("Bat. baja", 1);
-                                        consul->agregar_evento("ALARMA", obtener_modo(), "BATERIA BAJA");
+                                        consul->agregar_evento("ALARMA", obtener_modo(), "BATERIA BAJA", obtener_parametros());
                                         qDebug() << "[ALARMAS] Activa Bat. baja";
                                         if(! estadoAlarmaBateria){
                                             estadoAlarmaBateria = true;
@@ -3716,7 +3716,7 @@ void Monitor::receVent(QString trama){
                                 else if(20 < temp_nivel && temp_nivel <= 40){
                                     if(! buscar_en_lista("Bat. media")){
                                         agregar_en_lista("Bat. media", 1);
-                                        consul->agregar_evento("ALARMA", obtener_modo(), "BATERIA MEDIA");
+                                        consul->agregar_evento("ALARMA", obtener_modo(), "BATERIA MEDIA", obtener_parametros());
                                         qDebug() << "[ALARMAS] Agrega Bat. media";
                                         if(! estadoAlarmaBateria){
                                             estadoAlarmaBateria = true;
@@ -3725,7 +3725,7 @@ void Monitor::receVent(QString trama){
                                     }
                                     else{
                                         actualizar_en_lista("Bat. media", 1);
-                                        consul->agregar_evento("ALARMA", obtener_modo(), "BATERIA MEDIA");
+                                        consul->agregar_evento("ALARMA", obtener_modo(), "BATERIA MEDIA", obtener_parametros());
                                         qDebug() << "[ALARMAS] Activa Bat. media";
                                         if(! estadoAlarmaBateria){
                                             estadoAlarmaBateria = true;
@@ -3777,7 +3777,7 @@ void Monitor::receVent(QString trama){
                                     //consul->agregar_evento("ALIMENTACION", obtener_modo(), "BATERIA BAJA");
                                     if(! buscar_en_lista("Bat. baja")){
                                         agregar_en_lista("Bat. baja", 1);
-                                        consul->agregar_evento("ALARMA", obtener_modo(), "BATERIA BAJA");
+                                        consul->agregar_evento("ALARMA", obtener_modo(), "BATERIA BAJA", obtener_parametros());
                                         qDebug() << "[ALARMAS] Agrega Bat. baja";
                                         if(! estadoAlarmaBateria){
                                             estadoAlarmaBateria = true;
@@ -3786,7 +3786,7 @@ void Monitor::receVent(QString trama){
                                     }
                                     else if (diccionario_alarma->value("Bat. baja") == 0){
                                         actualizar_en_lista("Bat. baja", 1);
-                                        consul->agregar_evento("ALARMA", obtener_modo(), "BATERIA BAJA");
+                                        consul->agregar_evento("ALARMA", obtener_modo(), "BATERIA BAJA", obtener_parametros());
                                         qDebug() << "[ALARMAS] Activa Bat. baja";
                                         if(! estadoAlarmaBateria){
                                             estadoAlarmaBateria = true;
@@ -3797,7 +3797,7 @@ void Monitor::receVent(QString trama){
                                 else if(20 < temp_nivel && temp_nivel <= 40){
                                     if(! buscar_en_lista("Bat. media")){
                                         agregar_en_lista("Bat. media", 1);
-                                        consul->agregar_evento("ALARMA", obtener_modo(), "BATERIA MEDIA");
+                                        consul->agregar_evento("ALARMA", obtener_modo(), "BATERIA MEDIA", obtener_parametros());
                                         qDebug() << "[ALARMAS] Agrega Bat. media";
                                         if(! estadoAlarmaBateria){
                                             estadoAlarmaBateria = true;
@@ -3806,7 +3806,7 @@ void Monitor::receVent(QString trama){
                                     }
                                     else if (diccionario_alarma->value("Bat. media") == 0){
                                         actualizar_en_lista("Bat. media", 1);
-                                        consul->agregar_evento("ALARMA", obtener_modo(), "BATERIA MEDIA");
+                                        consul->agregar_evento("ALARMA", obtener_modo(), "BATERIA MEDIA", obtener_parametros());
                                         qDebug() << "[ALARMAS] Activa Bat. media";
                                         if(! estadoAlarmaBateria){
                                             estadoAlarmaBateria = true;
@@ -3873,14 +3873,14 @@ void Monitor::receVent(QString trama){
                             pruebas->label_oxigeno_estado->setText("Error");
                             pruebas->label_oxigeno_estado->setStyleSheet("color: red; background-color: #D5D8DC;");
                             pruebas->label_info->setText("Error en el sensor");
-                            consul->agregar_evento("PRUEBAS",obtener_modo(), "OXIGENO ERROR SENSOR");
+                            consul->agregar_evento("PRUEBAS",obtener_modo(), "OXIGENO ERROR SENSOR", obtener_parametros());
                             pruebas_iniciales = false;
                         }
                         else if(trama[2] == "1"){
                             pruebas->label_oxigeno_estado->setText("Error");
                             pruebas->label_oxigeno_estado->setStyleSheet("color: red; background-color: #D5D8DC;");
                             pruebas->label_info->setText("Sensor no usable.");
-                            consul->agregar_evento("PRUEBAS",obtener_modo(), "OXIGENO SENSOR NO USABLE");
+                            consul->agregar_evento("PRUEBAS",obtener_modo(), "OXIGENO SENSOR NO USABLE", obtener_parametros());
                             pruebas_iniciales = false;
                         }
                         else{
@@ -3889,7 +3889,7 @@ void Monitor::receVent(QString trama){
                                 pruebas->label_oxigeno_estado->setText("Precaución");
                                 pruebas->label_oxigeno_estado->setStyleSheet("color: yellow; background-color: #D5D8DC;");
                                 pruebas->label_info->setText("Sensor viejo.");
-                                consul->agregar_evento("PRUEBAS",obtener_modo(), "OXIGENO SENSOR VIEJO");
+                                consul->agregar_evento("PRUEBAS",obtener_modo(), "OXIGENO SENSOR VIEJO", obtener_parametros());
                                 pruebas_iniciales = false;
                             }
                             else{
@@ -3901,7 +3901,7 @@ void Monitor::receVent(QString trama){
                                 contador_timerOxigeno = 0;
                                 serVent->envia_trama_config("O1\n");
                                 timerOxigeno->start(1000);
-                                consul->agregar_evento("PRUEBAS",obtener_modo(), "OXIGENO SENSOR OK");
+                                consul->agregar_evento("PRUEBAS",obtener_modo(), "OXIGENO SENSOR OK", obtener_parametros());
                             }
                         }
                     }
@@ -3915,13 +3915,13 @@ void Monitor::receVent(QString trama){
                             pruebas->label_oxigeno_estado->setText("Error");
                             pruebas->label_oxigeno_estado->setStyleSheet("color: red; background-color: #D5D8DC;");
                             pruebas->label_info->setText("Error en el sensor");
-                            consul->agregar_evento("PRUEBAS",obtener_modo(), "OXIGENO ERROR SENSOR");
+                            consul->agregar_evento("PRUEBAS",obtener_modo(), "OXIGENO ERROR SENSOR", obtener_parametros());
                         }
                         else if(trama[2] == "1"){
                             pruebas->label_oxigeno_estado->setText("Error");
                             pruebas->label_oxigeno_estado->setStyleSheet("color: red; background-color: #D5D8DC;");
                             pruebas->label_info->setText("Sensor no usable.");
-                            consul->agregar_evento("PRUEBAS",obtener_modo(), "OXIGENO SENSOR NO USABLE");
+                            consul->agregar_evento("PRUEBAS",obtener_modo(), "OXIGENO SENSOR NO USABLE", obtener_parametros());
                         }
                         else{
                             int entero = trama.mid(2,1).toInt();
@@ -3929,7 +3929,7 @@ void Monitor::receVent(QString trama){
                                 pruebas->label_oxigeno_estado->setText("Precaución");
                                 pruebas->label_oxigeno_estado->setStyleSheet("color: yellow; background-color: #D5D8DC;");
                                 pruebas->label_info->setText("Sensor viejo.");
-                                consul->agregar_evento("PRUEBAS",obtener_modo(), "OXIGENO SENSOR VIEJO");
+                                consul->agregar_evento("PRUEBAS",obtener_modo(), "OXIGENO SENSOR VIEJO", obtener_parametros());
                             }
                             else{
                                 pruebas->label_oxigeno_estado->setText("OK");
@@ -3937,8 +3937,8 @@ void Monitor::receVent(QString trama){
                                 pruebas->label_info->setText("Prueba 100% Oxígeno superada");
                                 qDebug() << "[PRUEBAS] Terminan todas las pruebas";
                                 pruebas_terminadas = true;
-                                consul->agregar_evento("PRUEBAS",obtener_modo(), "OXIGENO SENSOR OK");
-                                consul->agregar_evento("PRUEBAS",obtener_modo(), "OXIGENO TERMINA OK");
+                                consul->agregar_evento("PRUEBAS",obtener_modo(), "OXIGENO SENSOR OK", obtener_parametros());
+                                consul->agregar_evento("PRUEBAS",obtener_modo(), "OXIGENO TERMINA OK", obtener_parametros());
                                 vida_o2_100 = entero;
                                 int promedio = (vida_o2_21 + vida_o2_100)/2;
                                 if(promedio <= 2){
@@ -3978,7 +3978,7 @@ void Monitor::receVent(QString trama){
                                 if(! configurandoSenPresion){
                                     estadoVentilador = false;
                                     label_debug->setText("Standby");
-                                    consul->agregar_evento("VENTILADOR", obtener_modo(), "DETIENE LA VENTILACION F");
+                                    consul->agregar_evento("VENTILADOR", obtener_modo(), "DETIENE LA VENTILACION F", obtener_parametros());
                                     tpresionModo = 0;
                                     //mandar a activar pingmuerto
                                     timerPingMuerto->start(30000);
@@ -4002,7 +4002,7 @@ void Monitor::receVent(QString trama){
                                 if(banderaTimerEstadoSenPresion){
                                     label_debug->setText("Vent ON");
                                     qDebug() << "[ESTADO] inicia la ventilación";
-                                    consul->agregar_evento("VENTILADOR", obtener_modo(), "INICIA LA VENTILACION");
+                                    consul->agregar_evento("VENTILADOR", obtener_modo(), "INICIA LA VENTILACION", obtener_parametros());
                                 }
                                 banderaModoSenPresion = 2;
                                 timerTPresion1S->start(2000);
@@ -4050,17 +4050,17 @@ void Monitor::receVent(QString trama){
                     if(trama[1] == "R"){
                         qDebug() << "[ERROR] Error en rango trama control";
                         label_debug->setText("Error rangos");
-                        consul->agregar_evento("COMUNICACION", obtener_modo(), "ERROR RANGOS DE CONFIGURACION");
+                        consul->agregar_evento("COMUNICACION", obtener_modo(), "ERROR RANGOS DE CONFIGURACION", obtener_parametros());
                     }
                     else if(trama[1] == "T"){
                         qDebug() << "[ERROR] Error en trama";
                         label_debug->setText("Error trama");
-                        consul->agregar_evento("COMUNICACION", obtener_modo(), "ERROR TRAMA");
+                        consul->agregar_evento("COMUNICACION", obtener_modo(), "ERROR TRAMA", obtener_parametros());
                     }
                     else if(trama[1] == "A"){
                         qDebug() << "[ERROR] Error en caracter";
                         label_debug->setText("Error ascii");
-                        consul->agregar_evento("COMUNICACION", obtener_modo(), "ERROR ASCII");
+                        consul->agregar_evento("COMUNICACION", obtener_modo(), "ERROR ASCII", obtener_parametros());
                         if(volverIntetarComandoM){
                             volverIntetarComandoM = false;
                             if(volverIntentarModo){
@@ -4146,7 +4146,7 @@ void Monitor::receVent(QString trama){
                     //checar si la presión es mayor a 35, mandar a detener y mostrar error
                     if(presion > 35){
                         //mandar a detener pruebas
-                        consul->agregar_evento("PRUEBAS", obtener_modo(), "ERROR PRESION TOPE Uc");
+                        consul->agregar_evento("PRUEBAS", obtener_modo(), "ERROR PRESION TOPE Uc", obtener_parametros());
                         pruebas->label_info->setText("Error presión tope");
                         detener_pruebas_presion();
                         pruebas->label_valvulas_estado->setText("Error");
@@ -4167,7 +4167,7 @@ void Monitor::receVent(QString trama){
                         if(vAvisoV == nullptr){
                             muestraAvisoVentilador("VERSION OBSOLETA: " + trama.mid(2) + " \n ACTUALIZAR VERSION DE VENTILADOR A: " + versionVentiladorEsperada);
                             timerConfigVent->stop();
-                            consul->agregar_evento("INICIO", obtener_modo(), "INCORRECTO CONTROL");
+                            consul->agregar_evento("INICIO", obtener_modo(), "INCORRECTO CONTROL", obtener_parametros());
                         }
                     }
                     else{
@@ -4180,14 +4180,14 @@ void Monitor::receVent(QString trama){
                             serVent->envia_trama_config(tramaOffsets);
                             //timerOffsetsVent->start();
                             timerOffsetsVent->start(4000);
-                            consul->agregar_evento("INICIO", obtener_modo(), "CORRECTO CONTROL");
+                            consul->agregar_evento("INICIO", obtener_modo(), "CORRECTO CONTROL", obtener_parametros());
                         }
                         else if(trama[1] == "1"){
                             estadoVentilador = true;
                             ventiladorListo = true;
                             origenListo = true;
                             cambiosMIni = true;
-                            consul->agregar_evento("INICIO", obtener_modo(), "RECUPERACION");
+                            consul->agregar_evento("INICIO", obtener_modo(), "RECUPERACION", obtener_parametros());
                         }
                         else if(trama[1] == "2"){
                             //aqui está en modo teste, se debe mandar a salir de ahí y ponerlo a modo detenido (0)
@@ -4195,7 +4195,7 @@ void Monitor::receVent(QString trama){
                             origenListo = true; // para detener timer
                             recuperacion_modo_test = true;
                             detener_pruebas_presion();
-                            consul->agregar_evento("INICIO", obtener_modo(), "MODO TEST");
+                            consul->agregar_evento("INICIO", obtener_modo(), "MODO TEST", obtener_parametros());
                             qDebug() << "[INICIO] Control está en modo test";
                         }
                     }
@@ -4223,7 +4223,7 @@ void Monitor::receVent(QString trama){
                     else{
                         if(pruebas_iniciales){
                             pruebas->label_info->setText("Error en prueba");
-                            consul->agregar_evento("PRUEBAS", obtener_modo(), "ERROR CONTROL");
+                            consul->agregar_evento("PRUEBAS", obtener_modo(), "ERROR CONTROL", obtener_parametros());
                             detener_pruebas_presion();
                             pruebas->label_valvulas_estado->setText("Error");
                             pruebas->label_valvulas_estado->setStyleSheet("color: red; background-color: #D5D8DC;");
@@ -4268,7 +4268,7 @@ void Monitor::libera(){
             pruebas->label_presion_estado->setStyleSheet("color: green; background-color: #D5D8DC;");
             //numero_prueba ++;
             pruebas->label_info->setText("Presione INICIAR \n para iniciar prueba de sensor de oxígeno.");
-            consul->agregar_evento("PRUEBAS", obtener_modo(), "FIN PRESION CORRECTA " + QString::number(top_presure) + " - " + QString::number(stable_presure) + " - " + QString::number(second_stable_presure) + " - " + QString::number(final_presure));
+            consul->agregar_evento("PRUEBAS", obtener_modo(), "FIN PRESION CORRECTA " + QString::number(top_presure) + " - " + QString::number(stable_presure) + " - " + QString::number(second_stable_presure) + " - " + QString::number(final_presure), obtener_parametros());
             timerFinPruebaPresion->start(5000);
             detener_pruebas_presion();
             oxis->mostrar();
@@ -4281,7 +4281,7 @@ void Monitor::libera(){
 
 void Monitor::no_libera(){
     try {
-        consul->agregar_evento("PRUEBAS", obtener_modo(),"ERROR PRESION LIBERAR");
+        consul->agregar_evento("PRUEBAS", obtener_modo(),"ERROR PRESION LIBERAR", obtener_parametros());
         pruebas->label_info->setText("Error en liberación de aire");
         detener_pruebas_presion();
         pruebas->label_valvulas_estado->setText("Error");
@@ -4306,7 +4306,7 @@ void Monitor::no_fuga(){
 
 void Monitor::fuga(){
     try {
-        consul->agregar_evento("PRUEBAS", obtener_modo(), "ERROR PRESION FUGA MANTENER");
+        consul->agregar_evento("PRUEBAS", obtener_modo(), "ERROR PRESION FUGA MANTENER", obtener_parametros());
         pruebas->label_info->setText("Fuga al mantener la presión");
         detener_pruebas_presion();
         pruebas->label_valvulas_estado->setText("Error");
@@ -4481,7 +4481,7 @@ void Monitor::validaUnSeg(){
                 contador_respuesta_config_senrpesion = 0;
                 label_debug->setText("Pulse Actualizar");
                 timerTPresion1S->stop();
-                consul->agregar_evento("COMUNICACION",obtener_modo(),"ERROR - NO RESPUESTA SENSORES I");
+                consul->agregar_evento("COMUNICACION",obtener_modo(),"ERROR - NO RESPUESTA SENSORES I", obtener_parametros());
                 //serPresion->iniciar_sensor_presion();
                 //---Aquí poner algo para volver a poner a funcionar lose sensores pero sin aplicar cambios
                 serPresion->escribir("A4\n");
@@ -4503,7 +4503,7 @@ void Monitor::validaUnSeg(){
                 else{
                     if(vAviso == nullptr){
                         muestraAviso("NO RESPONDE A LA SOLICITUD DE DATOS");
-                        consul->agregar_evento("COMUNICACION",obtener_modo(), "ERROR NO RESPONDE A0");
+                        consul->agregar_evento("COMUNICACION",obtener_modo(), "ERROR NO RESPONDE A0", obtener_parametros());
                     }
                 }
             }
@@ -4518,7 +4518,7 @@ void Monitor::validaUnSeg(){
                 graficaPresion->limpiar_promediador();
                 graficaVolumen->limpiar_promediador();
                 graficaFlujo->limpiar_promediador();
-                consul->agregar_evento("VENTILADOR", obtener_modo(), "INICIA LA VENTILACION");
+                consul->agregar_evento("VENTILADOR", obtener_modo(), "INICIA LA VENTILACION", obtener_parametros());
             }
             else{
                 serPresion->iniciar_sensor_presion();
@@ -4540,7 +4540,7 @@ void Monitor::validaUnSeg(){
                 contador_respuesta_config_senrpesion = 0;
                 label_debug->setText("Pulse Actualizar");
                 timerTPresion1S->stop();
-                consul->agregar_evento("COMUNICACION", obtener_modo(), "ERROR NO RESPUESTA SENSORES II");
+                consul->agregar_evento("COMUNICACION", obtener_modo(), "ERROR NO RESPUESTA SENSORES II", obtener_parametros());
                 //serPresion->iniciar_sensor_presion();
                 //---Aquí poner algo para volver a poner a funcionar lose sensores pero sin aplicar cambios
                 serPresion->escribir("A4\n");
@@ -4562,7 +4562,7 @@ void Monitor::validaUnSeg(){
                 contador_respuesta_config_senrpesion = 0;
                 //label_debug->setText("Pulse Actualizar");
                 timerTPresion1S->stop();
-                consul->agregar_evento("COMUNICACION", obtener_modo(), "ERROR NO RESPUESTA COMANDO PARA 3");
+                consul->agregar_evento("COMUNICACION", obtener_modo(), "ERROR NO RESPUESTA COMANDO PARA 3", obtener_parametros());
                 //serPresion->iniciar_sensor_presion();
                 //---Aquí poner algo para volver a poner a funcionar lose sensores pero sin aplicar cambios
                 banderaModoSenPresion = 5;
@@ -4585,7 +4585,7 @@ void Monitor::validaUnSeg(){
                 configurandoVentilador = false;
                 contador_respuesta_config_senrpesion = 0;
                 timerTPresion1S->stop();
-                consul->agregar_evento("COMUNICACION", obtener_modo(), "ERROR NO RESPUESTA COMANDO PARA 4");
+                consul->agregar_evento("COMUNICACION", obtener_modo(), "ERROR NO RESPUESTA COMANDO PARA 4", obtener_parametros());
                 //serPresion->iniciar_sensor_presion();
                 //---Aquí poner algo para volver a poner a funcionar lose sensores pero sin aplicar cambios
                 label_debug->setText("Error Actualizar");
@@ -4616,7 +4616,7 @@ void Monitor::validaCincoSeg(){
                         ventanaInoperanteAbierta = true;
                         ventanaAbierta = true;
                         ventiladorInoperante = true;
-                        consul->agregar_evento("COMUNICACION",obtener_modo(), "ERROR NO RESPONDE SENSORES");
+                        consul->agregar_evento("COMUNICACION",obtener_modo(), "ERROR NO RESPONDE SENSORES", obtener_parametros());
                         qDebug() << "[PING] solicitud de datos -- muestra aviso valida5s";
                         alarmaControl->iniciaAlarma(alarmaControl->INOPERANTE);
                     }
@@ -4668,7 +4668,7 @@ void Monitor::activarAlarmaComunicacionSensores(int tipo){
             //activar sensores 1
             if(!buscar_en_lista("C. SEN 1")){
                 agregar_en_lista("C. SEN 1", 1);
-                consul->agregar_evento("COMUNICACION", obtener_modo(), "C. SEN 1");
+                consul->agregar_evento("COMUNICACION", obtener_modo(), "C. SEN 1", obtener_parametros());
                 qDebug() << "[ALARMA] Agrega error en comunicación de la tarjeta de sensores, no ve a tarjeta control";
                 if(! estadoAlarmaComunicacion){
                     estadoAlarmaComunicacion = true;
@@ -4678,7 +4678,7 @@ void Monitor::activarAlarmaComunicacionSensores(int tipo){
             else{
                 //ya esta en la lista
                 actualizar_en_lista("C. SEN 1", 1);
-                consul->agregar_evento("COMUNICACION", obtener_modo(), "C. SEN 1");
+                consul->agregar_evento("COMUNICACION", obtener_modo(), "C. SEN 1", obtener_parametros());
                 qDebug() << "[ALARMA] Agrega error en comunicación de la tarjeta de sensores, no ve a tarjeta control";
                 if(! estadoAlarmaComunicacion){
                     estadoAlarmaComunicacion = true;
@@ -4690,7 +4690,7 @@ void Monitor::activarAlarmaComunicacionSensores(int tipo){
             //activar sensores 2
             if(!buscar_en_lista("C. SEN 2")){
                 agregar_en_lista("C. SEN 2", 1);
-                consul->agregar_evento("COMUNICACION", obtener_modo(), "C. SEN 2");
+                consul->agregar_evento("COMUNICACION", obtener_modo(), "C. SEN 2", obtener_parametros());
                 qDebug() << "[ALARMA] Agrega error en comunicación de la tarjeta de sensores, no ve a RPI";
                 if(! estadoAlarmaComunicacion){
                     estadoAlarmaComunicacion = true;
@@ -4700,7 +4700,7 @@ void Monitor::activarAlarmaComunicacionSensores(int tipo){
             else{
                 //ya esta en la lista
                 actualizar_en_lista("C. SEN 2", 1);
-                consul->agregar_evento("COMUNICACION", obtener_modo(), "C. SEN 2");
+                consul->agregar_evento("COMUNICACION", obtener_modo(), "C. SEN 2", obtener_parametros());
                 qDebug() << "[ALARMA] Agrega error en comunicación de la tarjeta de sensores, no ve a RPI";
                 if(! estadoAlarmaComunicacion){
                     estadoAlarmaComunicacion = true;
@@ -4760,7 +4760,7 @@ void Monitor::recePresion(QString trama){
                         timerTPresion1S->start(5000);
                     }
                     else{
-                        consul->agregar_evento("COMUNICACION", obtener_modo(), "ERROR SENSORES C");
+                        consul->agregar_evento("COMUNICACION", obtener_modo(), "ERROR SENSORES C", obtener_parametros());
                     }
                 }
                 else if(trama[0] == "W"){
@@ -4800,7 +4800,7 @@ void Monitor::recePresion(QString trama){
                         }
                     }
                     else{
-                        consul->agregar_evento("COMUNICACION",obtener_modo(), "ERROR SENSORES W");
+                        consul->agregar_evento("COMUNICACION",obtener_modo(), "ERROR SENSORES W", obtener_parametros());
                     }
                 }
                 else if(trama[0] == "D"){
@@ -4950,19 +4950,19 @@ void Monitor::recePresion(QString trama){
                             if(!corroborarVersionControl(temp_parts.at(0).mid(1), versionSenPresionEsperada)){
                                 if(vAviso == nullptr){
                                     muestraAviso("VERSION OBSOLETA:" + temp_parts.at(0).mid(1) + " \n ACTUALIZAR VERSION SENSORES A: " + versionSenPresionEsperada);
-                                    consul->agregar_evento("INICIO", obtener_modo(),"INCORRECTO SENSORES");
+                                    consul->agregar_evento("INICIO", obtener_modo(),"INCORRECTO SENSORES", obtener_parametros());
                                 }
                             }
                             else{
                                 versionSenPresion = temp_parts.at(0).mid(1);
                                 senPresionListo = true;
-                                consul->agregar_evento("INICIO", obtener_modo(),"CORRECTO SENSORES");
+                                consul->agregar_evento("INICIO", obtener_modo(),"CORRECTO SENSORES", obtener_parametros());
                             }
                         }
                         else{
                             if(vAviso == nullptr){
                                 muestraAviso("ERROR TRAMA VERSION");
-                                consul->agregar_evento("INICIO", obtener_modo(),"ERROR TRAMA VERSION SENSORES");
+                                consul->agregar_evento("INICIO", obtener_modo(),"ERROR TRAMA VERSION SENSORES", obtener_parametros());
                             }
                         }
 
@@ -5042,21 +5042,21 @@ void Monitor::recePresion(QString trama){
                                 if(vAviso == nullptr){
                                     qDebug() << "[ERROR] recePresion - error en el sensor de presion";
                                     //muestraAviso("EN EL SENSOR DE PRESION");
-                                    consul->agregar_evento("SENSORES", obtener_modo(), "ERROR SENSOR PRESION");
+                                    consul->agregar_evento("SENSORES", obtener_modo(), "ERROR SENSOR PRESION", obtener_parametros());
                                 }
                             }
                             else if(trama[1] == "2"){
                                 if(vAviso == nullptr){
                                     qDebug() << "[ERROR] recePresion - error en el sensor de flujo inhalación";
                                     //muestraAviso("EN EL SENSOR DE FLUJO");
-                                    consul->agregar_evento("SENSORES", obtener_modo(), "ERROR SENSOR FLUJO INHALACION");
+                                    consul->agregar_evento("SENSORES", obtener_modo(), "ERROR SENSOR FLUJO INHALACION", obtener_parametros());
                                 }
                             }
                             else if(trama[1] == "3"){
                                 if(vAviso == nullptr){
                                     qDebug() << "[ERROR] recePresion - error en el sensor de flujo exhalación";
                                     //muestraAviso("EN AMBOS SENSORES");
-                                    consul->agregar_evento("SENSORES", obtener_modo(), "ERROR SENSOR FLUJO EXHALACION");
+                                    consul->agregar_evento("SENSORES", obtener_modo(), "ERROR SENSOR FLUJO EXHALACION", obtener_parametros());
                                 }
                             }
                         }
@@ -5075,7 +5075,7 @@ void Monitor::recePresion(QString trama){
                                     }
 
                                     qDebug() << "[ESTADO] Inicia actualizar ventilador por Error WDT";
-                                    consul->agregar_evento("VENTILADOR", obtener_modo(), "act. vent. E WDT");
+                                    consul->agregar_evento("VENTILADOR", obtener_modo(), "act. vent. E WDT", obtener_parametros());
                                     huboCambioTrama = true;
                                     actualiza_por_wdt = true;
                                     actualizarDatosVentilador();
@@ -5104,7 +5104,7 @@ void Monitor::recePresion(QString trama){
                                 else if(error_sensores_sensor_exhalacion){
                                       type_error = "S. EXHALACION";
                                 }
-                                consul->agregar_evento("COMUNICACION", obtener_modo(), "- E WDT - " + type_error);
+                                consul->agregar_evento("COMUNICACION", obtener_modo(), "- E WDT - " + type_error, obtener_parametros());
                                 timerErrorWDT->start(7000);
                             }
 //                            label_debug->setText("Error WDT");
@@ -5301,7 +5301,7 @@ void Monitor::revisar_alarmas_senpresion(){
                     qDebug() << "[ALARMAS] Agrega Vol min MAX";
                     signoVm->bar->setPalette(*paleAlta);
                     signoVm->label_title->setStyleSheet("color: red;");
-                    consul->agregar_evento("ALARMA", obtener_modo(), "VOLUMEN MIN ALTO ACTIVADO - 4");
+                    consul->agregar_evento("ALARMA", obtener_modo(), "VOLUMEN MIN ALTO ACTIVADO - 4", obtener_parametros());
                     if(! estadoAlarmaVolMin){
                         estadoAlarmaVolMin = true;
                         alarmaControl->iniciaAlarma(alarmaControl->VOLMINIMO);
@@ -5313,7 +5313,7 @@ void Monitor::revisar_alarmas_senpresion(){
                         qDebug() << "[ALARMAS] Agrega Vol min MAX";
                         signoVm->bar->setPalette(*paleAlta);
                         signoVm->label_title->setStyleSheet("color: red;");
-                        consul->agregar_evento("ALARMA", obtener_modo(), "VOLUMEN MIN ALTO ACTIVADO - 4");
+                        consul->agregar_evento("ALARMA", obtener_modo(), "VOLUMEN MIN ALTO ACTIVADO - 4", obtener_parametros());
                         if(! estadoAlarmaVolMin){
                             estadoAlarmaVolMin = true;
                             alarmaControl->iniciaAlarma(alarmaControl->VOLMINIMO);
@@ -5325,7 +5325,7 @@ void Monitor::revisar_alarmas_senpresion(){
                 qDebug() << "[ALARMAS] Alarma volumen minuto alto DESACTIVADO";
                 if(buscar_en_lista("Vol min MAX")){
                     actualizar_en_lista("Vol min MAX", 0);
-                    consul->agregar_evento("ALARMA", obtener_modo(), "VOLUMEN MIN ALTO DESACTIVADO - 4");
+                    consul->agregar_evento("ALARMA", obtener_modo(), "VOLUMEN MIN ALTO DESACTIVADO - 4", obtener_parametros());
                     if(diccionario_alarma->value("Vol min MAX") == 0 && diccionario_alarma->value("Vol min MIN") == 0){
                         if(estadoAlarmaVolMin){
                             estadoAlarmaVolMin = false;
@@ -5345,7 +5345,7 @@ void Monitor::revisar_alarmas_senpresion(){
                     qDebug() << "[ALARMAS] Agrega Presion MAX";
                     signoPIP->bar->setPalette(*palemedia_baja);
                     signoPIP->label_title->setStyleSheet("color: yellow;");
-                    consul->agregar_evento("ALARMA", obtener_modo(), "PRESION ALTA ACTIVADA - 5");
+                    consul->agregar_evento("ALARMA", obtener_modo(), "PRESION ALTA ACTIVADA - 5", obtener_parametros());
                     if(! estadoAlarmaPresion){
                         estadoAlarmaPresion = true;
                         alarmaControl->iniciaAlarma(alarmaControl->PRESION);
@@ -5357,7 +5357,7 @@ void Monitor::revisar_alarmas_senpresion(){
                         qDebug() << "[ALARMAS] Agrega Presion MAX";
                         signoPIP->bar->setPalette(*palemedia_baja);
                         signoPIP->label_title->setStyleSheet("color: yellow;");
-                        consul->agregar_evento("ALARMA", obtener_modo(), "PRESION ALTA ACTIVADA - 5");
+                        consul->agregar_evento("ALARMA", obtener_modo(), "PRESION ALTA ACTIVADA - 5", obtener_parametros());
                         if(! estadoAlarmaPresion){
                             estadoAlarmaPresion = true;
                             alarmaControl->iniciaAlarma(alarmaControl->PRESION);
@@ -5369,7 +5369,7 @@ void Monitor::revisar_alarmas_senpresion(){
                 qDebug() << "[ALARMAS] Alarma presion alta DESACTIVADO";
                 if(buscar_en_lista("Presion MAX")){
                     actualizar_en_lista("Presion MAX", 0);
-                    consul->agregar_evento("ALARMA", obtener_modo(), "PRESION ALTA DESACTIVADA - 5");
+                    consul->agregar_evento("ALARMA", obtener_modo(), "PRESION ALTA DESACTIVADA - 5", obtener_parametros());
                     signoPIP->bar->setPalette(*paleNormal);
                     signoPIP->label_title->setStyleSheet("color: white;");
                     if(diccionario_alarma->value("Presion MAX") == 0 && diccionario_alarma->value("Presion baja") == 0 && diccionario_alarma->value("Presion MIN") == 0){
@@ -5387,7 +5387,7 @@ void Monitor::revisar_alarmas_senpresion(){
                 if(! buscar_en_lista("APNEA")){
                     agregar_en_lista("APNEA", 1);
                     qDebug() << "[ALARMAS] Agrega APNEA";
-                    consul->agregar_evento("ALARMA", obtener_modo(), "APNEA R ACTIVADA - 6");
+                    consul->agregar_evento("ALARMA", obtener_modo(), "APNEA R ACTIVADA - 6", obtener_parametros());
                     if(buscar_en_lista("Apnea")){
                         borrar_en_lista("Apnea");
                     }
@@ -5400,7 +5400,7 @@ void Monitor::revisar_alarmas_senpresion(){
                     if(diccionario_alarma->value("APNEA") == 0){
                         actualizar_en_lista("APNEA", 1);
                         qDebug() << "[ALARMAS] Agrega APNEA";
-                        consul->agregar_evento("ALARMA", obtener_modo(), "APNEA R ACTIVADA - 6");
+                        consul->agregar_evento("ALARMA", obtener_modo(), "APNEA R ACTIVADA - 6", obtener_parametros());
                         if(buscar_en_lista("Apnea")){
                             borrar_en_lista("Apnea");
                         }
@@ -5412,7 +5412,7 @@ void Monitor::revisar_alarmas_senpresion(){
                     else if(diccionario_alarma->value("APNEA") == 1){
                         actualizar_en_lista("APNEA", 1);
                         qDebug() << "[ALARMAS] Actualiza APNEA";
-                        consul->agregar_evento("ALARMA", obtener_modo(), "APNEA R REACTIVADA - 6");
+                        consul->agregar_evento("ALARMA", obtener_modo(), "APNEA R REACTIVADA - 6", obtener_parametros());
                     }
                 }
             }
@@ -5421,7 +5421,7 @@ void Monitor::revisar_alarmas_senpresion(){
                 if(! buscar_en_lista("Apnea")){
                     agregar_en_lista("Apnea", 1); //2
                     qDebug() << "[ALARMAS] Agrega  Apnea A";
-                    consul->agregar_evento("ALARMA", obtener_modo(), "APNEA L ACTIVADA - 6");
+                    consul->agregar_evento("ALARMA", obtener_modo(), "APNEA L ACTIVADA - 6", obtener_parametros());
                     if(buscar_en_lista("APNEA")){
                         borrar_en_lista("APNEA");
                     }
@@ -5434,7 +5434,7 @@ void Monitor::revisar_alarmas_senpresion(){
                     if(diccionario_alarma->value("Apnea") == 0){
                         actualizar_en_lista("Apnea", 1);
                         qDebug() << "[ALARMAS] Actualiza Apnea";
-                        consul->agregar_evento("ALARMA", obtener_modo(), "APNEA L ACTIVADA - 6");
+                        consul->agregar_evento("ALARMA", obtener_modo(), "APNEA L ACTIVADA - 6", obtener_parametros());
                         if(buscar_en_lista("APNEA")){
                             borrar_en_lista("APNEA");
                         }
@@ -5447,7 +5447,7 @@ void Monitor::revisar_alarmas_senpresion(){
                     else if(diccionario_alarma->value("Apnea") == 1){
                         actualizar_en_lista("Apnea", 1);
                         qDebug() << "[ALARMAS] Actualiza Apnea";
-                        consul->agregar_evento("ALARMA", obtener_modo(), "APNEA L REACTIVADA - 6");
+                        consul->agregar_evento("ALARMA", obtener_modo(), "APNEA L REACTIVADA - 6", obtener_parametros());
                     }
                 }
             }
@@ -5488,7 +5488,7 @@ void Monitor::revisar_alarmas_senpresion(){
                                                            "border-top-right-radius: 3Px; "
                                                            "border-bottom-right-radius: 3Px; "
                                                            "border-bottom-left-radius: 3Px;");
-                    consul->agregar_evento("ALARMA", obtener_modo(), "VOLUMEN TIDAL ALTO ACTIVADO - 7");
+                    consul->agregar_evento("ALARMA", obtener_modo(), "VOLUMEN TIDAL ALTO ACTIVADO - 7", obtener_parametros());
                     contornoColorAlarma(widgetVoli, "yellow");
                     if(! estadoAlarmaVol){
                         estadoAlarmaVol = true;
@@ -5507,7 +5507,7 @@ void Monitor::revisar_alarmas_senpresion(){
                                                                "border-top-right-radius: 3Px; "
                                                                "border-bottom-right-radius: 3Px; "
                                                                "border-bottom-left-radius: 3Px;");
-                        consul->agregar_evento("ALARMA", obtener_modo(), "VOLUMEN TIDAL ALTO ACTIVADO - 7");
+                        consul->agregar_evento("ALARMA", obtener_modo(), "VOLUMEN TIDAL ALTO ACTIVADO - 7", obtener_parametros());
                         contornoColorAlarma(widgetVoli, "yellow");
                         if(! estadoAlarmaVol){
                             estadoAlarmaVol = true;
@@ -5520,7 +5520,7 @@ void Monitor::revisar_alarmas_senpresion(){
                 qDebug() << "[ALARMAS] Alarma volumen tidal max DESACTIVADO";
                 if(buscar_en_lista("Vol tidal MAX")){
                     actualizar_en_lista("Vol tidal MAX", 0);
-                    consul->agregar_evento("ALARMA", obtener_modo(), "VOLUMEN TIDAL ALTO DESACTIVADO - 7");
+                    consul->agregar_evento("ALARMA", obtener_modo(), "VOLUMEN TIDAL ALTO DESACTIVADO - 7", obtener_parametros());
                     if(diccionario_alarma->value("Vol tidal MAX") == 0 && diccionario_alarma->value("Vol tidal MIN") == 0){
                         if(estadoAlarmaVol){
                             estadoAlarmaVol = false;
@@ -5553,7 +5553,7 @@ void Monitor::revisar_alarmas_senpresion(){
                                                            "border-top-right-radius: 3Px; "
                                                            "border-bottom-right-radius: 3Px; "
                                                            "border-bottom-left-radius: 3Px;");
-                    consul->agregar_evento("ALARMA", obtener_modo(), "FRECUENCIA ALTA ACTIVADA - 8");
+                    consul->agregar_evento("ALARMA", obtener_modo(), "FRECUENCIA ALTA ACTIVADA - 8", obtener_parametros());
                     contornoColorAlarma(widgetFR, "yellow");
                     if(! estadoAlarmaFr){
                         estadoAlarmaFr = true;
@@ -5572,7 +5572,7 @@ void Monitor::revisar_alarmas_senpresion(){
                                                                "border-top-right-radius: 3Px; "
                                                                "border-bottom-right-radius: 3Px; "
                                                                "border-bottom-left-radius: 3Px;");
-                        consul->agregar_evento("ALARMA", obtener_modo(), "FRECUENCIA ALTA ACTIVADA - 8");
+                        consul->agregar_evento("ALARMA", obtener_modo(), "FRECUENCIA ALTA ACTIVADA - 8", obtener_parametros());
                         contornoColorAlarma(widgetFR, "yellow");
                         if(! estadoAlarmaFr){
                             estadoAlarmaFr = true;
@@ -5585,7 +5585,7 @@ void Monitor::revisar_alarmas_senpresion(){
                 qDebug() << "[ALARMAS] Alarma frecuencia alta DESACTIVADO";
                 if(buscar_en_lista("Frec. MAX")){
                     actualizar_en_lista("Frec. MAX", 0);
-                    consul->agregar_evento("ALARMA", obtener_modo(), "FRECUENCIA ALTA DESACTIVADA - 8");
+                    consul->agregar_evento("ALARMA", obtener_modo(), "FRECUENCIA ALTA DESACTIVADA - 8", obtener_parametros());
                     if(diccionario_alarma->value("Frec. MAX") == 0 && diccionario_alarma->value("Frec. MIN") == 0){
                         if(estadoAlarmaFr){
                             estadoAlarmaFr = false;
@@ -5618,7 +5618,7 @@ void Monitor::revisar_alarmas_senpresion(){
                                                            "border-top-right-radius: 3Px; "
                                                            "border-bottom-right-radius: 3Px; "
                                                            "border-bottom-left-radius: 3Px;");
-                    consul->agregar_evento("ALARMA", obtener_modo(), "FRECUENCIA BAJA ACTIVADA - 9");
+                    consul->agregar_evento("ALARMA", obtener_modo(), "FRECUENCIA BAJA ACTIVADA - 9", obtener_parametros());
                     contornoColorAlarma(widgetFR, "yellow");
                     if(! estadoAlarmaFr){
                         estadoAlarmaFr = true;
@@ -5637,7 +5637,7 @@ void Monitor::revisar_alarmas_senpresion(){
                                                                "border-top-right-radius: 3Px; "
                                                                "border-bottom-right-radius: 3Px; "
                                                                "border-bottom-left-radius: 3Px;");
-                        consul->agregar_evento("ALARMA", obtener_modo(), "FRECUENCIA BAJA ACTIVADA - 9");
+                        consul->agregar_evento("ALARMA", obtener_modo(), "FRECUENCIA BAJA ACTIVADA - 9", obtener_parametros());
                         contornoColorAlarma(widgetFR, "yellow");
                         if(! estadoAlarmaFr){
                             estadoAlarmaFr = true;
@@ -5650,7 +5650,7 @@ void Monitor::revisar_alarmas_senpresion(){
                 qDebug() << "[ALARMAS] Alarma frecuencia baja DESACTIVADO";
                 if(buscar_en_lista("Frec. MIN")){
                     actualizar_en_lista("Frec. MIN", 0);
-                    consul->agregar_evento("ALARMA", obtener_modo(),  "FRECUENCIA BAJA DESACTIVADA - 9");
+                    consul->agregar_evento("ALARMA", obtener_modo(),  "FRECUENCIA BAJA DESACTIVADA - 9", obtener_parametros());
                     if(diccionario_alarma->value("Frec. MIN") == 0 && diccionario_alarma->value("Frec. MAX") == 0){
                         if(estadoAlarmaFr){
                             estadoAlarmaFr = false;
@@ -5677,7 +5677,7 @@ void Monitor::revisar_alarmas_senpresion(){
                     qDebug() << "[ALARMAS] Agrega Vol min MIN";
                     signoVm->bar->setPalette(*paleAlta);
                     signoVm->label_title->setStyleSheet("color: red;");
-                    consul->agregar_evento("ALARMA", obtener_modo(), "VOLUMEN MIN BAJO ACTIVADO - A");
+                    consul->agregar_evento("ALARMA", obtener_modo(), "VOLUMEN MIN BAJO ACTIVADO - A", obtener_parametros());
                     if(! estadoAlarmaVolMin){
                         estadoAlarmaVolMin = true;
                         alarmaControl->iniciaAlarma(alarmaControl->VOLMINIMO);
@@ -5689,7 +5689,7 @@ void Monitor::revisar_alarmas_senpresion(){
                         qDebug() << "[ALARMA] Agrega Vol min MIN";
                         signoVm->bar->setPalette(*paleAlta);
                         signoVm->label_title->setStyleSheet("color: red;");
-                        consul->agregar_evento("ALARMA", obtener_modo(),  "VOLUMEN MIN BAJO ACTIVADO - A");
+                        consul->agregar_evento("ALARMA", obtener_modo(),  "VOLUMEN MIN BAJO ACTIVADO - A", obtener_parametros());
                         if(! estadoAlarmaVolMin){
                             estadoAlarmaVolMin = true;
                             alarmaControl->iniciaAlarma(alarmaControl->VOLMINIMO);
@@ -5701,7 +5701,7 @@ void Monitor::revisar_alarmas_senpresion(){
                 qDebug() << "[ALARMAS] Alarma volumen minuto bajo DESACTIVADO";
                 if(buscar_en_lista("Vol min MIN")){
                     actualizar_en_lista("Vol min MIN", 0);
-                    consul->agregar_evento("ALARMA", obtener_modo(), "VOLUMEN MIN BAJO DESACTIVADO - A");
+                    consul->agregar_evento("ALARMA", obtener_modo(), "VOLUMEN MIN BAJO DESACTIVADO - A", obtener_parametros());
                     if(diccionario_alarma->value("Vol min MIN") == 0 && diccionario_alarma->value("Vol min MAX") == 0){
                         if(estadoAlarmaVolMin){
                             estadoAlarmaVolMin = false;
@@ -5727,7 +5727,7 @@ void Monitor::revisar_alarmas_senpresion(){
                                                            "border-top-right-radius: 3Px; "
                                                            "border-bottom-right-radius: 3Px; "
                                                            "border-bottom-left-radius: 3Px;");
-                    consul->agregar_evento("ALARMA", obtener_modo(), "VOLUMEN TIDAL BAJO ACTIVADO - B");
+                    consul->agregar_evento("ALARMA", obtener_modo(), "VOLUMEN TIDAL BAJO ACTIVADO - B", obtener_parametros());
                     contornoColorAlarma(widgetVoli, "yellow");
                     if(! estadoAlarmaVol){
                         estadoAlarmaVol = true;
@@ -5746,7 +5746,7 @@ void Monitor::revisar_alarmas_senpresion(){
                                                                "border-top-right-radius: 3Px; "
                                                                "border-bottom-right-radius: 3Px; "
                                                                "border-bottom-left-radius: 3Px;");
-                        consul->agregar_evento("ALARMA", obtener_modo(), "VOLUMEN TIDAL BAJO ACTIVADO - B");
+                        consul->agregar_evento("ALARMA", obtener_modo(), "VOLUMEN TIDAL BAJO ACTIVADO - B", obtener_parametros());
                         contornoColorAlarma(widgetVoli, "yellow");
                         if(! estadoAlarmaVol){
                             estadoAlarmaVol = true;
@@ -5759,7 +5759,7 @@ void Monitor::revisar_alarmas_senpresion(){
                 qDebug() << "[ALARMAS] Alarma volumen tidal bajo DESACTIVADO";
                 if(buscar_en_lista("Vol tidal MIN")){
                     actualizar_en_lista("Vol tidal MIN", 0);
-                    consul->agregar_evento("ALARMA", obtener_modo(), "VOLUMEN TIDAL BAJO DESACTIVADO - B");
+                    consul->agregar_evento("ALARMA", obtener_modo(), "VOLUMEN TIDAL BAJO DESACTIVADO - B", obtener_parametros());
                     if(diccionario_alarma->value("Vol tidal MIN") == 0 && diccionario_alarma->value("Vol tidal MAX") == 0){
                         if(estadoAlarmaVol){
                             estadoAlarmaVol = false;
@@ -5786,7 +5786,7 @@ void Monitor::revisar_alarmas_senpresion(){
                     qDebug() << "[ALARMAS] Agrega Presion MIN";
                     signoPEEP->bar->setPalette(*palemedia_baja);
                     signoPEEP->label_title->setStyleSheet("color: yellow;");
-                    consul->agregar_evento("ALARMA", obtener_modo(), "PRESION BAJA ACTIVADA - C");
+                    consul->agregar_evento("ALARMA", obtener_modo(), "PRESION BAJA ACTIVADA - C", obtener_parametros());
                     if(! estadoAlarmaPresion){
                         estadoAlarmaPresion = true;
                         alarmaControl->iniciaAlarma(alarmaControl->PRESION);
@@ -5798,7 +5798,7 @@ void Monitor::revisar_alarmas_senpresion(){
                         qDebug() << "[ALARMAS] Agrega Presion MIN";
                         signoPEEP->bar->setPalette(*palemedia_baja);
                         signoPEEP->label_title->setStyleSheet("color: yellow;");
-                        consul->agregar_evento("ALARMA", obtener_modo(), "PRESION BAJA ACTIVADA - C");
+                        consul->agregar_evento("ALARMA", obtener_modo(), "PRESION BAJA ACTIVADA - C", obtener_parametros());
                         if(! estadoAlarmaPresion){
                             estadoAlarmaPresion = true;
                             alarmaControl->iniciaAlarma(alarmaControl->PRESION);
@@ -5810,7 +5810,7 @@ void Monitor::revisar_alarmas_senpresion(){
                 qDebug() << "[ALARMAS] Alarma presion baja DESACTIVADO";
                 if(buscar_en_lista("Presion MIN")){
                     actualizar_en_lista("Presion MIN", 0);
-                    consul->agregar_evento("ALARMA", obtener_modo(), "PRESION BAJA DESACTIVADA - C");
+                    consul->agregar_evento("ALARMA", obtener_modo(), "PRESION BAJA DESACTIVADA - C", obtener_parametros());
                     signoPEEP->bar->setPalette(*paleNormal);
                     signoPEEP->label_title->setStyleSheet("color: white;");
                     if(diccionario_alarma->value("Presion MIN") == 0 && diccionario_alarma->value("Presion MAX") == 0 && diccionario_alarma->value("Presion baja") == 0){
@@ -5827,7 +5827,7 @@ void Monitor::revisar_alarmas_senpresion(){
                 qDebug() << "[ALARMAS] Alarma presion baja config ACTIVADO";
                 if(! buscar_en_lista("Presion baja")){
                     agregar_en_lista("Presion baja", 1);
-                    consul->agregar_evento("ALARMA", obtener_modo(), "PRESION BAJA CONFIG ACTIVADA - D");
+                    consul->agregar_evento("ALARMA", obtener_modo(), "PRESION BAJA CONFIG ACTIVADA - D", obtener_parametros());
                     qDebug() << "[ALARMAS] Agrega Presion baja";
                     if(! estadoAlarmaPresion){
                         estadoAlarmaPresion = true;
@@ -5837,7 +5837,7 @@ void Monitor::revisar_alarmas_senpresion(){
                 else{
                     if(diccionario_alarma->value("Presion baja") == 0){
                         actualizar_en_lista("Presion baja", 1);
-                        consul->agregar_evento("ALARMA", obtener_modo(), "PRESION BAJA CONFIG ACTIVADA - D");
+                        consul->agregar_evento("ALARMA", obtener_modo(), "PRESION BAJA CONFIG ACTIVADA - D", obtener_parametros());
                         qDebug() << "[ALARMAS] Agrega Presion baja";
                         if(! estadoAlarmaPresion){
                             estadoAlarmaPresion = true;
@@ -5850,7 +5850,7 @@ void Monitor::revisar_alarmas_senpresion(){
                 qDebug() << "[ALARMAS] Alarma presion baja config DESACTIVADO";
                 if(buscar_en_lista("Presion baja")){
                     actualizar_en_lista("Presion baja", 0);
-                    consul->agregar_evento("ALARMA", obtener_modo(), "PRESION BAJA CONFIG DESACTIVADA - D");
+                    consul->agregar_evento("ALARMA", obtener_modo(), "PRESION BAJA CONFIG DESACTIVADA - D", obtener_parametros());
                     if(diccionario_alarma->value("Presion baja") == 0 && diccionario_alarma->value("Presion MIN") == 0 && diccionario_alarma->value("Presion MAX") == 0){
                         if(estadoAlarmaPresion){
                             estadoAlarmaPresion = false;
@@ -5866,7 +5866,7 @@ void Monitor::revisar_alarmas_senpresion(){
                 qDebug() << "[ALARMAS] Alarma desconexion paciente ACTIVADO";
                 if(! buscar_en_lista("Desc. Paciente")){
                     agregar_en_lista("Desc. Paciente", 1);
-                    consul->agregar_evento("ALARMA", obtener_modo(), "Desconexion del paciente ACTIVADA - E");
+                    consul->agregar_evento("ALARMA", obtener_modo(), "Desconexion del paciente ACTIVADA - E", obtener_parametros());
                     qDebug() << "[ALARMAS] Agrega Desc. Paciente";
                     if(! estadoAlarmaDesconexion){
                         estadoAlarmaDesconexion = true;
@@ -5876,7 +5876,7 @@ void Monitor::revisar_alarmas_senpresion(){
                 else{
                     if(diccionario_alarma->value("Desc. Paciente") == 0){
                         actualizar_en_lista("Desc. Paciente", 1);
-                        consul->agregar_evento("ALARMA", obtener_modo(), "Desconexion del paciente ACTIVADA - E");
+                        consul->agregar_evento("ALARMA", obtener_modo(), "Desconexion del paciente ACTIVADA - E", obtener_parametros());
                         qDebug() << "[ALARMAS] Agrega Desc. Paciente";
                         if(! estadoAlarmaDesconexion){
                             estadoAlarmaDesconexion = true;
@@ -5889,7 +5889,7 @@ void Monitor::revisar_alarmas_senpresion(){
                 qDebug() << "[ALARMAS] Alarma desconexion paciente DESACTIVADO";
                 if(buscar_en_lista("Desc. Paciente")){
                     actualizar_en_lista("Desc. Paciente", 0);
-                    consul->agregar_evento("ALARMA", obtener_modo(), "Desconexion del paciente DESACTIVADA - E");
+                    consul->agregar_evento("ALARMA", obtener_modo(), "Desconexion del paciente DESACTIVADA - E", obtener_parametros());
                     if(diccionario_alarma->value("Desc. Paciente") == 0){
                         if(estadoAlarmaDesconexion){
                             estadoAlarmaDesconexion = false;
@@ -6059,7 +6059,7 @@ void Monitor::revisarBanderasVentilador(){
             configurandoVentilador = false;
         }
         label_debug->setText("CE:" + QString::number(numeroBanderaVentilador));
-        consul->agregar_evento("Trama control", obtener_modo(),"CE: " + QString::number(numeroBanderaVentilador));
+        consul->agregar_evento("Trama control", obtener_modo(),"CE: " + QString::number(numeroBanderaVentilador), obtener_parametros());
     }  catch (std::exception &e) {
         qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
@@ -6080,7 +6080,7 @@ void Monitor::revisarConfigVentilador(){
                         qDebug() << "[CONFIGURACION] origenListo Error";
                         muestraAvisoVentilador("ERROR VENTILADOR");
                         timerConfigVent->stop();
-                        consul->agregar_evento("COMUNICACION", obtener_modo(), "ERROR NO RESPONDE CONTROL I");
+                        consul->agregar_evento("COMUNICACION", obtener_modo(), "ERROR NO RESPONDE CONTROL I", obtener_parametros());
                     }
                 }
             }
@@ -6094,7 +6094,7 @@ void Monitor::revisarConfigVentilador(){
                 if(vAvisoV == nullptr){
                     qDebug() << "[CONFIGURACION] vrecibidaVentilador Error";
                     muestraAvisoVentilador("NO HAY CONEXION CON EL VENTILADOR");
-                    consul->agregar_evento("COMUNICACION", obtener_modo(), "ERROR NO RESPONDE CONTROL II");
+                    consul->agregar_evento("COMUNICACION", obtener_modo(), "ERROR NO RESPONDE CONTROL II", obtener_parametros());
                     timerConfigVent->stop();
                 }
             }
@@ -6121,7 +6121,7 @@ void Monitor::revisarOffsetVentilador(){
                 if(vAvisoV == nullptr){
                     qDebug() << "[TRAMAS] OffsetsVentilador Error";
                     muestraAvisoVentilador("NO HAY CONEXION CON EL VENTILADOR - Offsets");
-                    consul->agregar_evento("COMUNICACION", obtener_modo(), "ERROR NO RESPONDE CONTROL III");
+                    consul->agregar_evento("COMUNICACION", obtener_modo(), "ERROR NO RESPONDE CONTROL III", obtener_parametros());
                     timerOffsetsVent->stop();
                 }
             }
@@ -6148,7 +6148,7 @@ void Monitor::revisarMIniVentilador(){
                 if(vAvisoV == nullptr){
                     qDebug() << "[TRAMAS] MIniVentilador Error";
                     muestraAvisoVentilador("NO HAY CONEXION CON EL VENTILADOR - MIni");
-                    consul->agregar_evento("COMUNICACION", obtener_modo(), "ERROR NO RESPONDE CONTROL IV");
+                    consul->agregar_evento("COMUNICACION", obtener_modo(), "ERROR NO RESPONDE CONTROL IV", obtener_parametros());
                     timerMIniVent->stop();
                 }
             }
@@ -6593,7 +6593,7 @@ void Monitor::teclado(QString tecla){
         else if(tecla == "est"){
             qDebug() << "[ALARMAS] Desactivar audio";
             if(alarmaControl->pausaAlarma()){
-                consul->agregar_evento("ALARMA", obtener_modo(), "SILENCIAR AUDIO");
+                consul->agregar_evento("ALARMA", obtener_modo(), "SILENCIAR AUDIO", obtener_parametros());
             }
             if(! alarmaboolean){
                 alarmaboolean = true;
@@ -7716,7 +7716,7 @@ void Monitor::borrar_en_lista(QString alarma){
 
 void Monitor::borrar_alarmas(){
     try {
-        consul->agregar_evento("ALARMA", obtener_modo(), "Limpia alarmas");
+        consul->agregar_evento("ALARMA", obtener_modo(), "Limpia alarmas", obtener_parametros());
         //qDebug() << "borrar_alarmas";
         QStringList temp;
         QMap<QString, int>::iterator iter;
@@ -7788,7 +7788,7 @@ void Monitor::revisar_entra_gases(){
         if(aire_of < min_entrada_aire){
             if(! buscar_en_lista("P. Aire BAJO")){
                 agregar_en_lista("P. Aire BAJO", 1);
-                consul->agregar_evento("ALARMA", obtener_modo(), "Presión baja aire ACTIVADO - " + QString::number(aire_of,'f',1));
+                consul->agregar_evento("ALARMA", obtener_modo(), "Presión baja aire ACTIVADO - " + QString::number(aire_of,'f',1), obtener_parametros());
                 if(! estadoAlarmaGases){
                     estadoAlarmaGases = true;
                     alarmaControl->iniciaAlarma(alarmaControl->GASES);
@@ -7797,7 +7797,7 @@ void Monitor::revisar_entra_gases(){
             else{
                 if(diccionario_alarma->value("P. Aire BAJO") == 0){
                     actualizar_en_lista("P. Aire BAJO", 1);
-                    consul->agregar_evento("ALARMA", obtener_modo(), "Presión baja aire ACTIVADO - " + QString::number(aire_of,'f',1));
+                    consul->agregar_evento("ALARMA", obtener_modo(), "Presión baja aire ACTIVADO - " + QString::number(aire_of,'f',1), obtener_parametros());
                     if(! estadoAlarmaGases){
                         estadoAlarmaGases = true;
                         alarmaControl->iniciaAlarma(alarmaControl->GASES);
@@ -7808,7 +7808,7 @@ void Monitor::revisar_entra_gases(){
             if(buscar_en_lista("P. Aire ALTO")){
                 if(diccionario_alarma->value("P. Aire ALTO") == 1){
                     actualizar_en_lista("P. Aire ALTO", 0);
-                    consul->agregar_evento("ALARMA", obtener_modo(), "Presión alta aire DESACTIVADO");
+                    consul->agregar_evento("ALARMA", obtener_modo(), "Presión alta aire DESACTIVADO", obtener_parametros());
                     if(estadoAlarmaGases && !(estadoAlarmaSonoraGases())){
                         estadoAlarmaGases = false;
                         alarmaControl->detenAlarma(alarmaControl->GASES);
@@ -7820,7 +7820,7 @@ void Monitor::revisar_entra_gases(){
         else if(aire_of > max_entrada_aire){
             if(! buscar_en_lista("P. Aire ALTO")){
                 agregar_en_lista("P. Aire ALTO", 1);
-                consul->agregar_evento("ALARMA", obtener_modo(), "Presión alta aire ACTIVADO - " + QString::number(aire_of,'f',1));
+                consul->agregar_evento("ALARMA", obtener_modo(), "Presión alta aire ACTIVADO - " + QString::number(aire_of,'f',1), obtener_parametros());
                 if(! estadoAlarmaGases){
                     estadoAlarmaGases = true;
                     alarmaControl->iniciaAlarma(alarmaControl->GASES);
@@ -7829,7 +7829,7 @@ void Monitor::revisar_entra_gases(){
             else{
                 if(diccionario_alarma->value("P. Aire ALTO") == 0){
                     actualizar_en_lista("P. Aire ALTO", 1);
-                    consul->agregar_evento("ALARMA", obtener_modo(), "Presión alta aire ACTIVADO - " + QString::number(aire_of,'f',1));
+                    consul->agregar_evento("ALARMA", obtener_modo(), "Presión alta aire ACTIVADO - " + QString::number(aire_of,'f',1), obtener_parametros());
                     if(! estadoAlarmaGases){
                         estadoAlarmaGases = true;
                         alarmaControl->iniciaAlarma(alarmaControl->GASES);
@@ -7840,7 +7840,7 @@ void Monitor::revisar_entra_gases(){
             if(buscar_en_lista("P. Aire BAJO")){
                 if(diccionario_alarma->value("P. Aire BAJO") == 1){
                     actualizar_en_lista("P. Aire BAJO", 0);
-                    consul->agregar_evento("ALARMA", obtener_modo(), "Presión baja aire DESACTIVADO");
+                    consul->agregar_evento("ALARMA", obtener_modo(), "Presión baja aire DESACTIVADO", obtener_parametros());
                     if(estadoAlarmaGases && !(estadoAlarmaSonoraGases())){
                         estadoAlarmaGases = false;
                         alarmaControl->detenAlarma(alarmaControl->GASES);
@@ -7858,7 +7858,7 @@ void Monitor::revisar_entra_gases(){
                 if(buscar_en_lista("P. Aire BAJO")){
                     if(diccionario_alarma->value("P. Aire BAJO") == 1){
                         actualizar_en_lista("P. Aire BAJO", 0);
-                        consul->agregar_evento("ALARMA", obtener_modo(), "Presión baja aire DESACTIVADO");
+                        consul->agregar_evento("ALARMA", obtener_modo(), "Presión baja aire DESACTIVADO", obtener_parametros());
                         if(estadoAlarmaGases && !(estadoAlarmaSonoraGases())){
                             estadoAlarmaGases = false;
                             alarmaControl->detenAlarma(alarmaControl->GASES);
@@ -7868,7 +7868,7 @@ void Monitor::revisar_entra_gases(){
                 if(buscar_en_lista("P. Aire ALTO")){
                     if(diccionario_alarma->value("P. Aire ALTO") == 1){
                         actualizar_en_lista("P. Aire ALTO", 0);
-                        consul->agregar_evento("ALARMA", obtener_modo(), "Presión alta aire DESACTIVADO");
+                        consul->agregar_evento("ALARMA", obtener_modo(), "Presión alta aire DESACTIVADO", obtener_parametros());
                         if(estadoAlarmaGases && !(estadoAlarmaSonoraGases())){
                             estadoAlarmaGases = false;
                             alarmaControl->detenAlarma(alarmaControl->GASES);
@@ -7881,7 +7881,7 @@ void Monitor::revisar_entra_gases(){
         if(oxigeno_of < min_entrada_oxi){
             if(! buscar_en_lista("P. O2 BAJO")){
                 agregar_en_lista("P. O2 BAJO", 1);
-                consul->agregar_evento("ALARMA", obtener_modo(), "Presión baja oxigeno ACTIVADO - " + QString::number(oxigeno_of,'f',1));
+                consul->agregar_evento("ALARMA", obtener_modo(), "Presión baja oxigeno ACTIVADO - " + QString::number(oxigeno_of,'f',1), obtener_parametros());
                 if(! estadoAlarmaGases){
                     estadoAlarmaGases = true;
                     alarmaControl->iniciaAlarma(alarmaControl->GASES);
@@ -7890,7 +7890,7 @@ void Monitor::revisar_entra_gases(){
             else{
                 if(diccionario_alarma->value("P. O2 BAJO") == 0){
                     actualizar_en_lista("P. O2 BAJO", 1);
-                    consul->agregar_evento("ALARMA", obtener_modo(), "Presión baja oxigeno ACTIVADO - " + QString::number(oxigeno_of,'f',1));
+                    consul->agregar_evento("ALARMA", obtener_modo(), "Presión baja oxigeno ACTIVADO - " + QString::number(oxigeno_of,'f',1), obtener_parametros());
                     if(! estadoAlarmaGases){
                         estadoAlarmaGases = true;
                         alarmaControl->iniciaAlarma(alarmaControl->GASES);
@@ -7901,7 +7901,7 @@ void Monitor::revisar_entra_gases(){
             if(buscar_en_lista("P. O2 ALTO")){
                 if(diccionario_alarma->value("P. O2 ALTO") == 1){
                     actualizar_en_lista("P. O2 ALTO", 0);
-                    consul->agregar_evento("ALARMA", obtener_modo(), "Presión alta oxigeno DESACTIVADO");
+                    consul->agregar_evento("ALARMA", obtener_modo(), "Presión alta oxigeno DESACTIVADO", obtener_parametros());
                     if(estadoAlarmaGases && !(estadoAlarmaSonoraGases())){
                         estadoAlarmaGases = false;
                         alarmaControl->detenAlarma(alarmaControl->GASES);
@@ -7913,7 +7913,7 @@ void Monitor::revisar_entra_gases(){
         else if(oxigeno_of > max_entrada_oxi){
             if(! buscar_en_lista("P. O2 ALTO")){
                 agregar_en_lista("P. O2 ALTO", 1);
-                consul->agregar_evento("ALARMA", obtener_modo(), "Presión alta oxigeno ACTIVADO - " + QString::number(oxigeno_of,'f',1));
+                consul->agregar_evento("ALARMA", obtener_modo(), "Presión alta oxigeno ACTIVADO - " + QString::number(oxigeno_of,'f',1), obtener_parametros());
                 if(! estadoAlarmaGases){
                     estadoAlarmaGases = true;
                     alarmaControl->iniciaAlarma(alarmaControl->GASES);
@@ -7922,7 +7922,7 @@ void Monitor::revisar_entra_gases(){
             else{
                 if(diccionario_alarma->value("P. O2 ALTO") == 0){
                     actualizar_en_lista("P. O2 ALTO", 1);
-                    consul->agregar_evento("ALARMA", obtener_modo(), "Presión alta oxigeno ACTIVADO - " + QString::number(oxigeno_of,'f',1));
+                    consul->agregar_evento("ALARMA", obtener_modo(), "Presión alta oxigeno ACTIVADO - " + QString::number(oxigeno_of,'f',1), obtener_parametros());
                     if(! estadoAlarmaGases){
                         estadoAlarmaGases = true;
                         alarmaControl->iniciaAlarma(alarmaControl->GASES);
@@ -7933,7 +7933,7 @@ void Monitor::revisar_entra_gases(){
             if(buscar_en_lista("P. O2 BAJO")){
                 if(diccionario_alarma->value("P. O2 BAJO") == 1){
                     actualizar_en_lista("P. O2 BAJO", 0);
-                    consul->agregar_evento("ALARMA", obtener_modo(), "Presión baja oxigeno DESACTIVADO");
+                    consul->agregar_evento("ALARMA", obtener_modo(), "Presión baja oxigeno DESACTIVADO", obtener_parametros());
                     if(estadoAlarmaGases && !(estadoAlarmaSonoraGases())){
                         estadoAlarmaGases = false;
                         alarmaControl->detenAlarma(alarmaControl->GASES);
@@ -7951,7 +7951,7 @@ void Monitor::revisar_entra_gases(){
                 if(buscar_en_lista("P. O2 BAJO")){
                     if(diccionario_alarma->value("P. O2 BAJO") == 1){
                         actualizar_en_lista("P. O2 BAJO", 0);
-                        consul->agregar_evento("ALARMA", obtener_modo(), "Presión baja oxigeno DESACTIVADO");
+                        consul->agregar_evento("ALARMA", obtener_modo(), "Presión baja oxigeno DESACTIVADO", obtener_parametros());
                         if(estadoAlarmaGases && !(estadoAlarmaSonoraGases())){
                             estadoAlarmaGases = false;
                             alarmaControl->detenAlarma(alarmaControl->GASES);
@@ -7961,7 +7961,7 @@ void Monitor::revisar_entra_gases(){
                 if(buscar_en_lista("P. O2 ALTO")){
                     if(diccionario_alarma->value("P. O2 ALTO") == 1){
                         actualizar_en_lista("P. O2 ALTO", 0);
-                        consul->agregar_evento("ALARMA", obtener_modo(), "Presión alta oxigeno DESACTIVADO");
+                        consul->agregar_evento("ALARMA", obtener_modo(), "Presión alta oxigeno DESACTIVADO", obtener_parametros());
                         if(estadoAlarmaGases && !(estadoAlarmaSonoraGases())){
                             estadoAlarmaGases = false;
                             alarmaControl->detenAlarma(alarmaControl->GASES);
@@ -7988,7 +7988,7 @@ void Monitor::revisar_entra_gases(){
                         //activar alarma
                         if(! buscar_en_lista("Dif. gases")){
                             agregar_en_lista("Dif. gases", 1);
-                            consul->agregar_evento("ALARMA", obtener_modo(), "Diferencia entre gases es mayor a 5  es: " + QString::number(diferencia,'f',1));
+                            consul->agregar_evento("ALARMA", obtener_modo(), "Diferencia entre gases es mayor a 5  es: " + QString::number(diferencia,'f',1), obtener_parametros());
                             if(! estadoAlarmaGases){
                                 estadoAlarmaGases = true;
                                 alarmaControl->iniciaAlarma(alarmaControl->GASES);
@@ -7997,7 +7997,7 @@ void Monitor::revisar_entra_gases(){
                         else{
                             if(diccionario_alarma->value("Dif. gases") == 0){
                                 actualizar_en_lista("Dif. gases", 1);
-                                consul->agregar_evento("ALARMA", obtener_modo(), "Diferencia entre gases es mayor a 5 es : " + QString::number(diferencia,'f',1));
+                                consul->agregar_evento("ALARMA", obtener_modo(), "Diferencia entre gases es mayor a 5 es : " + QString::number(diferencia,'f',1), obtener_parametros());
                                 if(! estadoAlarmaGases){
                                     estadoAlarmaGases = true;
                                     alarmaControl->iniciaAlarma(alarmaControl->GASES);
@@ -8016,7 +8016,7 @@ void Monitor::revisar_entra_gases(){
                         if(buscar_en_lista("Dif. gases")){
                             if(diccionario_alarma->value("Dif. gases") == 1){
                                 actualizar_en_lista("Dif. gases", 0);
-                                consul->agregar_evento("ALARMA", obtener_modo(), "Diferencia entre gases DESACTIVADO es : " + QString::number(diferencia,'f',1));
+                                consul->agregar_evento("ALARMA", obtener_modo(), "Diferencia entre gases DESACTIVADO es : " + QString::number(diferencia,'f',1), obtener_parametros());
                                 if(estadoAlarmaGases && !(estadoAlarmaSonoraGases())){
                                     estadoAlarmaGases = false;
                                     alarmaControl->detenAlarma(alarmaControl->GASES);
@@ -8036,7 +8036,7 @@ void Monitor::revisar_entra_gases(){
                 if((diccionario_alarma->value("P. O2 BAJO") == 1 && tramaVentilador.mid(29,3).toInt() != 21) || diccionario_alarma->value("P. Aire BAJO") == 1){
                     //activar bloqueo
                     if(!bloqueo_gases){
-                        consul->agregar_evento("ALARMA", obtener_modo(), "Bloqueo de inicio por suministro de gases");
+                        consul->agregar_evento("ALARMA", obtener_modo(), "Bloqueo de inicio por suministro de gases", obtener_parametros());
                         bloqueo_gases = true;
                         qDebug() << "[GASES] bloqueo de gases por entrada mínima 1. fio2 es: " << tramaVentilador.mid(29,3);
                     }
@@ -8047,7 +8047,7 @@ void Monitor::revisar_entra_gases(){
                     if(bloqueo_gases){
                         bloqueo_gases = false;
                         qDebug() << "[GASES] desbloqueo de gases por entrada mínima 2. fio2 es: " << tramaVentilador.mid(29,3);
-                        consul->agregar_evento("ALARMA", obtener_modo(), "Desbloqueo de inicio por suministro de gases");
+                        consul->agregar_evento("ALARMA", obtener_modo(), "Desbloqueo de inicio por suministro de gases", obtener_parametros());
                     }
 
                }
@@ -8056,7 +8056,7 @@ void Monitor::revisar_entra_gases(){
                     if(bloqueo_gases){
                         bloqueo_gases = false;
                         qDebug() << "[GASES] desbloqueo de gases por entrada mínima 3. fio2 es: " << tramaVentilador.mid(29,3);
-                        consul->agregar_evento("ALARMA", obtener_modo(), "Desbloqueo de inicio por suministro de gases");
+                        consul->agregar_evento("ALARMA", obtener_modo(), "Desbloqueo de inicio por suministro de gases", obtener_parametros());
                     }
 
                }
@@ -8066,7 +8066,7 @@ void Monitor::revisar_entra_gases(){
                 if(bloqueo_gases){
                     bloqueo_gases = false;
                     qDebug() << "[GASES] desbloqueo de gases por entrada mínima 4. fio2 es: " << tramaVentilador.mid(29,3);
-                    consul->agregar_evento("ALARMA", obtener_modo(), "Desbloqueo de inicio por suministro de gases");
+                    consul->agregar_evento("ALARMA", obtener_modo(), "Desbloqueo de inicio por suministro de gases", obtener_parametros());
                 }
             }
         }
@@ -8094,7 +8094,7 @@ void Monitor::revisar_entra_gases(){
                     agregar_en_lista("FIO2 BAJO", 1);
                     signoPLATEU->bar->setPalette(*paleAlta);
                     signoPLATEU->label_title->setStyleSheet("color: red;");
-                    consul->agregar_evento("ALARMA", obtener_modo(), "FIO2 ACTIVADO - " + QString::number(nivel_oxi,'f',1) + ":" + QString::number(fio2 - 5));
+                    consul->agregar_evento("ALARMA", obtener_modo(), "FIO2 ACTIVADO - " + QString::number(nivel_oxi,'f',1) + ":" + QString::number(fio2 - 5), obtener_parametros());
                     if(! estadoAlarmaGases){
                         estadoAlarmaGases = true;
                         alarmaControl->iniciaAlarma(alarmaControl->GASES);
@@ -8105,7 +8105,7 @@ void Monitor::revisar_entra_gases(){
                         signoPLATEU->bar->setPalette(*paleAlta);
                         signoPLATEU->label_title->setStyleSheet("color: red;");
                         actualizar_en_lista("FIO2 BAJO", 1);
-                         consul->agregar_evento("ALARMA", obtener_modo(), "FIO2 ACTIVADO - " + QString::number(nivel_oxi,'f',1) + ":" + QString::number(fio2 - 5));
+                         consul->agregar_evento("ALARMA", obtener_modo(), "FIO2 ACTIVADO - " + QString::number(nivel_oxi,'f',1) + ":" + QString::number(fio2 - 5), obtener_parametros());
                         if(! estadoAlarmaGases){
                             estadoAlarmaGases = true;
                             alarmaControl->iniciaAlarma(alarmaControl->GASES);
@@ -8116,7 +8116,7 @@ void Monitor::revisar_entra_gases(){
                 if(buscar_en_lista("FIO2 ALTO")){
                     if(diccionario_alarma->value("FIO2 ALTO") == 1){
                         actualizar_en_lista("FIO2 ALTO", 0);
-                        consul->agregar_evento("ALARMA", obtener_modo(), "FIO2 ALTO DESACTIVADO");
+                        consul->agregar_evento("ALARMA", obtener_modo(), "FIO2 ALTO DESACTIVADO", obtener_parametros());
                         if(estadoAlarmaGases && !(estadoAlarmaSonoraGases())){
                             estadoAlarmaGases = false;
                             alarmaControl->detenAlarma(alarmaControl->GASES);
@@ -8129,7 +8129,7 @@ void Monitor::revisar_entra_gases(){
                     signoPLATEU->bar->setPalette(*paleAlta);
                     signoPLATEU->label_title->setStyleSheet("color: red;");
                     agregar_en_lista("FIO2 ALTO", 1);
-                    consul->agregar_evento("ALARMA", obtener_modo(), "FIO2 ACTIVADO - " + QString::number(nivel_oxi,'f',1) + ":" + QString::number(fio2 + 5));
+                    consul->agregar_evento("ALARMA", obtener_modo(), "FIO2 ACTIVADO - " + QString::number(nivel_oxi,'f',1) + ":" + QString::number(fio2 + 5), obtener_parametros());
                     if(! estadoAlarmaGases){
                         estadoAlarmaGases = true;
                         alarmaControl->iniciaAlarma(alarmaControl->GASES);
@@ -8140,7 +8140,7 @@ void Monitor::revisar_entra_gases(){
                         signoPLATEU->bar->setPalette(*paleAlta);
                         signoPLATEU->label_title->setStyleSheet("color: red;");
                         actualizar_en_lista("FIO2 ALTO", 1);
-                        consul->agregar_evento("ALARMA", obtener_modo(), "FIO2 ACTIVADO - " + QString::number(nivel_oxi,'f',1) + ":" + QString::number(fio2 + 5));
+                        consul->agregar_evento("ALARMA", obtener_modo(), "FIO2 ACTIVADO - " + QString::number(nivel_oxi,'f',1) + ":" + QString::number(fio2 + 5), obtener_parametros());
                         if(! estadoAlarmaGases){
                             estadoAlarmaGases = true;
                             alarmaControl->iniciaAlarma(alarmaControl->GASES);
@@ -8151,7 +8151,7 @@ void Monitor::revisar_entra_gases(){
                 if(buscar_en_lista("FIO2 BAJO")){
                     if(diccionario_alarma->value("FIO2 BAJO") == 1){
                         actualizar_en_lista("FIO2 BAJO", 0);
-                        consul->agregar_evento("ALARMA", obtener_modo(), "FIO2 BAJO DESACTIVADO");
+                        consul->agregar_evento("ALARMA", obtener_modo(), "FIO2 BAJO DESACTIVADO", obtener_parametros());
                         if(estadoAlarmaGases && !(estadoAlarmaSonoraGases())){
                             estadoAlarmaGases = false;
                             alarmaControl->detenAlarma(alarmaControl->GASES);
@@ -8165,7 +8165,7 @@ void Monitor::revisar_entra_gases(){
                 if(buscar_en_lista("FIO2 ALTO")){
                     if(diccionario_alarma->value("FIO2 ALTO") == 1){
                         actualizar_en_lista("FIO2 ALTO", 0);
-                        consul->agregar_evento("ALARMA", obtener_modo(), "FIO2 ALTO DESACTIVADO");
+                        consul->agregar_evento("ALARMA", obtener_modo(), "FIO2 ALTO DESACTIVADO", obtener_parametros());
                         if(estadoAlarmaGases && !(estadoAlarmaSonoraGases())){
                             estadoAlarmaGases = false;
                             alarmaControl->detenAlarma(alarmaControl->GASES);
@@ -8175,7 +8175,7 @@ void Monitor::revisar_entra_gases(){
                 if(buscar_en_lista("FIO2 BAJO")){
                     if(diccionario_alarma->value("FIO2 BAJO") == 1){
                         actualizar_en_lista("FIO2 BAJO", 0);
-                        consul->agregar_evento("ALARMA", obtener_modo(), "FIO2 BAJO DESACTIVADO");
+                        consul->agregar_evento("ALARMA", obtener_modo(), "FIO2 BAJO DESACTIVADO", obtener_parametros());
                         if(estadoAlarmaGases && !(estadoAlarmaSonoraGases())){
                             estadoAlarmaGases = false;
                             alarmaControl->detenAlarma(alarmaControl->GASES);
@@ -8215,5 +8215,56 @@ QString Monitor::obtener_modo(){
     }  catch (std::exception &e) {
         qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
         return "";
+    }
+}
+
+QString Monitor::obtener_parametros(){
+    try {
+        if(modoSel == 0){
+            //return "PCMV";
+            return obtener_params_modo("PCMV");
+        }
+        else if(modoSel == 1){
+            //return "VCMV";
+            return obtener_params_modo("VCMV");
+        }
+        else if(modoSel == 2){
+            //return "PSIMV";
+            return obtener_params_modo("PSIMV");
+        }
+        else if(modoSel == 3){
+            //return "VSIMV";
+            return obtener_params_modo("VSIMV");
+        }
+        else if(modoSel == 4){
+            //return "PCPAP";
+            return obtener_params_modo("PCPAP");
+        }
+        else if(modoSel == 5){
+            //return "VCPAP";
+            return obtener_params_modo("VCPAP");
+        }
+        else{
+            return "";
+        }
+    }  catch (std::exception &e) {
+        qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        return "";
+    }
+}
+
+QString Monitor::obtener_params_modo(QString modo){
+    QStringList parts_default;
+    QString ult_config = consul->buscar_ult_config(modo);
+    if(ult_config != ""){
+        parts_default = ult_config.split(",");
+        parts_default.removeAt(0);
+        return parts_default.join(";");
+    }
+    else{
+        QString default_config = consul->cargar_config_default(modo);
+        parts_default = default_config.split(",");
+        parts_default.removeAt(0);
+        return parts_default.join(";");
     }
 }

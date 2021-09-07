@@ -1296,7 +1296,7 @@ void UiConfiguracion::guardarConfigPCMV(){
         if(valores.size() > 0){
             if(monitor->consul->guardar_config_ultima_PCMV(valores.at(0),valores.at(1), valores.at(2),valores.at(3),valores.at(4),valores.at(5),valores.at(6),valores.at(7),valores.at(8),valores.at(9))){
                 guardarModo(0);
-                monitor->consul->agregar_evento("Guardar", monitor->obtener_modo(), "Se guardaron cambios en modo PCMV");
+                monitor->consul->agregar_evento("Guardar", monitor->obtener_modo(), "Se guardaron cambios en modo PCMV",monitor->obtener_parametros());
                 configModo->modoPCMV->mostrar_mensaje("Datos guardados");
             }
             else{
@@ -1318,7 +1318,7 @@ void UiConfiguracion::guardarConfigVCMV(){
         if(valores.size() > 0){
             if(monitor->consul->guardar_config_ultima_VCMV(valores.at(0),valores.at(1), valores.at(2),valores.at(3),valores.at(4),valores.at(5),valores.at(6),valores.at(7),valores.at(8),valores.at(9))){
                 guardarModo(1);
-                monitor->consul->agregar_evento("Guardar", monitor->obtener_modo(), "Se guardaron cambios en modo VCMV");
+                monitor->consul->agregar_evento("Guardar", monitor->obtener_modo(), "Se guardaron cambios en modo VCMV",monitor->obtener_parametros());
                 configModo->modoVCMV->mostrar_mensaje("Datos guardados");
             }
             else{
@@ -1340,7 +1340,7 @@ void UiConfiguracion::guardarConfigPSIMV(){
         if(valores.size() > 0){
             if(monitor->consul->guardar_config_ultima_PSIMV(valores.at(0),valores.at(1), valores.at(2),valores.at(3),valores.at(4),valores.at(5),valores.at(6),valores.at(7),valores.at(8),valores.at(9),valores.at(10))){
                 guardarModo(2);
-                monitor->consul->agregar_evento("Guardar", monitor->obtener_modo(), "Se guardaron cambios en modo PSIMV");
+                monitor->consul->agregar_evento("Guardar", monitor->obtener_modo(), "Se guardaron cambios en modo PSIMV",monitor->obtener_parametros());
                 configModo->modoPSIMV->mostrar_mensaje("Datos guardados");
             }
             else{
@@ -1362,7 +1362,7 @@ void UiConfiguracion::guardarConfigVSIMV(){
         if(valores.size() > 0){
             if(monitor->consul->guardar_config_ultima_VSIMV(valores.at(0),valores.at(1), valores.at(2),valores.at(3),valores.at(4),valores.at(5),valores.at(6),valores.at(7),valores.at(8),valores.at(9),valores.at(10),valores.at(11),valores.at(12))){
                 guardarModo(3);
-                monitor->consul->agregar_evento("Guardar", monitor->obtener_modo(), "Se guardaron cambios en modo VSIMV");
+                monitor->consul->agregar_evento("Guardar", monitor->obtener_modo(), "Se guardaron cambios en modo VSIMV",monitor->obtener_parametros());
                 configModo->modoVSIMV->mostrar_mensaje("Datos guardados");
             }
             else{
@@ -1384,7 +1384,7 @@ void UiConfiguracion::guardarConfigPCPAP(){
         if(valores.size() > 0){
             if(monitor->consul->guardar_config_ultima_PCPAP(valores.at(0),valores.at(1), valores.at(2),valores.at(3),valores.at(4),valores.at(5),valores.at(6),valores.at(7),valores.at(8),valores.at(9))){
                 guardarModo(4);
-                monitor->consul->agregar_evento("Guardar", monitor->obtener_modo(), "Se guardaron cambios en modo PCPAP");
+                monitor->consul->agregar_evento("Guardar", monitor->obtener_modo(), "Se guardaron cambios en modo PCPAP",monitor->obtener_parametros());
                 configModo->modoPCPAP->mostrar_mensaje("Datos guardados");
             }
             else{
@@ -1406,7 +1406,7 @@ void UiConfiguracion::guardarConfigVCPAP(){
         if(valores.size() > 0){
             if(monitor->consul->guardar_config_ultima_VCPAP(valores.at(0),valores.at(1), valores.at(2),valores.at(3),valores.at(4),valores.at(5),valores.at(6),valores.at(7),valores.at(8),valores.at(9))){
                 guardarModo(5);
-                monitor->consul->agregar_evento("Guardar", monitor->obtener_modo(), "Se guardaron cambios en modo VCPAP");
+                monitor->consul->agregar_evento("Guardar", monitor->obtener_modo(), "Se guardaron cambios en modo VCPAP",monitor->obtener_parametros());
                 configModo->modoVCPAP->mostrar_mensaje("Datos guardados");
             }
             else{

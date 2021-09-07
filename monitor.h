@@ -732,6 +732,10 @@ public:
     //timer reiniciar ping
     QTimer *timerReiniciarPing;
 
+    //obtener parametros
+    QString obtener_parametros();
+    QString obtener_params_modo(QString modo);
+
 
 public slots:
     void revisarErrorWDT();

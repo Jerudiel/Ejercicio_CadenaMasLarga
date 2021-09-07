@@ -61,7 +61,7 @@ public:
     //QStringList obtener_eventos_para_borrar();
     QStringList borrar_eventos();
     bool borrar_evento(QString id);
-    bool agregar_evento(QString tipo, QString modo, QString descripcion);
+    bool agregar_evento(QString tipo, QString modo, QString descripcion, QString params);
     QString numero_serie();
     bool guarda_teclado(QString pres, QString solt);
     QString leer_teclado();
