@@ -42,6 +42,7 @@
 #include "utilidades/ventanainsoxi.h"
 #include "utilidades/ventanaconfigpi.h"
 #include "utilidades/ventanainoperante.h"
+#include "utilidades/gpio.h"
 
 class Monitor : public QWidget
 {
@@ -754,6 +755,8 @@ public:
     VentanaInoperante *ventanaRecordatorioMantenimiento;
     bool ventanaRecordatorioMantenimientoAbierta;
     void tecla_mantenimiento(QString tecla);
+
+    Gpio *gpio;
 
 public slots:
     void revisarErrorWDT();

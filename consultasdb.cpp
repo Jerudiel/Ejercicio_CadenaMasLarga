@@ -920,7 +920,7 @@ QStringList ConsultasDb::obtener_eventos(){
     try {
         if(baseDatos.isOpen()){
             //aqui falta poner límite de antiguedad y de tipo
-            QString quer = "SELECT tipo, modo, descripcion, params, fecha, hora FROM public.\"eventos\" ORDER BY fecha DESC, hora DESC";
+            QString quer = "SELECT tipo, modo, descripcion, params, fecha, hora FROM public.\"eventos\" WHERE fecha >= CURRENT_DATE - integer '8' ORDER BY fecha DESC, hora DESC";
             baseDatos.transaction();
             QSqlQuery consul;
             consul.prepare(quer);

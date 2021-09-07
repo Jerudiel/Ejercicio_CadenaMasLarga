@@ -8,6 +8,7 @@ CONFIG += c++11
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
+LIBS += -lwiringPi
 
 SOURCES += \
     consultas.cpp \
@@ -42,6 +43,7 @@ SOURCES += \
     utilidades/alarmaqw.cpp \
     utilidades/alarmasx.cpp \
     utilidades/formulas.cpp \
+    utilidades/gpio.cpp \
     utilidades/infoalarma.cpp \
     utilidades/logutils.cpp \
     utilidades/myswitch.cpp \
@@ -111,6 +113,7 @@ HEADERS += \
     utilidades/alarmaqw.h \
     utilidades/alarmasx.h \
     utilidades/formulas.h \
+    utilidades/gpio.h \
     utilidades/infoalarma.h \
     utilidades/logutils.h \
     utilidades/myswitch.h \

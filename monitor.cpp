@@ -20,7 +20,10 @@ Monitor::Monitor(QWidget *parent, ConsultasDb *consul, bool debug_c, bool debug_
         versionVentiladorEsperada = "4.1.0";
         versionSenPresionEsperada = "3.3.0";
         versionTecladoEsperada = "1.0";
-        versionPi = "3.8.20";
+        versionPi = "3.8.21";
+
+        gpio = new Gpio;
+
 
         this->control_gases = control_gases;
 
@@ -791,16 +794,14 @@ Monitor::Monitor(QWidget *parent, ConsultasDb *consul, bool debug_c, bool debug_
             qDebug() << "[CARGA] Error al cargar actualizar_formulas";
         }
 
-
-        //AQUI SE DEBE PREGUNTAR POR EL PIN GPIO PARA VER SI SE DEBE BORRAR LOS EVENTOS O NO
-        borrar_eventos();
-
-        //qDebug() << "Termina de borrar_eventos";
-
         timerBorrar = new QTimer;
         connect(timerOxigeno, SIGNAL(timeout()), this, SLOT(borrar_eventos()));
         timerBorrar->setInterval(7200000);
-        timerBorrar->start();
+        //AQUI SE DEBE PREGUNTAR POR EL PIN GPIO PARA VER SI SE DEBE BORRAR LOS EVENTOS O NO
+        if(!gpio->leer_pin()){
+            borrar_eventos();
+            timerBorrar->start();
+        }
 
         min_entrada_aire = 40;
         min_entrada_oxi = 40;
@@ -1033,7 +1034,7 @@ void Monitor::revisarMantenimiento(){
     else{
         //qDebug() << "[MANTENIMIENTO] revisarMantenimiento 3";
         //mostrar el recordatorio si no ya se está mostrando
-        if(ventanaRecordatorioMantenimiento->isHidden()){
+        if(ventanaRecordatorioMantenimiento->isHidden() && !ventanaAbierta){
             ventanaRecordatorioMantenimiento->show();
             ventanaRecordatorioMantenimientoAbierta = true;
             ventanaAbierta = true;
