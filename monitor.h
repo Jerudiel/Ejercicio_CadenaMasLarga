@@ -736,6 +736,24 @@ public:
     QString obtener_parametros();
     QString obtener_params_modo(QString modo);
 
+    //tiempo trabajando
+    QTimer *timerTrabajando;
+    QString obtenerTiempoTrabajado();
+    QString obtenerTiempoAcumulado();
+    void guardarTiempoTrabajadoAcumulado();
+    void revisarTiempoAcumulado();
+    void detenerTiempoAcumulado();
+    void iniciarTiempoAcumulado();
+
+    //mantenimiento
+    QTimer *timerMantenimiento;
+    float horaParaMantenimiento;
+    int intervaloRecordatorioMantenimiento;
+    int intervaloPreguntarPorMantenimiento;
+    bool necesitaMantenimiento;
+    VentanaInoperante *ventanaRecordatorioMantenimiento;
+    bool ventanaRecordatorioMantenimientoAbierta;
+    void tecla_mantenimiento(QString tecla);
 
 public slots:
     void revisarErrorWDT();
@@ -816,6 +834,11 @@ public slots:
     void revisarPingMuerto();
 
     void revivirPing();
+
+    void aumentaTiempoTrabajando();
+
+    void revisarMantenimiento();
+
 signals:
     void calTeclado(QString trama);
     void get_mode_keyboard_frame(QString frame);

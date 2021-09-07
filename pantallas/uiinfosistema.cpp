@@ -73,6 +73,17 @@ UiInfoSistema::UiInfoSistema(QWidget *parent, Monitor *monitor) : QWidget(parent
         labelNumeroSerie->setAlignment(Qt::AlignCenter);
         labelNumeroSerie->setObjectName("labelNumeroSerie");
 
+        labelTiempoAcumulado = new QLabel(this);
+        labelTiempoAcumulado->setGeometry(QRect(40, 410, 350, 50));
+        labelTiempoAcumulado->setFont(*fuente);
+        labelTiempoAcumulado->setAlignment(Qt::AlignCenter);
+        labelTiempoAcumulado->setObjectName("labelTiempoAcumulado");
+
+        labelTiempoTotal = new QLabel(this);
+        labelTiempoTotal->setGeometry(QRect(400, 410, 350, 50));
+        labelTiempoTotal->setFont(*fuente);
+        labelTiempoTotal->setAlignment(Qt::AlignCenter);
+        labelTiempoTotal->setObjectName("labelTiempoTotal");
 
         labelNumeroReinicios = new QLabel(this);
         labelNumeroReinicios->setGeometry(QRect(400, 20, 350, 50));
@@ -100,6 +111,12 @@ UiInfoSistema::UiInfoSistema(QWidget *parent, Monitor *monitor) : QWidget(parent
         //connect(timerActualiza, SLOT(timeout()), this, SIGNAL(actualizaValores()));
         connect(timerActualiza, &QTimer::timeout , this, &UiInfoSistema::actualizaValores);
         timerActualiza->start();
+
+        timerActualizaTiempos = new QTimer;
+        timerActualizaTiempos->setInterval(60000);
+        //connect(timerActualiza, SLOT(timeout()), this, SIGNAL(actualizaValores()));
+        connect(timerActualizaTiempos, &QTimer::timeout , this, &UiInfoSistema::actualizaTiempos);
+        timerActualizaTiempos->start();
 
         retranslateUi();
     }  catch (std::exception &e) {
@@ -134,6 +151,8 @@ void UiInfoSistema::retranslateUi(){
         labelEntradaAire->setText("Entrada aire:  psi");
         labelEntradaOxigeno->setText("Entrada oxigeno:  psi");
         labelSenPresion->setText("Sensor presión: cmH2O");
+        labelTiempoAcumulado->setText("Minutos trabajando:");
+        labelTiempoTotal->setText("Horas trabajadas:");
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
 
@@ -260,9 +279,23 @@ void UiInfoSistema::actualizaValores(){
         labelEntradaAire->setText("Entrada aire: " + QString::number(aire_of,'f',2) + " psi");
         labelEntradaOxigeno->setText("Entrada oxigeno: " + QString::number(oxigeno_of,'f',2) + " psi");
         labelSenPresion->setText("Sensor presión: " + QString::number(monitor->sensor_presion_c) + " cmH2O");
+
     }  catch (std::exception &e) {
         qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
 
     }
 }
 
+void UiInfoSistema::actualizaTiempos(){
+    try {
+        QString temp_acumulado = monitor->consul->leer_trabajo_acumulado();
+        QString temp_total = monitor->consul->leer_trabajo_total();
+
+        labelTiempoAcumulado->setText("Minutos trabajando: " + temp_acumulado);
+        labelTiempoTotal->setText("Horas trabajadas: " + temp_total);
+
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+
+    }
+}

@@ -20,7 +20,7 @@ Monitor::Monitor(QWidget *parent, ConsultasDb *consul, bool debug_c, bool debug_
         versionVentiladorEsperada = "4.1.0";
         versionSenPresionEsperada = "3.3.0";
         versionTecladoEsperada = "1.0";
-        versionPi = "3.8.19";
+        versionPi = "3.8.20";
 
         this->control_gases = control_gases;
 
@@ -791,6 +791,8 @@ Monitor::Monitor(QWidget *parent, ConsultasDb *consul, bool debug_c, bool debug_
             qDebug() << "[CARGA] Error al cargar actualizar_formulas";
         }
 
+
+        //AQUI SE DEBE PREGUNTAR POR EL PIN GPIO PARA VER SI SE DEBE BORRAR LOS EVENTOS O NO
         borrar_eventos();
 
         //qDebug() << "Termina de borrar_eventos";
@@ -979,12 +981,135 @@ Monitor::Monitor(QWidget *parent, ConsultasDb *consul, bool debug_c, bool debug_
         contador_act_dif_gases = 0;
         contador_desact_dif_gases = 0;
 
+        //tiempo trabajando
+        timerTrabajando = new QTimer;
+        timerTrabajando->setInterval(60000);
+        connect(timerTrabajando, SIGNAL(timeout()), this, SLOT(aumentaTiempoTrabajando()));
+
+        guardarTiempoTrabajadoAcumulado();
+
+        //checar si ya necesita mantenimiento
+        necesitaMantenimiento = false;
+        horaParaMantenimiento = 1.5;
+        intervaloRecordatorioMantenimiento = 90000;
+        intervaloPreguntarPorMantenimiento = 60000;
+        timerMantenimiento = new QTimer;
+        timerMantenimiento->setInterval(intervaloPreguntarPorMantenimiento);
+        connect(timerMantenimiento, SIGNAL(timeout()), this, SLOT(revisarMantenimiento()));
+        timerMantenimiento->start(intervaloPreguntarPorMantenimiento);
+
+        //ventana inoperante
+        ventanaRecordatorioMantenimiento = new VentanaInoperante(this, 500, 300, "MANTENIMIENTO");
+        ventanaRecordatorioMantenimiento->move(0,0);
+        ventanaRecordatorioMantenimiento->label_info->setText("El ventilador necesita mantenimiento.");
+        ventanaRecordatorioMantenimiento->resize(mainwindow->width(), mainwindow->height());
+        ventanaRecordatorioMantenimiento->hide();
+        ventanaRecordatorioMantenimientoAbierta = false;
+
 
     } catch (std::exception &e) {
         qWarning("[Error] %s desde la funcion %s", e.what(), Q_FUNC_INFO );
     }
     catch(...){
         qWarning("ERROR AL CREAR CLASE MONITOR");
+    }
+}
+
+void Monitor::revisarMantenimiento(){
+    //qDebug() << "[MANTENIMIENTO] revisarMantenimiento";
+    if(!necesitaMantenimiento){
+        //leer horas totales
+        //qDebug() << "[MANTENIMIENTO] revisarMantenimiento 2";
+        float horas = consul->leer_trabajo_total().toFloat();
+        //qDebug() << "[MANTENIMIENTO] revisarMantenimiento: " << horas;
+        if(horaParaMantenimiento - horas < 0){
+            //necesita mantenimiento
+            necesitaMantenimiento = true;
+            timerMantenimiento->stop();
+            timerMantenimiento->setInterval(intervaloRecordatorioMantenimiento);
+            timerMantenimiento->start(intervaloRecordatorioMantenimiento);
+        }
+    }
+    else{
+        //qDebug() << "[MANTENIMIENTO] revisarMantenimiento 3";
+        //mostrar el recordatorio si no ya se está mostrando
+        if(ventanaRecordatorioMantenimiento->isHidden()){
+            ventanaRecordatorioMantenimiento->show();
+            ventanaRecordatorioMantenimientoAbierta = true;
+            ventanaAbierta = true;
+        }
+    }
+
+}
+
+void Monitor::tecla_mantenimiento(QString tecla){
+    if(tecla == "ok"){
+        if(!ventanaRecordatorioMantenimiento->isHidden()){
+            ventanaRecordatorioMantenimiento->hide();
+            ventanaRecordatorioMantenimientoAbierta = false;
+            ventanaAbierta = false;
+        }
+    }
+}
+
+void Monitor::detenerTiempoAcumulado(){
+    //qDebug() << "detenerTiempoAcumulado";
+    if(timerTrabajando->isActive()){
+        timerTrabajando->stop();
+    }
+    guardarTiempoTrabajadoAcumulado();
+}
+
+void Monitor::iniciarTiempoAcumulado(){
+    //qDebug() << "iniciarTiempoAcumulado";
+    timerTrabajando->start(60000);
+}
+
+void Monitor::guardarTiempoTrabajadoAcumulado(){
+    //leer el acumulado
+    QString temp = consul->leer_trabajo_acumulado();
+    //convertirlo a entero y convertir a horas con 1 decimal
+    float horas = QString::number(temp.toInt()/60.0,'f',1).toFloat();
+    //leer horas totales
+    float total = consul->leer_trabajo_total().toFloat();
+    //nuevo total
+    float nuevo_total = horas + total;
+    //guardar nuevo total
+    if(!consul->guarda_trabajo_total(QString::number(nuevo_total,'f',1))){
+        qDebug() << "[TRABAJADO] No se pudo guardar el nuevo total";
+    }
+    if(!consul->guarda_trabajo_acumulado("0")){
+        qDebug() << "[TRABAJADO] No se pudo poner a 0 el acumulado";
+    }
+}
+
+void Monitor::revisarTiempoAcumulado(){
+    QString temp = consul->leer_trabajo_acumulado();
+    if(temp != "0"){
+        guardarTiempoTrabajadoAcumulado();
+    }
+}
+
+QString Monitor::obtenerTiempoTrabajado(){
+    //leer el total
+    QString total = consul->leer_trabajo_total();
+    //qDebug() << "total trabajado: " << total;
+    return total;
+}
+
+QString Monitor::obtenerTiempoAcumulado(){
+    //leer el total
+    QString acumulado = consul->leer_trabajo_acumulado();
+    //qDebug() << "total trabajado: " << total;
+    return acumulado;
+}
+
+void Monitor::aumentaTiempoTrabajando(){
+    //leer el tiempo, agregarle uno y volver a guardarlo
+    QString temp = consul->leer_trabajo_acumulado();
+    long int acumulado = temp.toInt() + 1;
+    if(!consul->guarda_trabajo_acumulado(QString::number(acumulado))){
+        qDebug() << "[TRABAJADO] No se pudo guardar aumentaTiempoTrabajando";
     }
 }
 
@@ -1894,6 +2019,7 @@ void Monitor::ventilador_detenido(){
             timerREG->start(400);
             pingControlVivo = false;
             pingSensoresVivo = false;
+            detenerTiempoAcumulado();
         }
         /*else{
             qDebug() << "entra a ventilador_detenido, valor a0: " + QString::number(recibe_a0) + " estadoVentilador: " + QString::number(estadoVentilador);
@@ -2585,6 +2711,7 @@ void Monitor::revisarTerminaConfigurar(){
                             label_debug->setText("Vent ON");
                             //aqui debería activar el timer para medir fios?
                             listo_medir_fio2 = true;
+                            iniciarTiempoAcumulado();
                         }
                         //
                         //pruebas
@@ -3986,6 +4113,7 @@ void Monitor::receVent(QString trama){
                                     timerREG->start(400);
                                     pingControlVivo = false;
                                     pingSensoresVivo = false;
+                                    detenerTiempoAcumulado();
                                 }
                                 else{
                                    label_debug->setText("Deteniendo...");
@@ -4003,6 +4131,7 @@ void Monitor::receVent(QString trama){
                                     label_debug->setText("Vent ON");
                                     qDebug() << "[ESTADO] inicia la ventilación";
                                     consul->agregar_evento("VENTILADOR", obtener_modo(), "INICIA LA VENTILACION", obtener_parametros());
+                                    iniciarTiempoAcumulado();
                                 }
                                 banderaModoSenPresion = 2;
                                 timerTPresion1S->start(2000);
@@ -4188,6 +4317,7 @@ void Monitor::receVent(QString trama){
                             origenListo = true;
                             cambiosMIni = true;
                             consul->agregar_evento("INICIO", obtener_modo(), "RECUPERACION", obtener_parametros());
+                            iniciarTiempoAcumulado();
                         }
                         else if(trama[1] == "2"){
                             //aqui está en modo teste, se debe mandar a salir de ahí y ponerlo a modo detenido (0)
@@ -4519,6 +4649,7 @@ void Monitor::validaUnSeg(){
                 graficaVolumen->limpiar_promediador();
                 graficaFlujo->limpiar_promediador();
                 consul->agregar_evento("VENTILADOR", obtener_modo(), "INICIA LA VENTILACION", obtener_parametros());
+                iniciarTiempoAcumulado();
             }
             else{
                 serPresion->iniciar_sensor_presion();
@@ -7740,6 +7871,7 @@ void Monitor::borrar_eventos(){
         //prueba borrar eventos
         qDebug() << "[EVENTOS] BORRAR EVENTOS";
         QStringList events_to_delete = consul->borrar_eventos();
+        QStringList events_to_delete_c = consul->borrar_eventos_criticos();
         qDebug() << "[EVENTOS] TERMINA DE BORRAR EVENTOS";
         //qDebug() << "[EVENTOS] Tamaño a borrar: " + QString::number(events_to_delete.size());
 

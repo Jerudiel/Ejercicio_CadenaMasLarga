@@ -317,6 +317,9 @@ void MainWindow::recteclado(QString trama){
                     else if(monitor->ventanaInoperanteAbierta){
                         monitor->tecla_inoperante(trama);
                     }
+                    else if(monitor->ventanaRecordatorioMantenimientoAbierta){
+                        monitor->tecla_mantenimiento(trama);
+                    }
                     /*else{
                         qDebug() << "teclado------9";
                     }*/

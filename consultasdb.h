@@ -60,6 +60,7 @@ public:
     QStringList obtener_eventos();
     //QStringList obtener_eventos_para_borrar();
     QStringList borrar_eventos();
+    QStringList borrar_eventos_criticos();
     bool borrar_evento(QString id);
     bool agregar_evento(QString tipo, QString modo, QString descripcion, QString params);
     QString numero_serie();
@@ -74,6 +75,11 @@ public:
     bool guarda_com_pip(QString b1);
     QStringList obtener_ultimo_evento();
     QSqlDatabase baseDatos;
+    QString obtener_id_trabajo();
+    QString leer_trabajo_total();
+    QString leer_trabajo_acumulado();
+    bool guarda_trabajo_acumulado(QString acumulado);
+    bool guarda_trabajo_total(QString total);
 private:
 
 };

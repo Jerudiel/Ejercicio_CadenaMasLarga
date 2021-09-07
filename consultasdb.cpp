@@ -965,7 +965,53 @@ QStringList ConsultasDb::obtener_eventos(){
 QStringList ConsultasDb::borrar_eventos(){
     try {
         if(baseDatos.isOpen()){
-            QString quer = "DELETE FROM public.\"eventos\" WHERE fecha <= CURRENT_DATE - integer '7'";
+            QString quer = "DELETE FROM public.\"eventos\" WHERE fecha <= CURRENT_DATE - integer '14' AND tipo <> 'ALARMA'";
+            baseDatos.transaction();
+            QSqlQuery consul;
+            consul.prepare(quer);
+            bool resultado = consul.exec();
+            if (consul.lastError().type() != QSqlError::NoError || !resultado)
+            {
+                qDebug() << "[DB] borrar_eventos Error: " << consul.lastError(); //.text();
+                baseDatos.rollback();
+            }
+            baseDatos.commit();
+            //
+            QString salida = "result?";
+            QStringList *lista_filas = new QStringList;
+            while(consul.next()){
+                //aqui estoy recorriendo filas
+                //convertir los valores de resultado en una QStringList
+                QSqlRecord record = consul.record();
+                QStringList tmp;
+                //qDebug() << "obtener_eventos_para_borrar, record.count: " + QString::number(record.count());
+                for(int i=0; i < record.count(); i++)
+                {
+                    tmp.append(record.value(i).toString());
+                }
+                //convertir la QStringLsit en un QString
+                QString fila = tmp.join(",");
+                //Agregar  el QString a la QStringList lista_filas
+                lista_filas->append(fila);
+            }
+            return *lista_filas;
+
+        }
+        else{
+            QStringList *lista_filas = new QStringList;
+            return *lista_filas;
+        }
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        QStringList *lista_filas = new QStringList;
+        return *lista_filas;
+    }
+}
+
+QStringList ConsultasDb::borrar_eventos_criticos(){
+    try {
+        if(baseDatos.isOpen()){
+            QString quer = "DELETE FROM public.\"eventos\" WHERE fecha <= CURRENT_DATE - integer '30' AND tipo = 'ALARMA'";
             baseDatos.transaction();
             QSqlQuery consul;
             consul.prepare(quer);
@@ -1271,3 +1317,99 @@ QStringList ConsultasDb::obtener_ultimo_evento(){
     }
 }
 
+QString ConsultasDb::obtener_id_trabajo(){
+    try {
+        QString quer = "SELECT id FROM public.\"trabajo\"";
+        QString resultados = consulta(quer);
+        QStringList res_list = resultados.split("?");
+        if(res_list.contains("result")){
+            return res_list.at(1);
+        }
+        else{
+            return "";
+        }
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        return "";
+    }
+}
+
+QString ConsultasDb::leer_trabajo_total(){
+    try {
+        QString quer = "SELECT total FROM public.\"trabajo\"";
+        QString resultados = consulta(quer);
+        QStringList res_list = resultados.split("?");
+        if(res_list.contains("result")){
+            return res_list.at(1);
+        }
+        else{
+            return "";
+        }
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        return "";
+    }
+}
+
+QString ConsultasDb::leer_trabajo_acumulado(){
+    try {
+        QString quer = "SELECT acumulado FROM public.\"trabajo\"";
+        QString resultados = consulta(quer);
+        QStringList res_list = resultados.split("?");
+        if(res_list.contains("result")){
+            return res_list.at(1);
+        }
+        else{
+            return "";
+        }
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        return "";
+    }
+}
+
+bool ConsultasDb::guarda_trabajo_acumulado(QString acumulado){
+    try {
+        QString id_trabajo = obtener_id_trabajo();
+        if(id_trabajo != ""){
+            QString update_query = "UPDATE public.\"trabajo\" SET acumulado = " + acumulado + " WHERE id = " + id_trabajo;
+            QString resultados = consulta(update_query);
+            if(resultados.at(1) != ""){
+                return true;
+            }
+            else{
+                qDebug("False guarda_trabajo_acumulado");
+                return false;
+            }
+        }
+        else{
+            return false;
+        }
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        return false;
+    }
+}
+
+bool ConsultasDb::guarda_trabajo_total(QString total){
+    try {
+        QString id_trabajo = obtener_id_trabajo();
+        if(id_trabajo != ""){
+            QString update_query = "UPDATE public.\"trabajo\" SET total = " + total + " WHERE id = " + id_trabajo;
+            QString resultados = consulta(update_query);
+            if(resultados.at(1) != ""){
+                return true;
+            }
+            else{
+                qDebug("False guarda_trabajo_total");
+                return false;
+            }
+        }
+        else{
+            return false;
+        }
+    }  catch (std::exception &e) {
+        qWarning("Error %s desde la funcion %s", e.what(), Q_FUNC_INFO );
+        return false;
+    }
+}

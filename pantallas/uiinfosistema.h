@@ -29,6 +29,8 @@ public:
     QLabel *labelVersionCPU;
     QLabel *labelNumeroSerie;
     QLabel *labelNumeroReinicios;
+    QLabel *labelTiempoAcumulado;
+    QLabel *labelTiempoTotal;
 
     Temperatura *tempMon; //= Temperatura(self, self.Monitor, self.logger)
 
@@ -36,6 +38,7 @@ public:
     MySwitch *switchSenPre;
     QTimer *timerActualiza;
 
+    QTimer *timerActualizaTiempos;
     void retranslateUi();
     virtual void paintEvent(QPaintEvent *event);
 
@@ -45,6 +48,7 @@ public slots:
     void cambiarSentidoGiro();
     void cambiarSenPre();
     void actualizaValores();
+    void actualizaTiempos();
 
 signals:
 
